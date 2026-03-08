@@ -1,804 +1,291 @@
-<!DOCTYPE html><html lang="en"><head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Federal Compliance Burden on Small Universities: A Comprehensive Analysis</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'navy': '#1e3a8a',
-                        'ivory': '#fefdf8',
-                        'deep-navy': '#0f172a',
-                        'accent-gold': '#fbbf24'
-                    },
-                    fontFamily: {
-                        'serif': ['Playfair Display', 'serif'],
-                        'sans': ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .hero-gradient {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1e40af 100%);
-        }
-        .text-shadow {
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        .grain-overlay {
-            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.15) 1px, transparent 0);
-            background-size: 20px 20px;
-        }
-        .toc-fixed {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 40;
-            background: rgba(254, 253, 248, 0.95);
-            backdrop-filter: blur(10px);
-            border-right: 1px solid #e5e7eb;
-        }
-        .main-content {
-            margin-left: 280px;
-            min-height: 100vh;
-        }
-        @media (max-width: 1024px) {
-            .toc-fixed {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-            .toc-fixed.open {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0;
-            }
-        }
-    </style>
-  </head>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI Web Drop</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --ink: #1d2a3a;
+      --muted: #5e6b7b;
+      --accent: #2f6fe4;
+      --accent-soft: #e8f0ff;
+      --border: #d9e2ef;
+    }
 
-  <body class="bg-ivory font-sans text-gray-800">
-    <!-- Mobile Menu Toggle -->
-    <button id="mobile-menu-toggle" class="lg:hidden fixed top-4 left-4 z-50 bg-navy text-white p-2 rounded-md">
-      <i class="fas fa-bars"></i>
-    </button>
+    * { box-sizing: border-box; }
 
-    <!-- Table of Contents -->
-    <nav id="toc" class="toc-fixed p-6">
-      <div class="mb-8">
-        <h3 class="font-serif text-lg font-bold text-navy mb-4">Contents</h3>
-        <ul class="space-y-2 text-sm">
-          <li>
-            <a href="#executive-summary" class="text-gray-600 hover:text-navy transition-colors duration-200 block py-1">Executive Summary</a>
-          </li>
-          <li>
-            <a href="#direct-impacts" class="text-gray-600 hover:text-navy transition-colors duration-200 block py-1">Direct Impacts</a>
-          </li>
-          <li class="ml-4">
-            <a href="#accreditation-reforms" class="text-gray-500 hover:text-navy transition-colors duration-200 block py-1">Accreditation Reforms</a>
-          </li>
-          <li class="ml-4">
-            <a href="#financial-aid-oversight" class="text-gray-500 hover:text-navy transition-colors duration-200 block py-1">Financial Aid Oversight</a>
-          </li>
-          <li class="ml-4">
-            <a href="#gainful-employment" class="text-gray-500 hover:text-navy transition-colors duration-200 block py-1">Gainful Employment Rule</a>
-          </li>
-          <li class="ml-4">
-            <a href="#title-ix-expansion" class="text-gray-500 hover:text-navy transition-colors duration-200 block py-1">Title IX Expansion</a>
-          </li>
-          <li>
-            <a href="#indirect-impacts" class="text-gray-600 hover:text-navy transition-colors duration-200 block py-1">Indirect Impacts</a>
-          </li>
-          <li class="ml-4">
-            <a href="#ocr-enforcement" class="text-gray-500 hover:text-navy transition-colors duration-200 block py-1">OCR Enforcement</a>
-          </li>
-          <li class="ml-4">
-            <a href="#immigration-policies" class="text-gray-500 hover:text-navy transition-colors duration-200 block py-1">Immigration Policies</a>
-          </li>
-          <li class="ml-4">
-            <a href="#funding-uncertainties" class="text-gray-500 hover:text-navy transition-colors duration-200 block py-1">Funding Uncertainties</a>
-          </li>
-          <li>
-            <a href="#case-study" class="text-gray-600 hover:text-navy transition-colors duration-200 block py-1">Case Study: Bowdoin College</a>
-          </li>
-          <li>
-            <a href="#workload-analysis" class="text-gray-600 hover:text-navy transition-colors duration-200 block py-1">Workload Analysis</a>
-          </li>
-          <li>
-            <a href="#future-implications" class="text-gray-600 hover:text-navy transition-colors duration-200 block py-1">Future Implications</a>
-          </li>
-          <li>
-            <a href="#conclusion" class="text-gray-600 hover:text-navy transition-colors duration-200 block py-1">Conclusion</a>
-          </li>
-        </ul>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1100px 500px at 0% -20%, #dce8ff 0%, transparent 65%),
+        radial-gradient(900px 450px at 100% -10%, #e8f8ef 0%, transparent 60%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, #163058 0%, #2f6fe4 100%);
+      border-radius: 16px;
+      color: #fff;
+      padding: 24px;
+      box-shadow: 0 18px 40px rgba(22, 48, 88, 0.25);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.5rem, 2.2vw, 2rem);
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(23, 34, 51, 0.06);
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li + li { margin-top: 8px; }
+
+    a.file-link {
+      display: block;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--ink);
+      background: #fff;
+      transition: border-color 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    a.file-link:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 16px rgba(47, 111, 228, 0.12);
+    }
+
+    .name { font-weight: 600; }
+
+    .path {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      word-break: break-all;
+    }
+
+    .empty,
+    .error {
+      margin: 0;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      background: #fbfcff;
+    }
+
+    .error {
+      border-color: #f2c0c0;
+      background: #fff6f6;
+      color: #7c2f2f;
+    }
+
+    .tip {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    code {
+      background: #eef3fb;
+      border: 1px solid #dbe5f5;
+      border-radius: 6px;
+      padding: 1px 6px;
+      font-family: Consolas, "SFMono-Regular", Menlo, monospace;
+      font-size: 0.88em;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>AI Web Drop</h1>
+      <p class="subtitle">Drop any <code>.html</code> file into this repo and it will appear here automatically on GitHub Pages.</p>
+    </section>
+
+    <section class="panel" aria-live="polite">
+      <div class="row">
+        <p class="meta" id="repo-label">Detecting repository...</p>
+        <span class="badge" id="count-badge">0 files</span>
       </div>
-    </nav>
+      <div id="state"></div>
+      <ul id="file-list"></ul>
+      <p class="tip">Note: this index is built from the GitHub repository tree API, so updates appear after your latest push is available.</p>
+    </section>
+  </main>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- Hero Section -->
-      <section class="hero-gradient grain-overlay relative overflow-hidden">
-        <div class="absolute inset-0 bg-black bg-opacity-20"></div>
-        <div class="relative z-10 px-8 py-16 md:px-12 md:py-24">
-          <div class="max-w-6xl">
-            <!-- Bento Grid Layout -->
-            <div class="grid grid-cols-12 gap-6 items-center">
-              <!-- Title Column -->
-              <div class="col-span-12 lg:col-span-7">
-                <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white text-shadow mb-6 leading-tight">
-                  The <em class="text-accent-gold">Mounting Burden</em> of Federal Compliance on Small Universities
-                </h1>
-                <p class="text-lg sm:text-xl text-gray-200 mb-8 leading-relaxed">
-                  How recent Department of Education regulations and broader federal policies are reshaping the operational landscape for higher education institutions
-                </p>
-              </div>
+  <script>
+    const stateEl = document.getElementById("state");
+    const listEl = document.getElementById("file-list");
+    const countBadgeEl = document.getElementById("count-badge");
+    const repoLabelEl = document.getElementById("repo-label");
 
-              <!-- Visual Element Column -->
-              <div class="col-span-12 lg:col-span-5">
-                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-white border-opacity-20">
-                  <img src="https://kimi-web-img.moonshot.cn/img/placeholder-0620/%E5%9B%BE%E7%89%879.png" alt="University administrative staff reviewing federal compliance documents" class="w-full h-48 object-cover rounded-lg mb-4" size="medium" aspect="wide" style="photo" query="university administration federal compliance" referrerpolicy="no-referrer" data-modified="1" data-score="10000.00"/>
-                  <div class="text-white">
-                    <h3 class="font-bold mb-2">Key Compliance Areas</h3>
-                    <ul class="text-sm space-y-1 text-gray-200">
-                      <li><i class="fas fa-check text-accent-gold mr-2"></i>Accreditation Reforms</li>
-                      <li><i class="fas fa-check text-accent-gold mr-2"></i>Title IX Expansion</li>
-                      <li><i class="fas fa-check text-accent-gold mr-2"></i>Financial Aid Oversight</li>
-                      <li><i class="fas fa-check text-accent-gold mr-2"></i>Gainful Employment Rules</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+    function setState(message, type) {
+      stateEl.innerHTML = "";
+      if (!message) {
+        return;
+      }
+      const p = document.createElement("p");
+      p.className = type === "error" ? "error" : "empty";
+      p.textContent = message;
+      stateEl.appendChild(p);
+    }
 
-      <!-- Executive Summary -->
-      <section id="executive-summary" class="px-8 py-16 md:px-12 bg-white">
-        <div class="max-w-4xl">
-          <h2 class="font-serif text-3xl font-bold text-navy mb-8">Executive Summary</h2>
-          <div class="prose prose-lg max-w-none">
-            <p class="text-xl text-gray-700 mb-6 leading-relaxed">
-              Federal activities in recent months have ushered in a period of significant change and increased regulatory scrutiny for higher education institutions, with small universities facing distinct challenges due to their typically more limited resources.
-            </p>
+    function encodePath(path) {
+      return path.split("/").map(encodeURIComponent).join("/");
+    }
 
-            <div class="bg-gray-50 rounded-lg p-6 mb-8">
-              <h3 class="font-bold text-navy mb-4">Key Developments</h3>
-              <ul class="space-y-3">
-                <li class="flex items-start">
-                  <i class="fas fa-gavel text-navy mr-3 mt-1"></i>
-                  <span><strong>Sweeping reforms to the accreditation system</strong> aimed at increasing institutional flexibility but also imposing new requirements related to student outcomes and intellectual diversity</span>
-                </li>
-                <li class="flex items-start">
-                  <i class="fas fa-shield-alt text-navy mr-3 mt-1"></i>
-                  <span><strong>Enhanced financial aid oversight</strong> with new fraud prevention measures and reporting requirements</span>
-                </li>
-                <li class="flex items-start">
-                  <i class="fas fa-balance-scale text-navy mr-3 mt-1"></i>
-                  <span><strong>Expanded Title IX regulations</strong> broadening protections but also lowering thresholds for institutional response</span>
-                </li>
-                <li class="flex items-start">
-                  <i class="fas fa-chart-line text-navy mr-3 mt-1"></i>
-                  <span><strong>Gainful Employment rules</strong> demanding meticulous data collection and reporting on program-level student outcomes</span>
-                </li>
-              </ul>
-            </div>
+    function detectGitHubPagesRepo() {
+      const host = window.location.hostname;
+      const pathParts = window.location.pathname.replace(/^\/+/, "").split("/").filter(Boolean);
 
-            <p class="text-gray-700 leading-relaxed">
-              Cumulatively, these activities translate into increased administrative and IT system adjustments, extensive staff training, policy revisions, and complex resource allocation and strategic planning challenges for small universities, which must also prepare for potential future legislative changes and evolving enforcement landscapes.
-            </p>
-          </div>
-        </div>
-      </section>
+      if (!host.endsWith("github.io")) {
+        throw new Error("This index is designed to run from GitHub Pages (hostname ending in github.io).");
+      }
 
-      <!-- Direct Impacts -->
-      <section id="direct-impacts" class="px-8 py-16 md:px-12 bg-gray-50">
-        <div class="max-w-4xl">
-          <h2 class="font-serif text-3xl font-bold text-navy mb-12">Direct Impacts: New Department of Education Regulations</h2>
+      const owner = host.replace(/\.github\.io$/, "");
 
-          <!-- Accreditation Reforms -->
-          <div id="accreditation-reforms" class="mb-12">
-            <h3 class="font-serif text-2xl font-bold text-navy mb-6">Accreditation Reforms and Institutional Flexibility</h3>
-            <div class="bg-white rounded-lg p-8 shadow-sm">
-              <p class="text-gray-700 mb-6 leading-relaxed">
-                Recent federal activities, particularly an <strong>Executive Order issued on April 23, 2025, titled &#34;Reforming Accreditation to Strengthen Higher Education,&#34;</strong> signal significant shifts in the landscape of higher education accreditation. <a href="https://www.whitehouse.gov/presidential-actions/2025/04/reforming-accreditation-to-strengthen-higher-education/" class="text-navy hover:underline" target="_blank">[30]</a>
-              </p>
+      if (pathParts.length === 0) {
+        return {
+          owner,
+          repo: owner + ".github.io",
+          siteBasePath: "/"
+        };
+      }
 
-              <div class="grid md:grid-cols-2 gap-6 mb-6">
-                <div class="bg-blue-50 rounded-lg p-4">
-                  <h4 class="font-bold text-navy mb-2">Key Changes</h4>
-                  <ul class="text-sm space-y-2">
-                    <li><i class="fas fa-arrow-right text-navy mr-2"></i>Reduced barriers to changing accreditors</li>
-                    <li><i class="fas fa-arrow-right text-navy mr-2"></i>Emphasis on &#34;intellectual diversity&#34; among faculty</li>
-                    <li><i class="fas fa-arrow-right text-navy mr-2"></i>De-emphasis on DEI mandates</li>
-                    <li><i class="fas fa-arrow-right text-navy mr-2"></i>Focus on high-quality academic programs</li>
-                  </ul>
-                </div>
-                <div class="bg-amber-50 rounded-lg p-4">
-                  <h4 class="font-bold text-navy mb-2">Workload Implications</h4>
-                  <ul class="text-sm space-y-2">
-                    <li><i class="fas fa-exclamation-triangle text-amber-600 mr-2"></i>Review and revise DEI policies</li>
-                    <li><i class="fas fa-exclamation-triangle text-amber-600 mr-2"></i>Research new accreditor options</li>
-                    <li><i class="fas fa-exclamation-triangle text-amber-600 mr-2"></i>Update data collection processes</li>
-                    <li><i class="fas fa-exclamation-triangle text-amber-600 mr-2"></i>Navigate transition complexities</li>
-                  </ul>
-                </div>
-              </div>
+      return {
+        owner,
+        repo: pathParts[0],
+        siteBasePath: "/" + pathParts[0] + "/"
+      };
+    }
 
-              <blockquote class="border-l-4 border-navy pl-4 italic text-gray-600 mb-4">
-                &#34;The Executive Order asserts that accreditors have, in some instances, &#39;abused their authority by imposing discriminatory diversity, equity, and inclusion (DEI)-based standards&#39; and have approved &#39;low-quality&#39; institutions, leading to poor student outcomes and significant debt.&#34;
-              </blockquote>
-            </div>
-          </div>
+    async function fetchJson(url) {
+      const res = await fetch(url, { headers: { "Accept": "application/vnd.github+json" } });
+      if (!res.ok) {
+        throw new Error("GitHub API request failed (" + res.status + ").");
+      }
+      return res.json();
+    }
 
-          <!-- Financial Aid Oversight -->
-          <div id="financial-aid-oversight" class="mb-12">
-            <h3 class="font-serif text-2xl font-bold text-navy mb-6">Enhanced Financial Aid Oversight and Fraud Prevention</h3>
-            <div class="bg-white rounded-lg p-8 shadow-sm">
-              <p class="text-gray-700 mb-6 leading-relaxed">
-                The Department of Education has intensified its focus on the integrity of federal student aid programs, announcing several measures aimed at <strong>preventing fraud, particularly identity theft</strong>, and ensuring that aid reaches eligible students. <a href="https://capincrouse.com/top-six-june-2025-announcements-for-higher-education-institutions/" class="text-navy hover:underline" target="_blank">[8]</a>
-              </p>
+    async function loadFiles() {
+      setState("Loading HTML files...");
+      listEl.innerHTML = "";
 
-              <div class="grid md:grid-cols-3 gap-4 mb-6">
-                <div class="bg-red-50 rounded-lg p-4 text-center">
-                  <i class="fas fa-user-shield text-3xl text-red-600 mb-3"></i>
-                  <h4 class="font-bold text-navy mb-2">Identity Verification</h4>
-                  <p class="text-sm text-gray-600">New V4 and V5 verification categories for fall 2025</p>
-                </div>
-                <div class="bg-green-50 rounded-lg p-4 text-center">
-                  <i class="fas fa-file-alt text-3xl text-green-600 mb-3"></i>
-                  <h4 class="font-bold text-navy mb-2">NSLDS Reports</h4>
-                  <p class="text-sm text-gray-600">New Delinquent Borrower Report (DELQ01)</p>
-                </div>
-                <div class="bg-blue-50 rounded-lg p-4 text-center">
-                  <i class="fas fa-globe text-3xl text-blue-600 mb-3"></i>
-                  <h4 class="font-bold text-navy mb-2">Foreign Gifts</h4>
-                  <p class="text-sm text-gray-600">Section 117 reporting deadline July 31, 2025</p>
-                </div>
-              </div>
+      const repoInfo = detectGitHubPagesRepo();
+      repoLabelEl.textContent = repoInfo.owner + "/" + repoInfo.repo;
 
-              <p class="text-gray-700 leading-relaxed">
-                For small universities, these changes translate into an <strong>increased administrative burden in the financial aid office</strong>, requiring staff training on new verification procedures, system updates for XML reporting formats, and enhanced monitoring of foreign gift reporting requirements.
-              </p>
-            </div>
-          </div>
+      const repoMeta = await fetchJson("https://api.github.com/repos/" + repoInfo.owner + "/" + repoInfo.repo);
+      const branch = repoMeta.default_branch || "main";
 
-          <!-- Gainful Employment -->
-          <div id="gainful-employment" class="mb-12">
-            <h3 class="font-serif text-2xl font-bold text-navy mb-6">Gainful Employment Rule: Ongoing Compliance</h3>
-            <div class="bg-white rounded-lg p-8 shadow-sm">
-              <p class="text-gray-700 mb-6 leading-relaxed">
-                The U.S. Department of Education&#39;s <strong>Gainful Employment (GE) regulations, effective July 1, 2024</strong>, represent a significant and ongoing compliance obligation for both for-profit and not-for-profit institutions. <a href="https://www.hklaw.com/en/insights/publications/2023/10/new-gainful-employment-rules-impact-for-profit-and-nonprofit" class="text-navy hover:underline" target="_blank">[3]</a>
-              </p>
+      const tree = await fetchJson(
+        "https://api.github.com/repos/" + repoInfo.owner + "/" + repoInfo.repo + "/git/trees/" + encodeURIComponent(branch) + "?recursive=1"
+      );
 
-              <div class="bg-yellow-50 rounded-lg p-6 mb-6">
-                <h4 class="font-bold text-navy mb-4">Critical Metrics</h4>
-                <div class="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h5 class="font-semibold mb-2">Debt-to-Earnings Ratio</h5>
-                    <p class="text-sm text-gray-600 mb-2">Program passes if debt payments are:</p>
-                    <ul class="text-sm space-y-1">
-                      <li>≤ 8% of annual earnings <strong>OR</strong></li>
-                      <li>≤ 20% of discretionary earnings</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h5 class="font-semibold mb-2">Earnings Premium Test</h5>
-                    <p class="text-sm text-gray-600">Graduate earnings must exceed typical high school graduate in state labor force (~$25,000 average)</p>
-                  </div>
-                </div>
-              </div>
+      const htmlFiles = (tree.tree || [])
+        .filter((item) => item.type === "blob")
+        .map((item) => item.path)
+        .filter((path) => path.toLowerCase().endsWith(".html"))
+        .filter((path) => path.toLowerCase() !== "index.html")
+        .sort((a, b) => a.localeCompare(b));
 
-              <p class="text-gray-700 leading-relaxed">
-                Institutions must <strong>annually report 23 distinct data elements</strong> for each program, including program length, total enrollment, costs, loan debt, and earnings data. The administrative burden of collecting, verifying, and reporting this data is substantial, particularly for smaller institutions with limited administrative staff and resources.
-              </p>
-            </div>
-          </div>
+      countBadgeEl.textContent = htmlFiles.length + (htmlFiles.length === 1 ? " file" : " files");
 
-          <!-- Title IX Expansion -->
-          <div id="title-ix-expansion" class="mb-12">
-            <h3 class="font-serif text-2xl font-bold text-navy mb-6">Expanded Title IX Regulations</h3>
-            <div class="bg-white rounded-lg p-8 shadow-sm">
-              <p class="text-gray-700 mb-6 leading-relaxed">
-                The Department of Education&#39;s <strong>new Title IX regulations, which took effect on August 1, 2024</strong>, represent a significant expansion of institutional responsibilities and are poised to substantially increase the compliance workload for all higher education institutions. <a href="https://www.fennemorelaw.com/update-u-s-department-of-education-final-title-ix-regulations-effective-august-1-increase-scope-against-sex-discrimination/" class="text-navy hover:underline" target="_blank">[103]</a>
-              </p>
+      if (htmlFiles.length === 0) {
+        setState("No HTML files found yet. Add one and push to GitHub.");
+        return;
+      }
 
-              <div class="grid md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <h4 class="font-bold text-navy mb-3">Expanded Protections</h4>
-                  <ul class="space-y-2 text-sm">
-                    <li><i class="fas fa-plus text-green-600 mr-2"></i>Sexual orientation discrimination</li>
-                    <li><i class="fas fa-plus text-green-600 mr-2"></i>Gender identity discrimination</li>
-                    <li><i class="fas fa-plus text-green-600 mr-2"></i>Pregnancy and related conditions</li>
-                    <li><i class="fas fa-plus text-green-600 mr-2"></i>Parental, family, marital status</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 class="font-bold text-navy mb-3">Lower Thresholds</h4>
-                  <ul class="space-y-2 text-sm">
-                    <li><i class="fas fa-arrow-down text-amber-600 mr-2"></i>From &#34;severe, pervasive <strong>and</strong> objectively offensive&#34;</li>
-                    <li><i class="fas fa-arrow-down text-amber-600 mr-2"></i>To &#34;severe <strong>or</strong> pervasive&#34; and objectively offensive</li>
-                  </ul>
-                </div>
-              </div>
+      setState("");
 
-              <div class="bg-red-50 rounded-lg p-4 mb-4">
-                <h4 class="font-bold text-red-800 mb-2">Legal Challenges</h4>
-                <p class="text-sm text-red-700">
-                  As of August 2024, <strong>multiple lawsuits challenging certain provisions</strong> have resulted in preliminary injunctions barring implementation in 26 states, creating a patchwork of compliance requirements across the country. <a href="https://assets.aclu.org/live/uploads/2024/08/Title-IX-8-19-24-Fact-Sheet.pdf" class="text-red-600 hover:underline" target="_blank">[106]</a>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      htmlFiles.forEach((filePath) => {
+        const href = repoInfo.siteBasePath + encodePath(filePath);
+        const name = filePath.split("/").pop();
 
-      <!-- Indirect Impacts -->
-      <section id="indirect-impacts" class="px-8 py-16 md:px-12 bg-white">
-        <div class="max-w-4xl">
-          <h2 class="font-serif text-3xl font-bold text-navy mb-12">Indirect Impacts: Broader Federal Policies</h2>
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        const nameEl = document.createElement("div");
+        const pathEl = document.createElement("div");
 
-          <!-- OCR Enforcement -->
-          <div id="ocr-enforcement" class="mb-12">
-            <h3 class="font-serif text-2xl font-bold text-navy mb-6">Office for Civil Rights (OCR) Enforcement Priorities</h3>
-            <div class="bg-gray-50 rounded-lg p-8">
-              <p class="text-gray-700 mb-6 leading-relaxed">
-                Recent activities by the U.S. Department of Education&#39;s Office for Civil Rights (OCR) indicate a <strong>significant shift in enforcement priorities</strong> and caseload management. A POLITICO report revealed that the OCR has been <strong>dismissing civil rights complaints at an &#34;unheard of&#34; pace since March 2025</strong>. <a href="https://www.politico.com/news/2025/07/08/education-departments-civil-rights-complaint-dismissals-prompt-concern-from-trump-opponents-00439118" class="text-navy hover:underline" target="_blank">[81]</a>
-              </p>
+        a.className = "file-link";
+        a.href = href;
 
-              <div class="bg-white rounded-lg p-6 mb-6">
-                <h4 class="font-bold text-navy mb-4">Complaint Resolution Statistics (March 11 - June 27, 2025)</h4>
-                <div class="grid md:grid-cols-3 gap-4 text-center">
-                  <div class="bg-red-100 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-red-600">3,424</div>
-                    <div class="text-sm text-gray-600">Complaints Dismissed</div>
-                  </div>
-                  <div class="bg-yellow-100 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-yellow-600">96</div>
-                    <div class="text-sm text-gray-600">Resolved for Insufficient Evidence</div>
-                  </div>
-                  <div class="bg-green-100 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-green-600">290</div>
-                    <div class="text-sm text-gray-600">Voluntary Resolutions</div>
-                  </div>
-                </div>
-              </div>
+        nameEl.className = "name";
+        nameEl.textContent = name;
 
-              <p class="text-gray-700 leading-relaxed">
-                The agency appears to be <strong>increasingly focusing its civil rights efforts on stamping out campus antisemitism</strong>, potentially altering the compliance landscape for institutions. This creates uncertainty for small universities, which must navigate shifting enforcement priorities with limited legal and administrative resources.
-              </p>
-            </div>
-          </div>
+        pathEl.className = "path";
+        pathEl.textContent = filePath;
 
-          <!-- Immigration Policies -->
-          <div id="immigration-policies" class="mb-12">
-            <h3 class="font-serif text-2xl font-bold text-navy mb-6">Immigration Policies and International Student Dynamics</h3>
-            <div class="bg-gray-50 rounded-lg p-8">
-              <p class="text-gray-700 mb-6 leading-relaxed">
-                Recent U.S. immigration policies and enforcement actions have created a <strong>complex and often challenging environment for international students</strong> and the universities that host them. A June 2025 travel ban proclamation included a <strong>&#34;total ban&#34; on citizens from 12 countries</strong> entering the United States. <a href="https://monitor.icef.com/2025/06/what-are-the-latest-developments-for-international-students-in-the-united-states/" class="text-navy hover:underline" target="_blank">[97]</a>
-              </p>
+        a.appendChild(nameEl);
+        a.appendChild(pathEl);
+        li.appendChild(a);
+        listEl.appendChild(li);
+      });
+    }
 
-              <div class="grid md:grid-cols-2 gap-6 mb-6">
-                <div class="bg-red-50 rounded-lg p-4">
-                  <h4 class="font-bold text-red-800 mb-3">Travel Ban Impact</h4>
-                  <p class="text-sm text-gray-700 mb-2">F, M, and J student visas banned for:</p>
-                  <div class="text-xs text-gray-600">
-                    <strong>Total Ban:</strong> Afghanistan, Burma, Chad, Congo, Equatorial Guinea, Eritrea, Haiti, Iran, Libya, Somalia, Sudan, Yemen
-                    <br/>
-                    <br/>
-                    <strong>Partial Ban:</strong> Burundi, Cuba, Laos, Sierra Leone, Togo, Turkmenistan, Venezuela
-                  </div>
-                </div>
-                <div class="bg-blue-50 rounded-lg p-4">
-                  <h4 class="font-bold text-blue-800 mb-3">Enforcement Actions</h4>
-                  <ul class="text-sm space-y-2 text-gray-700">
-                    <li><i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>Arrests of protest participants</li>
-                    <li><i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>Visa cancellations for op-ed writers</li>
-                    <li><i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>SEVIS terminations without notice</li>
-                    <li><i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>Climate of fear on campuses</li>
-                  </ul>
-                </div>
-              </div>
-
-              <blockquote class="border-l-4 border-navy pl-4 italic text-gray-600 mb-4">
-                &#34;Some universities are reportedly checking on visa revocations hourly and being on call to quickly inform affected students of SEVIS terminations.&#34; <a href="https://www.forbes.com/sites/stuartanderson/2025/03/31/trump-immigration-policies-increase-peril-for-international-students/" class="text-navy hover:underline" target="_blank">[98]</a>
-              </blockquote>
-            </div>
-          </div>
-
-          <!-- Funding Uncertainties -->
-          <div id="funding-uncertainties" class="mb-12">
-            <h3 class="font-serif text-2xl font-bold text-navy mb-6">OMB Directives and Funding Uncertainties</h3>
-            <div class="bg-gray-50 rounded-lg p-8">
-              <p class="text-gray-700 mb-6 leading-relaxed">
-                Recent actions by the White House and the Office of Management and Budget (OMB) have introduced <strong>significant funding uncertainties</strong> for higher education institutions. In January 2025, the OMB issued a memorandum instructing federal agencies to <strong>temporarily halt all spending</strong> while reviewing funding for alignment with administration priorities. <a href="https://www.acenet.edu/News-Room/Pages/OMB-Funding-Pause-Executive-Orders.aspx" class="text-navy hover:underline" target="_blank">[107]</a>
-              </p>
-
-              <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-                <div class="flex items-center">
-                  <i class="fas fa-exclamation-triangle text-yellow-600 mr-3"></i>
-                  <div>
-                    <h4 class="font-bold text-yellow-800">Critical Impact</h4>
-                    <p class="text-sm text-yellow-700 mt-1">
-                      Funding for programs like the College Assistance Migrant Program (CAMP) and High School Equivalency Program (HEP) was withheld in July 2025, forcing some institutions to consider closing programs and laying off staff. <a href="https://www.insidehighered.com/news/students/retention/2025/07/16/funding-paused-migrant-education-trump-plans-cuts" class="text-yellow-600 hover:underline" target="_blank">[110]</a>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <p class="text-gray-700 leading-relaxed">
-                The OMB memo specifically targeted <strong>discretionary grants at the Department of Education for review concerning alignment with administration priorities, including DEI initiatives and &#34;woke gender ideology&#34;</strong>. This direct impact on specific programs demonstrates how broader OMB reviews can translate into immediate operational crises for universities.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Case Study -->
-      <section id="case-study" class="px-8 py-16 md:px-12 bg-navy text-white">
-        <div class="max-w-4xl">
-          <h2 class="font-serif text-3xl font-bold mb-12">Case Study: Bowdoin College and OCR</h2>
-
-          <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-8">
-            <div class="grid md:grid-cols-3 gap-8">
-              <div class="md:col-span-2">
-                <h3 class="font-serif text-2xl font-bold mb-4">The Complaint</h3>
-                <p class="text-gray-200 mb-6 leading-relaxed">
-                  On <strong>May 21, 2025, the Equal Protection Project (EPP) filed a federal civil rights complaint against Bowdoin College</strong> with the OCR, alleging that the college administers eighteen distinct scholarships and programs that discriminate on the basis of race, color, national origin, and/or sex. <a href="https://www.themainewire.com/2025/05/bowdoin-college-faces-civil-rights-complaint-alleging-discrimination-based-on-sex-and-race-in-scholarships/" class="text-accent-gold hover:underline" target="_blank">[89]</a>
-                </p>
-
-                <div class="bg-white bg-opacity-10 rounded-lg p-4 mb-6">
-                  <h4 class="font-bold mb-3">Examples of Challenged Scholarships:</h4>
-                  <ul class="text-sm space-y-2 text-gray-200">
-                    <li><strong>Alice G. and Frederick W. Titus Scholarship Fund:</strong> Preference to &#34;students from minority groups who enhance the diversity of campus&#34;</li>
-                    <li><strong>Sweeney Family Scholarship Fund:</strong> Preference to &#34;female students who have an interest in technology&#34;</li>
-                  </ul>
-                </div>
-              </div>
-
-              <div class="md:col-span-1">
-                <img src="https://kimi-web-img.moonshot.cn/img/www.bowdoin.edu/684b07ffbb3de3546d3c3be4e24b7f96a501b412.jpg" alt="Bowdoin College campus" class="w-full h-48 object-cover rounded-lg mb-4" size="medium" aspect="wide" style="photo" query="Bowdoin College campus" referrerpolicy="no-referrer" data-modified="1" data-score="11599.00"/>
-                <div class="bg-white bg-opacity-10 rounded-lg p-4">
-                  <h4 class="font-bold mb-2">Workload Impact</h4>
-                  <ul class="text-sm space-y-2 text-gray-200">
-                    <li><i class="fas fa-search text-accent-gold mr-2"></i>Internal investigation</li>
-                    <li><i class="fas fa-file-alt text-accent-gold mr-2"></i>Document gathering and submission</li>
-                    <li><i class="fas fa-gavel text-accent-gold mr-2"></i>Legal counsel engagement</li>
-                    <li><i class="fas fa-edit text-accent-gold mr-2"></i>Policy revision and training</li>
-                    <li><i class="fas fa-newspaper text-accent-gold mr-2"></i>Media relations and reputation management</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-8">
-              <p class="text-gray-200 leading-relaxed">
-                The EPP&#39;s complaint requests that OCR <strong>promptly open a formal investigation, impose remedial relief for those allegedly excluded from scholarships, and ensure future compliance with federal civil rights laws</strong>. For a small university like Bowdoin, responding to such a complaint entails considerable administrative and legal workload, even before any formal finding of wrongdoing.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Workload Analysis -->
-      <section id="workload-analysis" class="px-8 py-16 md:px-12 bg-gray-50">
-        <div class="max-w-4xl">
-          <h2 class="font-serif text-3xl font-bold text-navy mb-12">Analysis of Workload Implications</h2>
-
-          <div class="grid md:grid-cols-3 gap-8 mb-12">
-            <div class="bg-white rounded-lg p-6 shadow-sm">
-              <div class="text-center mb-4">
-                <i class="fas fa-server text-4xl text-blue-600 mb-3"></i>
-                <h3 class="font-bold text-navy">IT System Adjustments</h3>
-              </div>
-              <p class="text-sm text-gray-600 mb-4">
-                Federal mandates require significant upgrades to administrative processes and IT systems, particularly for GE reporting and enhanced financial aid oversight.
-              </p>
-              <ul class="text-xs space-y-1 text-gray-500">
-                <li>• ERP system upgrades</li>
-                <li>• Data collection enhancements</li>
-                <li>• XML reporting capabilities</li>
-                <li>• Identity verification systems</li>
-              </ul>
-            </div>
-
-            <div class="bg-white rounded-lg p-6 shadow-sm">
-              <div class="text-center mb-4">
-                <i class="fas fa-chalkboard-teacher text-4xl text-green-600 mb-3"></i>
-                <h3 class="font-bold text-navy">Staff Training</h3>
-              </div>
-              <p class="text-sm text-gray-600 mb-4">
-                Comprehensive training requirements across multiple regulatory domains necessitate significant time and resource investment.
-              </p>
-              <ul class="text-xs space-y-1 text-gray-500">
-                <li>• Title IX mandatory reporting</li>
-                <li>• Financial aid procedures</li>
-                <li>• Accreditation standards</li>
-                <li>• Civil rights compliance</li>
-              </ul>
-            </div>
-
-            <div class="bg-white rounded-lg p-6 shadow-sm">
-              <div class="text-center mb-4">
-                <i class="fas fa-coins text-4xl text-amber-600 mb-3"></i>
-                <h3 class="font-bold text-navy">Resource Allocation</h3>
-              </div>
-              <p class="text-sm text-gray-600 mb-4">
-                Difficult choices regarding budget allocation, strategic planning, and program portfolio management under increasing constraints.
-              </p>
-              <ul class="text-xs space-y-1 text-gray-500">
-                <li>• Compliance cost absorption</li>
-                <li>• Program evaluation metrics</li>
-                <li>• Risk management strategies</li>
-                <li>• Mission alignment challenges</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-lg p-8 shadow-sm">
-            <h3 class="font-serif text-xl font-bold text-navy mb-6">Cumulative Impact Assessment</h3>
-            <div class="space-y-4">
-              <div class="flex items-start">
-                <div class="bg-red-100 rounded-full p-2 mr-4 mt-1">
-                  <i class="fas fa-chart-line text-red-600 text-sm"></i>
-                </div>
-                <div>
-                  <h4 class="font-bold text-navy mb-1">Administrative Burden Increase</h4>
-                  <p class="text-sm text-gray-600">Significant expansion in compliance requirements across multiple functional areas</p>
-                </div>
-              </div>
-
-              <div class="flex items-start">
-                <div class="bg-yellow-100 rounded-full p-2 mr-4 mt-1">
-                  <i class="fas fa-clock text-yellow-600 text-sm"></i>
-                </div>
-                <div>
-                  <h4 class="font-bold text-navy mb-1">Time Constraints</h4>
-                  <p class="text-sm text-gray-600">Multiple deadlines and implementation timelines require immediate attention</p>
-                </div>
-              </div>
-
-              <div class="flex items-start">
-                <div class="bg-blue-100 rounded-full p-2 mr-4 mt-1">
-                  <i class="fas fa-exclamation-triangle text-blue-600 text-sm"></i>
-                </div>
-                <div>
-                  <h4 class="font-bold text-navy mb-1">Risk Exposure</h4>
-                  <p class="text-sm text-gray-600">Heightened consequences for non-compliance including loss of federal funding</p>
-                </div>
-              </div>
-
-              <div class="flex items-start">
-                <div class="bg-green-100 rounded-full p-2 mr-4 mt-1">
-                  <i class="fas fa-balance-scale text-green-600 text-sm"></i>
-                </div>
-                <div>
-                  <h4 class="font-bold text-navy mb-1">Strategic Challenges</h4>
-                  <p class="text-sm text-gray-600">Balancing mission-driven goals with federal compliance requirements</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Future Implications -->
-      <section id="future-implications" class="px-8 py-16 md:px-12 bg-white">
-        <div class="max-w-4xl">
-          <h2 class="font-serif text-3xl font-bold text-navy mb-12">Potential Future Implications</h2>
-
-          <div class="space-y-8">
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-8">
-              <h3 class="font-serif text-xl font-bold text-navy mb-4">Legislative Proposals</h3>
-              <p class="text-gray-700 mb-4 leading-relaxed">
-                The U.S. Senate&#39;s HELP Committee proposals for a Reconciliation bill in June 2025 aim to &#34;fix our broken higher education system&#34; by prioritizing student success and 21st-century skills. <a href="https://www.powerslaw.com/washington-dc-education-update-june-2025-2/" class="text-navy hover:underline" target="_blank">[1]</a>
-              </p>
-
-              <div class="grid md:grid-cols-2 gap-6">
-                <div class="bg-white rounded-lg p-4">
-                  <h4 class="font-bold text-navy mb-2">Key Proposals</h4>
-                  <ul class="text-sm space-y-2 text-gray-600">
-                    <li>• Elimination of Grad PLUS loans</li>
-                    <li>• Caps on unsubsidized graduate loans</li>
-                    <li>• Workforce Pell Grants for short-term programs</li>
-                    <li>• &#34;Do no harm&#34; standard for program eligibility</li>
-                  </ul>
-                </div>
-                <div class="bg-white rounded-lg p-4">
-                  <h4 class="font-bold text-navy mb-2">Potential Impact</h4>
-                  <ul class="text-sm space-y-2 text-gray-600">
-                    <li>• Reduced loan availability for students</li>
-                    <li>• Increased pressure on institutional aid</li>
-                    <li>• Competition with non-accredited providers</li>
-                    <li>• Enhanced outcome tracking requirements</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-8">
-              <h3 class="font-serif text-xl font-bold text-navy mb-4">Evolving Enforcement Landscapes</h3>
-              <p class="text-gray-700 mb-4 leading-relaxed">
-                Both OCR and accrediting agencies are expected to continue evolving their enforcement approaches, presenting ongoing compliance challenges for small universities.
-              </p>
-
-              <div class="bg-white rounded-lg p-6">
-                <div class="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 class="font-bold text-navy mb-3">OCR Focus Areas</h4>
-                    <ul class="text-sm space-y-2">
-                      <li><i class="fas fa-eye text-amber-600 mr-2"></i>Dynamic enforcement priorities</li>
-                      <li><i class="fas fa-eye text-amber-600 mr-2"></i>Campus antisemitism investigations</li>
-                      <li><i class="fas fa-eye text-amber-600 mr-2"></i>DEI program scrutiny</li>
-                      <li><i class="fas fa-eye text-amber-600 mr-2"></i>Transgender rights interpretations</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 class="font-bold text-navy mb-3">Accreditation Changes</h4>
-                    <ul class="text-sm space-y-2">
-                      <li><i class="fas fa-certificate text-amber-600 mr-2"></i>Greater institutional flexibility</li>
-                      <li><i class="fas fa-certificate text-amber-600 mr-2"></i>Student outcome emphasis</li>
-                      <li><i class="fas fa-certificate text-amber-600 mr-2"></i>DEI mandate de-emphasis</li>
-                      <li><i class="fas fa-certificate text-amber-600 mr-2"></i>New accreditor competition</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-gradient-to-r from-red-50 to-pink-50 rounded-lg p-8">
-              <h3 class="font-serif text-xl font-bold text-navy mb-4">Broader Policy Shifts</h3>
-              <p class="text-gray-700 mb-4 leading-relaxed">
-                National debates surrounding DEI programs and immigration policies will continue to indirectly impact small universities, creating ongoing compliance challenges.
-              </p>
-
-              <div class="bg-white rounded-lg p-6">
-                <div class="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 class="font-bold text-red-800 mb-3">DEI Challenges</h4>
-                    <p class="text-sm text-gray-600 mb-3">
-                      Continued legal challenges, OCR investigations, and pressure to modify or justify DEI efforts
-                    </p>
-                    <div class="text-xs text-gray-500">
-                      <strong>Examples:</strong> Policy review, legal defense, community engagement
-                    </div>
-                  </div>
-                  <div>
-                    <h4 class="font-bold text-red-800 mb-3">Immigration Impact</h4>
-                    <p class="text-sm text-gray-600 mb-3">
-                      Ongoing travel restrictions, visa scrutiny, and campus climate concerns
-                    </p>
-                    <div class="text-xs text-gray-500">
-                      <strong>Examples:</strong> SEVIS compliance, student support, advocacy efforts
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Conclusion -->
-      <section id="conclusion" class="px-8 py-16 md:px-12 bg-navy text-white">
-        <div class="max-w-4xl">
-          <h2 class="font-serif text-3xl font-bold mb-8">Conclusion and Outlook</h2>
-
-          <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-8 mb-8">
-            <p class="text-xl text-gray-200 mb-6 leading-relaxed">
-              The past six months have demonstrated a <strong>significant intensification of federal activities impacting higher education</strong>, with small universities facing a particularly challenging environment due to their typically more constrained resources.
-            </p>
-
-            <div class="grid md:grid-cols-2 gap-8 mb-8">
-              <div>
-                <h3 class="font-bold text-accent-gold mb-4">Current Challenges</h3>
-                <ul class="space-y-2 text-sm text-gray-200">
-                  <li><i class="fas fa-check text-accent-gold mr-2"></i>Direct impacts from new Department of Education regulations</li>
-                  <li><i class="fas fa-check text-accent-gold mr-2"></i>Indirect pressures from evolving OCR enforcement</li>
-                  <li><i class="fas fa-check text-accent-gold mr-2"></i>Restrictive immigration policies affecting international students</li>
-                  <li><i class="fas fa-check text-accent-gold mr-2"></i>Funding uncertainties from OMB directives</li>
-                </ul>
-              </div>
-              <div>
-                <h3 class="font-bold text-accent-gold mb-4">Required Actions</h3>
-                <ul class="space-y-2 text-sm text-gray-200">
-                  <li><i class="fas fa-arrow-right text-accent-gold mr-2"></i>Enhance compliance infrastructure</li>
-                  <li><i class="fas fa-arrow-right text-accent-gold mr-2"></i>Invest in data management capabilities</li>
-                  <li><i class="fas fa-arrow-right text-accent-gold mr-2"></i>Foster cross-department collaboration</li>
-                  <li><i class="fas fa-arrow-right text-accent-gold mr-2"></i>Maintain strategic agility</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="text-center">
-            <blockquote class="text-xl italic text-gray-200 mb-6">
-              &#34;The outlook is one of continued adaptation and resilience, as these institutions strive to uphold their educational missions while meeting the demands of an increasingly complex federal regulatory environment.&#34;
-            </blockquote>
-
-            <p class="text-gray-300 leading-relaxed">
-              Small universities must prepare for potential future implications, including new legislative proposals that could reshape federal student aid and institutional accountability, an ever-evolving enforcement landscape, and the continued ripple effects of broader policy shifts concerning DEI and immigration. Proactive engagement with federal policy developments, robust internal controls, and a clear articulation of institutional mission and values will be crucial for small universities to not only manage the increased workload but also to thrive in this era of heightened federal scrutiny and regulatory change.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Footer -->
-      <footer class="px-8 py-8 md:px-12 bg-gray-900 text-gray-400">
-        <div class="max-w-4xl mx-auto text-center">
-          <p class="text-sm">© 2025 | <a href="https://www.kimi.com/share/d1skt28onf4m9cocvtfg" class="hover:text-white transition-colors duration-200">View Original Chat</a></p>
-        </div>
-      </footer>
-    </main>
-
-    <script>
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
-            const toc = document.getElementById('toc');
-            toc.classList.toggle('open');
-        });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const toc = document.getElementById('toc');
-            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-            
-            if (!toc.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
-                toc.classList.remove('open');
-            }
-        });
-
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Highlight active section in TOC
-        const sections = document.querySelectorAll('section[id]');
-        const tocLinks = document.querySelectorAll('#toc a[href^="#"]');
-
-        function highlightActiveSection() {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (window.scrollY >= sectionTop - 200) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            tocLinks.forEach(link => {
-                link.classList.remove('text-navy', 'font-semibold');
-                link.classList.add('text-gray-600');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.remove('text-gray-600');
-                    link.classList.add('text-navy', 'font-semibold');
-                }
-            });
-        }
-
-        window.addEventListener('scroll', highlightActiveSection);
-        highlightActiveSection(); // Initial call
-    </script>
-  
-
-</body></html>
+    loadFiles().catch((err) => {
+      countBadgeEl.textContent = "0 files";
+      setState(err.message, "error");
+    });
+  </script>
+</body>
+</html>
