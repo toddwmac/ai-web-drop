@@ -113,6 +113,25 @@
       color: var(--muted);
     }
 
+    .footer {
+      text-align: center;
+      padding: 40px 24px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
     @media (max-width: 640px) {
       .wrap { padding: 40px 20px; }
       a.file-card { padding: 20px 24px; }
@@ -130,6 +149,10 @@
     <div id="state"></div>
     <ul id="file-list"></ul>
   </main>
+
+  <footer class="footer">
+    © 2026 <a href="https://www.appliedailabs.com" target="_blank" rel="noopener noreferrer">Applied AI Labs</a>
+  </footer>
 
   <script>
     const stateEl = document.getElementById("state");
