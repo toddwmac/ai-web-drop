@@ -6,13 +6,13 @@
   <title>AI Web Drop</title>
   <style>
     :root {
-      --bg: #f4f7fb;
+      --bg: #f8fafc;
       --panel: #ffffff;
-      --ink: #1d2a3a;
-      --muted: #5e6b7b;
-      --accent: #2f6fe4;
-      --accent-soft: #e8f0ff;
-      --border: #d9e2ef;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --accent: #3b82f6;
+      --accent-light: #dbeafe;
+      --border: #e2e8f0;
     }
 
     * { box-sizing: border-box; }
@@ -21,163 +21,119 @@
       margin: 0;
       font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
       color: var(--ink);
-      background:
-        radial-gradient(1100px 500px at 0% -20%, #dce8ff 0%, transparent 65%),
-        radial-gradient(900px 450px at 100% -10%, #e8f8ef 0%, transparent 60%),
-        var(--bg);
+      background: var(--bg);
       min-height: 100vh;
     }
 
     .wrap {
-      max-width: 960px;
+      max-width: 900px;
       margin: 0 auto;
-      padding: 32px 20px 56px;
+      padding: 64px 24px;
     }
 
-    .hero {
-      background: linear-gradient(120deg, #163058 0%, #2f6fe4 100%);
-      border-radius: 16px;
-      color: #fff;
-      padding: 24px;
-      box-shadow: 0 18px 40px rgba(22, 48, 88, 0.25);
-      margin-bottom: 18px;
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
     }
 
     h1 {
-      margin: 0 0 8px;
-      font-size: clamp(1.5rem, 2.2vw, 2rem);
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
       line-height: 1.2;
     }
 
     .subtitle {
       margin: 0;
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px;
-      box-shadow: 0 8px 24px rgba(23, 34, 51, 0.06);
-    }
-
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .meta {
       color: var(--muted);
-      font-size: 0.95rem;
-      margin: 0;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-size: 0.85rem;
-      font-weight: 600;
+      font-size: 1.1rem;
+      max-width: 500px;
+      margin: 0 auto;
     }
 
     ul {
       list-style: none;
       margin: 0;
       padding: 0;
+      display: grid;
+      gap: 20px;
     }
 
-    li + li { margin-top: 8px; }
-
-    a.file-link {
+    a.file-card {
       display: block;
-      padding: 12px 14px;
+      padding: 28px 32px;
+      background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 16px;
       text-decoration: none;
       color: var(--ink);
-      background: #fff;
-      transition: border-color 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
-    a.file-link:hover {
+    a.file-card:hover {
       border-color: var(--accent);
-      transform: translateY(-1px);
-      box-shadow: 0 8px 16px rgba(47, 111, 228, 0.12);
+      box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+      transform: translateY(-2px);
     }
 
-    .name { font-weight: 600; }
+    .file-name {
+      font-weight: 600;
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+      color: var(--ink);
+    }
 
-    .path {
-      margin-top: 4px;
+    .file-description {
       color: var(--muted);
-      font-size: 0.88rem;
-      word-break: break-all;
+      line-height: 1.6;
+      font-size: 1rem;
     }
 
     .empty,
     .error {
-      margin: 0;
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px dashed var(--border);
+      text-align: center;
+      padding: 48px 24px;
+      border-radius: 16px;
       color: var(--muted);
-      background: #fbfcff;
+      background: var(--panel);
+      border: 1px dashed var(--border);
     }
 
     .error {
-      border-color: #f2c0c0;
-      background: #fff6f6;
-      color: #7c2f2f;
+      border-color: #fecaca;
+      background: #fef2f2;
+      color: #991b1b;
     }
 
-    .tip {
-      margin-top: 14px;
+    .loading {
+      text-align: center;
+      padding: 48px 24px;
       color: var(--muted);
-      font-size: 0.9rem;
     }
 
-    code {
-      background: #eef3fb;
-      border: 1px solid #dbe5f5;
-      border-radius: 6px;
-      padding: 1px 6px;
-      font-family: Consolas, "SFMono-Regular", Menlo, monospace;
-      font-size: 0.88em;
+    @media (max-width: 640px) {
+      .wrap { padding: 40px 20px; }
+      a.file-card { padding: 20px 24px; }
+      .file-name { font-size: 1.1rem; }
     }
   </style>
 </head>
 <body>
   <main class="wrap">
-    <section class="hero">
-      <h1>AI Web Drop</h1>
-      <p class="subtitle">Drop any <code>.html</code> file into this repo and it will appear here automatically on GitHub Pages.</p>
-    </section>
+    <div class="header">
+      <h1>Collection</h1>
+      <p class="subtitle">Explore the documents and resources below</p>
+    </div>
 
-    <section class="panel" aria-live="polite">
-      <div class="row">
-        <p class="meta" id="repo-label">Detecting repository...</p>
-        <span class="badge" id="count-badge">0 files</span>
-      </div>
-      <div id="state"></div>
-      <ul id="file-list"></ul>
-      <p class="tip">Note: Check the latest push to this repo.</p>
-    </section>
+    <div id="state"></div>
+    <ul id="file-list"></ul>
   </main>
 
   <script>
     const stateEl = document.getElementById("state");
     const listEl = document.getElementById("file-list");
-    const countBadgeEl = document.getElementById("count-badge");
-    const repoLabelEl = document.getElementById("repo-label");
 
     function setState(message, type) {
       stateEl.innerHTML = "";
@@ -185,7 +141,7 @@
         return;
       }
       const p = document.createElement("p");
-      p.className = type === "error" ? "error" : "empty";
+      p.className = type === "error" ? "error" : type === "loading" ? "loading" : "empty";
       p.textContent = message;
       stateEl.appendChild(p);
     }
@@ -199,7 +155,7 @@
       const pathParts = window.location.pathname.replace(/^\/+/, "").split("/").filter(Boolean);
 
       if (!host.endsWith("github.io")) {
-        throw new Error("This index is designed to run from GitHub Pages (hostname ending in github.io).");
+        throw new Error("This site is designed to run from GitHub Pages.");
       }
 
       const owner = host.replace(/\.github\.io$/, "");
@@ -222,17 +178,29 @@
     async function fetchJson(url) {
       const res = await fetch(url, { headers: { "Accept": "application/vnd.github+json" } });
       if (!res.ok) {
-        throw new Error("GitHub API request failed (" + res.status + ").");
+        throw new Error("Unable to load files.");
       }
       return res.json();
     }
 
+    async function loadManifest() {
+      try {
+        const res = await fetch("manifest.json");
+        if (res.ok) {
+          return await res.json();
+        }
+        return {};
+      } catch {
+        return {};
+      }
+    }
+
     async function loadFiles() {
-      setState("Loading HTML files...");
+      setState("Loading...");
       listEl.innerHTML = "";
 
       const repoInfo = detectGitHubPagesRepo();
-      repoLabelEl.textContent = repoInfo.owner + "/" + repoInfo.repo;
+      const manifest = await loadManifest();
 
       const repoMeta = await fetchJson("https://api.github.com/repos/" + repoInfo.owner + "/" + repoInfo.repo);
       const branch = repoMeta.default_branch || "main";
@@ -246,12 +214,11 @@
         .map((item) => item.path)
         .filter((path) => path.toLowerCase().endsWith(".html"))
         .filter((path) => path.toLowerCase() !== "index.html")
+        .filter((path) => path.toLowerCase() !== "manifest.json")
         .sort((a, b) => a.localeCompare(b));
 
-      countBadgeEl.textContent = htmlFiles.length + (htmlFiles.length === 1 ? " file" : " files");
-
       if (htmlFiles.length === 0) {
-        setState("No HTML files found yet. Add one and push to GitHub.");
+        setState("No documents available yet.");
         return;
       }
 
@@ -259,32 +226,36 @@
 
       htmlFiles.forEach((filePath) => {
         const href = repoInfo.siteBasePath + encodePath(filePath);
-        const name = filePath.split("/").pop();
+        const name = filePath.split("/").pop().replace(/\.html$/i, "");
+        const description = manifest[filePath] || "";
 
         const li = document.createElement("li");
         const a = document.createElement("a");
-        const nameEl = document.createElement("div");
-        const pathEl = document.createElement("div");
 
-        a.className = "file-link";
+        a.className = "file-card";
         a.href = href;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
 
-        nameEl.className = "name";
+        const nameEl = document.createElement("div");
+        nameEl.className = "file-name";
         nameEl.textContent = name;
-
-        pathEl.className = "path";
-        pathEl.textContent = filePath;
-
         a.appendChild(nameEl);
-        a.appendChild(pathEl);
+
+        if (description) {
+          const descEl = document.createElement("div");
+          descEl.className = "file-description";
+          descEl.textContent = description;
+          a.appendChild(descEl);
+        }
+
         li.appendChild(a);
         listEl.appendChild(li);
       });
     }
 
     loadFiles().catch((err) => {
-      countBadgeEl.textContent = "0 files";
-      setState(err.message, "error");
+      setState("Something went wrong. Please try again.", "error");
     });
   </script>
 </body>
