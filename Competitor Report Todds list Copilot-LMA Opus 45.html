@@ -1,0 +1,1345 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copilot Research - Sublime Laser Competitive Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2c5282;
+            --accent-color: #3182ce;
+            --light-bg: #f7fafc;
+            --text-color: #2d3748;
+            --text-light: #718096;
+            --border-color: #e2e8f0;
+            --success-color: #38a169;
+            --warning-color: #d69e2e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Navigation Styles */
+        nav {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 280px;
+            height: calc(100vh - 70px);
+            background: white;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 1.5rem 0;
+            z-index: 900;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav ul li {
+            margin: 0;
+        }
+
+        nav ul li a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: var(--light-bg);
+            border-left-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        nav ul li a.active {
+            background-color: #ebf8ff;
+            border-left-color: var(--accent-color);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        nav ul li.section-header {
+            padding: 1rem 1.5rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-light);
+            letter-spacing: 0.05em;
+        }
+
+        nav ul li.section-header:not(:first-child) {
+            margin-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+        }
+
+        /* Main Content Styles */
+        main {
+            margin-left: 280px;
+            margin-top: 70px;
+            padding: 2rem 3rem;
+            max-width: calc(1400px - 280px);
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-color);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin: 2rem 0 1rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            color: var(--secondary-color);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin: 1.25rem 0 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* List Styles */
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .key-points {
+            background: #f0fff4;
+            border-left: 4px solid var(--success-color);
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .key-points h4 {
+            color: var(--success-color);
+            margin-top: 0;
+        }
+
+        /* Specs Grid */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .spec-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .spec-card h4 {
+            color: var(--accent-color);
+            margin-top: 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+
+        .spec-label {
+            color: var(--text-light);
+        }
+
+        .spec-value {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        /* Competitor Cards */
+        .competitor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .competitor-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .competitor-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .competitor-card h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #ebf8ff;
+            color: var(--accent-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0.25rem 0.25rem 0.25rem 0;
+        }
+
+        /* Roadmap */
+        .roadmap {
+            position: relative;
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .roadmap::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--accent-color), var(--success-color));
+            border-radius: 3px;
+        }
+
+        .roadmap-item {
+            position: relative;
+            padding: 1rem 0 1rem 1.5rem;
+        }
+
+        .roadmap-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 1.25rem;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border: 3px solid var(--accent-color);
+            border-radius: 50%;
+        }
+
+        .roadmap-year {
+            font-weight: 700;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+
+        /* Risk Cards */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .risk-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.25rem;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .risk-card h4 {
+            color: var(--warning-color);
+            margin-top: 0;
+        }
+
+        /* References */
+        .reference-list {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .reference-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .reference-item:last-child {
+            border-bottom: none;
+        }
+
+        .reference-number {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.75rem;
+        }
+
+        .reference-url {
+            color: var(--accent-color);
+            word-break: break-all;
+            font-size: 0.85rem;
+        }
+
+        /* Mobile Navigation Toggle */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            nav {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            nav.open {
+                transform: translateX(0);
+            }
+
+            main {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 800;
+            }
+
+            .overlay.open {
+                display: block;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .competitor-grid,
+            .specs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            nav, header {
+                display: none;
+            }
+
+            main {
+                margin: 0;
+                padding: 1rem;
+            }
+
+            .section {
+                display: block !important;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">CR</div>
+                <span>Copilot Deeo Research - Applied AI Labs</span>
+            </div>
+            <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">☰</button>
+        </div>
+    </header>
+
+    <div class="overlay" onclick="toggleNav()"></div>
+
+    <nav id="navigation">
+        <ul>
+            <li class="section-header">Overview</li>
+            <li><a href="#executive-summary" class="nav-link active" data-section="executive-summary">Executive Summary</a></li>
+            
+            <li class="section-header">Sublime Laser</li>
+            <li><a href="#company-overview" class="nav-link" data-section="company-overview">Company Overview</a></li>
+            <li><a href="#technical-capabilities" class="nav-link" data-section="technical-capabilities">Technical Capabilities</a></li>
+            <li><a href="#certifications" class="nav-link" data-section="certifications">Certifications & Quality</a></li>
+            
+            <li class="section-header">Competition</li>
+            <li><a href="#competitive-landscape" class="nav-link" data-section="competitive-landscape">Competitive Landscape</a></li>
+            <li><a href="#competitor-profiles" class="nav-link" data-section="competitor-profiles">Competitor Profiles</a></li>
+            <li><a href="#technology-comparison" class="nav-link" data-section="technology-comparison">Technology Comparison</a></li>
+            
+            <li class="section-header">Market Analysis</li>
+            <li><a href="#market-dynamics" class="nav-link" data-section="market-dynamics">Market Dynamics</a></li>
+            <li><a href="#buyer-segments" class="nav-link" data-section="buyer-segments">Buyer Segments</a></li>
+            <li><a href="#opportunities" class="nav-link" data-section="opportunities">Opportunities</a></li>
+            
+            <li class="section-header">Strategy</li>
+            <li><a href="#recommendations" class="nav-link" data-section="recommendations">Strategic Recommendations</a></li>
+            <li><a href="#risk-analysis" class="nav-link" data-section="risk-analysis">Risk Analysis</a></li>
+            <li><a href="#roadmap" class="nav-link" data-section="roadmap">Strategic Roadmap</a></li>
+            
+            <li class="section-header">Additional Info</li>
+            <li><a href="#credibility" class="nav-link" data-section="credibility">Customer Credibility</a></li>
+            <li><a href="#conclusion" class="nav-link" data-section="conclusion">Conclusion</a></li>
+            <li><a href="#references" class="nav-link" data-section="references">References</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- Executive Summary -->
+        <section id="executive-summary" class="section active">
+            <h1>Executive Summary</h1>
+            <div class="card">
+                <p><strong>Sublime Laser, Inc.</strong>, based in Salt Lake City, Utah, is a precision laser machining company specializing in femtosecond and fiber laser processing for the medical device sector, with a focus on neurovascular, cardiovascular, and peripheral vascular device components.</p>
+                
+                <p>The company distinguishes itself through ultra-fast turnaround times, tight-tolerance machining, and a unique "Rent a Laser" service for rapid prototyping and on-site engineering collaboration.</p>
+                
+                <p>This report provides a comprehensive analysis of Sublime Laser's capabilities, a detailed competitive benchmarking against key rivals—including Resonetics, Admedes, Symmetry Laser + ArcRev, Lighteum, Norman Noble, Lumenous, Primo Group, and MicroCut—and identifies potential buyer segments and strategic recommendations for growth and market penetration.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">$2.54M</div>
+                    <div class="stat-label">Total Funding Raised</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">2022</div>
+                    <div class="stat-label">Year Founded</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">12μm</div>
+                    <div class="stat-label">Minimum Feature Size</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">ISO 13485</div>
+                    <div class="stat-label">Certified</div>
+                </div>
+            </div>
+
+            <div class="key-points">
+                <h4>Key Differentiators</h4>
+                <ul>
+                    <li>Ultra-fast turnaround: Parts delivered in days, not weeks</li>
+                    <li>Unique "Rent a Laser" service for on-site rapid prototyping</li>
+                    <li>Femtosecond laser technology with minimal heat-affected zones</li>
+                    <li>Tight-tolerance machining for medical device components</li>
+                    <li>Collaborative engineering approach with direct customer interaction</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Company Overview -->
+        <section id="company-overview" class="section">
+            <h1>1. Sublime Laser: Company Overview</h1>
+            
+            <h2>1.1 Company Profile and History</h2>
+            <div class="card">
+                <p>Sublime Laser was founded in <strong>2022</strong> and operates from its headquarters at 1785 South 4130 West, Suite M, Salt Lake City, Utah. The company has raised a total of <strong>$2.54 million</strong> in funding, with its most recent round occurring two years ago.</p>
+                
+                <p>Sublime Laser is currently in an unattributed Stage III growth phase and maintains a lean, agile team structure. The company's core business is custom laser machining for the medical device industry, with a specialization in femtosecond laser technology.</p>
+                
+                <p>The company's services are tailored to produce tight-tolerance components in a variety of metals and materials, emphasizing rapid turnaround from design to production. The company is <strong>ISO 13485 certified</strong>, underscoring its commitment to quality and regulatory compliance in the medtech sector.</p>
+            </div>
+
+            <h2>1.6 Market Focus and Industries Served</h2>
+            <div class="card">
+                <p>Sublime Laser's primary market focus is on medical device components for:</p>
+                <ul>
+                    <li><strong>Neurovascular</strong> applications</li>
+                    <li><strong>Cardiovascular</strong> applications</li>
+                    <li><strong>Peripheral vascular</strong> applications</li>
+                </ul>
+                <p>Strategic plans also highlight potential expansion into adjacent markets such as aerospace, defense, and micro-electronics, leveraging the same precision laser technologies for new applications.</p>
+            </div>
+        </section>
+
+        <!-- Technical Capabilities -->
+        <section id="technical-capabilities" class="section">
+            <h1>Technical Capabilities and Processes</h1>
+            
+            <p>Sublime Laser's technical offering centers on two primary laser modalities: <strong>femtosecond</strong> and <strong>fiber lasers</strong>. The femtosecond lasers vaporize material to create parts with exact dimensions and minimal heat-affected zones (HAZ), a critical requirement for high-precision medical components. The fiber lasers, by contrast, melt material for rapid and accurate part production.</p>
+
+            <div class="specs-grid">
+                <div class="spec-card">
+                    <h4>Femtosecond Laser Specifications</h4>
+                    <div class="spec-item">
+                        <span class="spec-label">Materials</span>
+                        <span class="spec-value">SS, Nitinol, Precious Metals, Ceramic, Glass</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Tube Diameters</span>
+                        <span class="spec-value">0.008" to 0.313" OD</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Wall Thickness</span>
+                        <span class="spec-value">0.0005" to 0.013"</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Tube Length</span>
+                        <span class="spec-value">Up to 120"</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Kerf Width</span>
+                        <span class="spec-value">12-30 microns</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Feature Size</span>
+                        <span class="spec-value">12 microns and larger</span>
+                    </div>
+                </div>
+
+                <div class="spec-card">
+                    <h4>Fiber Laser Specifications</h4>
+                    <div class="spec-item">
+                        <span class="spec-label">Materials</span>
+                        <span class="spec-value">SS, Nitinol, Precious Metals</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Tube Diameters</span>
+                        <span class="spec-value">0.008" to 0.500" OD</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Wall Thickness</span>
+                        <span class="spec-value">0.003" to 0.040"</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Tube Length</span>
+                        <span class="spec-value">Up to 120"</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Kerf Width</span>
+                        <span class="spec-value">20-40 microns</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Feature Size</span>
+                        <span class="spec-value">20 microns and larger</span>
+                    </div>
+                </div>
+            </div>
+
+            <h2>1.3 Materials, Tolerances, and Product Types</h2>
+            <div class="card">
+                <p>Sublime Laser's process expertise encompasses nitinol, stainless steel, precious metals, ceramics, and glass. The company's femtosecond laser technology is particularly well-suited for producing components with extremely tight tolerances and minimal thermal distortion, which is essential for neurovascular and cardiovascular device applications.</p>
+                
+                <p>The company's stated kerf widths and feature sizes (as small as <strong>12 microns</strong>) position it at the forefront of microfabrication for medical device components.</p>
+            </div>
+
+            <h2>1.5 Capacity, Lead Times, and Scale-Up Potential</h2>
+            <div class="card">
+                <p>A key differentiator for Sublime Laser is its commitment to <strong>rapid turnaround</strong>. The company emphasizes delivery of parts in days rather than weeks or months, supported by streamlined quoting and production workflows.</p>
+                
+                <p>Sublime's <strong>"Rent a Laser"</strong> service allows customers to rent both a laser and a technician for on-site or in-house rapid prototyping, enabling real-time design iteration and reducing development cycles.</p>
+                
+                <p>While the company currently operates with a small team, strategic planning documents indicate a roadmap for scaling operations, including investments in automation, digital quoting, and expanded technician capacity.</p>
+            </div>
+        </section>
+
+        <!-- Certifications -->
+        <section id="certifications" class="section">
+            <h1>Certifications, Quality Systems, and Regulatory Compliance</h1>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">✓</div>
+                    <h3>ISO 13485 Certified</h3>
+                </div>
+                <p>Sublime Laser is ISO 13485 certified, meeting the international standard for quality management systems in the medical device industry. This certification is a prerequisite for supplier qualification among major medtech OEMs and contract manufacturers, ensuring that Sublime's processes, documentation, and traceability meet stringent regulatory requirements.</p>
+            </div>
+
+            <div class="key-points">
+                <h4>Quality Assurance Highlights</h4>
+                <ul>
+                    <li>Full process documentation and traceability</li>
+                    <li>Regulatory compliance for medical device manufacturing</li>
+                    <li>Qualification for major medtech OEM supplier programs</li>
+                    <li>Commitment to continuous quality improvement</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Competitive Landscape -->
+        <section id="competitive-landscape" class="section">
+            <h1>2. Competitive Landscape: Profiles and Benchmarking</h1>
+            
+            <p>To contextualize Sublime Laser's positioning, this section provides a detailed comparative analysis of its main competitors, focusing on capabilities, technologies, certifications, industries served, and geographic reach.</p>
+
+            <h2>2.1 Competitive Benchmarking Table</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Laser Technologies</th>
+                            <th>Materials/Processes</th>
+                            <th>Certifications</th>
+                            <th>Industries Served</th>
+                            <th>Geographic Reach</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Sublime Laser</strong></td>
+                            <td>Femtosecond, Fiber</td>
+                            <td>Nitinol, SS, precious metals, ceramics, glass; tubular focus; kerf 12-40μm</td>
+                            <td>ISO 13485</td>
+                            <td>Neurovascular, cardiovascular, peripheral vascular</td>
+                            <td>USA (Salt Lake City, UT)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Resonetics</strong></td>
+                            <td>Fiber, Femtosecond, Custom</td>
+                            <td>Metals, polymers; cutting, welding, drilling, ablating, perforating</td>
+                            <td>ISO 13485, others</td>
+                            <td>Medtech (devices, implants), microfluidics, sensors</td>
+                            <td>Global (9+ sites)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Admedes</strong></td>
+                            <td>Fiber, Ultra-short pulse, Nd:YAG</td>
+                            <td>Nitinol, wide range; tube, sheet, wire; min kerf 5μm</td>
+                            <td>ISO 13485</td>
+                            <td>Heart valves, neuro devices, stents, R&D</td>
+                            <td>Europe, USA</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Symmetry Laser + ArcRev</strong></td>
+                            <td>Precision laser cutting</td>
+                            <td>Metals (hypotubes, stents); rapid prototyping to high-volume</td>
+                            <td>ISO 13485</td>
+                            <td>Medical device components (catheters, hypotubes)</td>
+                            <td>USA (Davis, CA)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Lighteum</strong></td>
+                            <td>Femtosecond (20W/40W), Multi-axis ablation</td>
+                            <td>Nitinol, platinum alloys, precious metals; kerf ultra-fine</td>
+                            <td>ISO 13485</td>
+                            <td>Stents, hypotubes, implants, microelectrodes, surgical tools</td>
+                            <td>USA (Santa Clara, CA)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Norman Noble</strong></td>
+                            <td>Laser machining, shape setting, welding</td>
+                            <td>Nitinol, titanium, alloys; 5-axis micro milling; rapid prototyping</td>
+                            <td>ISO 13485</td>
+                            <td>Vascular, orthopedic implants, stents</td>
+                            <td>USA (Cleveland, OH)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Lumenous</strong></td>
+                            <td>Laser cutting, micromachining, shape setting</td>
+                            <td>Nitinol, SS, wire/tube drawing, surface finishing</td>
+                            <td>ISO 13485 (BSI)</td>
+                            <td>Minimally invasive devices, R&D, prototyping</td>
+                            <td>USA, China, Belgium</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Primo Group</strong></td>
+                            <td>Plastic extrusion, AI-driven production</td>
+                            <td>Plastics, extrusions; ERP/AI optimization</td>
+                            <td>ISO 9001, others</td>
+                            <td>Industrial, medtech, automotive, extrusion</td>
+                            <td>Global (8+ countries)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MicroCut</strong></td>
+                            <td>Precision laser cutting</td>
+                            <td>Not specified</td>
+                            <td>Not specified</td>
+                            <td>Not specified</td>
+                            <td>Not specified</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p><em>Table Notes: SS = Stainless Steel; HAZ = Heat Affected Zone; R&D = Research & Development. Data reflects best available public information as of March 2026.</em></p>
+        </section>
+
+        <!-- Competitor Profiles -->
+        <section id="competitor-profiles" class="section">
+            <h1>Competitor Profiles and Differentiators</h1>
+
+            <div class="competitor-grid">
+                <div class="competitor-card">
+                    <h4>Resonetics</h4>
+                    <p>Global leader in laser processing for complex medical devices, components, and implants. Offers comprehensive laser-based manufacturing services including cutting, welding, drilling, ablating, and perforating.</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag">Proprietary Systems</span>
+                        <span class="tag">Global Footprint</span>
+                        <span class="tag">50+ Engineers</span>
+                        <span class="tag">9 Sites</span>
+                    </div>
+                </div>
+
+                <div class="competitor-card">
+                    <h4>Admedes</h4>
+                    <p>Recognized for deep expertise in laser cutting, particularly for nitinol medical device components. Offers advanced surface finishing including electropolishing and patented blue oxide treatments.</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag">Nitinol Expert</span>
+                        <span class="tag">5μm Min Kerf</span>
+                        <span class="tag">Advanced Finishing</span>
+                    </div>
+                </div>
+
+                <div class="competitor-card">
+                    <h4>Symmetry Laser + ArcRev</h4>
+                    <p>Following acquisition, expanded precision laser cutting and lean manufacturing capabilities. Supports full product lifecycle from rapid prototyping (3-5 day lead times) to high-volume production.</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag">3-5 Day Lead Times</span>
+                        <span class="tag">Lean Manufacturing</span>
+                        <span class="tag">Hypotubes</span>
+                    </div>
+                </div>
+
+                <div class="competitor-card">
+                    <h4>Lighteum</h4>
+                    <p>Leverages state-of-the-art femtosecond laser technology (20W and 40W systems) and multi-axis laser ablation. Claims over 750 million medical components shipped globally.</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag">Multi-axis Ablation</span>
+                        <span class="tag">750M+ Components</span>
+                        <span class="tag">Automation</span>
+                    </div>
+                </div>
+
+                <div class="competitor-card">
+                    <h4>Norman Noble</h4>
+                    <p>World's largest laser contract manufacturer of nitinol implants. Offers unmatched machining and finishing capabilities for vascular and orthopedic devices.</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag">Largest Nitinol Mfg</span>
+                        <span class="tag">5-axis Milling</span>
+                        <span class="tag">Shape Setting</span>
+                    </div>
+                </div>
+
+                <div class="competitor-card">
+                    <h4>Lumenous</h4>
+                    <p>Pioneer in precise materials, laser processing, and premium finishing since 1995. Operates facilities in USA, China, and Belgium with online component access.</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag">Since 1995</span>
+                        <span class="tag">Global Operations</span>
+                        <span class="tag">TruePhase Testing</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technology Comparison -->
+        <section id="technology-comparison" class="section">
+            <h1>3. Technology Comparison</h1>
+            
+            <h2>Femtosecond vs. Fiber vs. Ultrashort Pulse Lasers</h2>
+
+            <div class="specs-grid">
+                <div class="spec-card">
+                    <h4>Femtosecond Lasers</h4>
+                    <p>Emit pulses with durations in the femtosecond range (10⁻¹⁵ seconds), enabling material removal with minimal thermal effects.</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>Extremely precise cuts</li>
+                        <li>Ultra-fine kerf widths</li>
+                        <li>Virtually no HAZ</li>
+                        <li>Ideal for stents, hypotubes, microelectrodes</li>
+                        <li>Best for nitinol and sensitive alloys</li>
+                    </ul>
+                </div>
+
+                <div class="spec-card">
+                    <h4>Fiber Lasers</h4>
+                    <p>Use optical fibers doped with rare-earth elements to generate high-intensity laser beams. Efficient for rapid material removal.</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>High precision capability</li>
+                        <li>Larger HAZ than femtosecond</li>
+                        <li>Speed prioritized over ultra-fine resolution</li>
+                        <li>Common for cutting, welding, drilling</li>
+                        <li>Less thermally sensitive applications</li>
+                    </ul>
+                </div>
+
+                <div class="spec-card">
+                    <h4>Ultrashort Pulse & Nd:YAG</h4>
+                    <p>Ultrashort pulse lasers (picosecond and femtosecond) offer greater control over material interaction.</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>Finer features possible</li>
+                        <li>Reduced recast layers</li>
+                        <li>Nd:YAG versatile for welding/cutting</li>
+                        <li>Can handle metal combinations</li>
+                        <li>Application-driven selection</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Market Dynamics -->
+        <section id="market-dynamics" class="section">
+            <h1>4. Market Dynamics and Buyer Segmentation</h1>
+            
+            <h2>4.1 Industry Trends and Market Growth</h2>
+            <div class="card">
+                <p>The global precision laser processing market is experiencing <strong>robust growth</strong>, driven by increasing demand for high-precision components in medical devices, aerospace, and electronics.</p>
+                
+                <p>Key trends include:</p>
+                <ul>
+                    <li><strong>AI and Automation Integration:</strong> Enhancing operational efficiency, quality control, and process adaptability</li>
+                    <li><strong>Regional Focus:</strong> North America and Europe targeting high-end, customized solutions for niche markets</li>
+                    <li><strong>Regulatory Standards:</strong> ISO 13485 and ISO 14001 increasingly shaping supplier qualification</li>
+                    <li><strong>Environmental Considerations:</strong> Growing adoption of environmentally friendly laser technologies</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Buyer Segments -->
+        <section id="buyer-segments" class="section">
+            <h1>Buyer Segments</h1>
+
+            <div class="competitor-grid">
+                <div class="competitor-card">
+                    <h4>Large Medical Device OEMs</h4>
+                    <p>Major manufacturers requiring ISO 13485 certification, proven process validation, and ability to scale from prototype to volume production.</p>
+                    <p style="margin-top: 0.5rem;"><strong>Examples:</strong> Medtronic, Boston Scientific, Abbott, Stryker</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag">End-to-End Solutions</span>
+                        <span class="tag">Rapid Prototyping</span>
+                        <span class="tag">Volume Production</span>
+                    </div>
+                </div>
+
+                <div class="competitor-card">
+                    <h4>Medtech Startups and Scaleups</h4>
+                    <p>Emerging device companies prioritizing rapid prototyping, design iteration, and flexible manufacturing support. Often lack in-house machining capabilities.</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag">Time-to-Market</span>
+                        <span class="tag">Design Iteration</span>
+                        <span class="tag">Rent a Laser</span>
+                    </div>
+                </div>
+
+                <div class="competitor-card">
+                    <h4>Contract Manufacturers (CMOs)</h4>
+                    <p>Tier-1 suppliers requiring reliable partners for specialized laser machining, especially for components exceeding in-house capabilities.</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag">Supplier Agility</span>
+                        <span class="tag">Process Documentation</span>
+                        <span class="tag">Regulated Workflows</span>
+                    </div>
+                </div>
+
+                <div class="competitor-card">
+                    <h4>Adjacent Industries</h4>
+                    <p>Aerospace, defense, and micro-electronics sectors where precision and non-thermal processing capabilities are in demand.</p>
+                    <div style="margin-top: 1rem;">
+                        <span class="tag">Micro-satellites</span>
+                        <span class="tag">Sensor Housings</span>
+                        <span class="tag">Probe Cards</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Opportunities -->
+        <section id="opportunities" class="section">
+            <h1>5. Underserved Niches and White-Space Opportunities</h1>
+
+            <div class="card">
+                <h3>5.1 Rapid Prototyping and On-Demand Engineering</h3>
+                <p>While several competitors offer rapid prototyping, Sublime Laser's <strong>"Rent a Laser"</strong> service—enabling on-site or in-house prototyping with direct engineering collaboration—remains a <strong>unique differentiator</strong>. This model addresses iterative design cycles and accelerates development for R&D teams, particularly in startups and early-stage projects.</p>
+            </div>
+
+            <div class="card">
+                <h3>5.2 Ultra-Fast Turnaround for Tight-Tolerance Components</h3>
+                <p>Sublime Laser's commitment to delivering parts in <strong>days, not weeks</strong>, positions it to serve buyers with urgent development timelines or those facing supply chain disruptions. This is especially relevant for medtech startups, scaleups, and OEMs launching new products.</p>
+            </div>
+
+            <div class="card">
+                <h3>5.3 Process Validation and Transfer-to-Production Packages</h3>
+                <p>Strategic planning highlights the opportunity to offer <strong>"Process Lock"</strong> or <strong>"Transfer-to-Production"</strong> packages, including rigorous documentation, process characterization, and traceability. This addresses a common challenge for buyers transitioning from prototype to regulated production.</p>
+            </div>
+
+            <div class="card">
+                <h3>5.4 Adjacent High-Tech Markets</h3>
+                <p>Expansion into aerospace, defense, and micro-electronics represents a <strong>white-space opportunity</strong>, leveraging Sublime's femtosecond capabilities for applications requiring "no-heat" precision and microfabrication beyond traditional medical devices.</p>
+            </div>
+        </section>
+
+        <!-- Recommendations -->
+        <section id="recommendations" class="section">
+            <h1>7. Strategic Recommendations for Sublime Laser</h1>
+
+            <div class="card">
+                <h3>7.1 Position as a Strategic Engineering Partner</h3>
+                <p>Transition from a transactional "job shop" model to an integrated engineering partner by offering process validation packages, design-for-manufacturing (DFM) consulting, and "Development Sprints" where engineers co-locate with Sublime staff.</p>
+            </div>
+
+            <div class="card">
+                <h3>7.2 Digitize and Automate Quoting and DFM Feedback</h3>
+                <p>Invest in digital transformation by developing an automated quoting and DFM engine, enabling customers to upload CAD files and receive instant manufacturability feedback and pricing.</p>
+            </div>
+
+            <div class="card">
+                <h3>7.3 Scale the "Rent a Laser" and On-Demand Engineering Model</h3>
+                <p>Expand the "Rent a Laser" service into a scalable premium offering, including virtual/remote access (live-streamed microscope sessions) and subscription-based "Precision-as-a-Service" contracts.</p>
+            </div>
+
+            <div class="card">
+                <h3>7.4 Expand into Adjacent High-Tech Markets</h3>
+                <p>Leverage existing femtosecond capabilities to enter aerospace, defense, and micro-electronics markets. Pilot programs in these sectors can diversify revenue streams.</p>
+            </div>
+
+            <div class="card">
+                <h3>7.5 Integrate Post-Processing and Vertical Services</h3>
+                <p>Pursue partnerships or acquisitions to add electropolishing, chemical etching, and cleaning services, delivering "component-ready" parts and reducing customer friction.</p>
+            </div>
+
+            <div class="card">
+                <h3>7.6 Professionalize Operations and Scale Capacity</h3>
+                <p>Implement CRM and ERP systems to track quotes, turnaround times, and customer interactions. Hire additional technicians and publish technical case studies and a "Laser Tube Design Guide."</p>
+            </div>
+        </section>
+
+        <!-- Risk Analysis -->
+        <section id="risk-analysis" class="section">
+            <h1>8. Risk Analysis</h1>
+
+            <div class="risk-grid">
+                <div class="risk-card">
+                    <h4>Supply Chain and Capacity Risks</h4>
+                    <p>As a small, agile company, Sublime Laser faces risks related to capacity constraints and supply chain disruptions. Scaling technician headcount and investing in automation will be critical.</p>
+                </div>
+
+                <div class="risk-card">
+                    <h4>Regulatory and Quality Risks</h4>
+                    <p>Maintaining ISO 13485 certification and robust process documentation is essential. Expansion into aerospace or defense may require additional certifications (e.g., AS9100).</p>
+                </div>
+
+                <div class="risk-card">
+                    <h4>Competitive Risks</h4>
+                    <p>Larger competitors like Resonetics and Norman Noble offer end-to-end solutions and global scale. Sublime must differentiate through speed, agility, and engineering collaboration.</p>
+                </div>
+
+                <div class="risk-card">
+                    <h4>Technical Risks</h4>
+                    <p>Continuous investment in advanced laser technologies (e.g., picosecond lasers, AI-driven process optimization) is necessary to stay ahead of evolving requirements.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Roadmap -->
+        <section id="roadmap" class="section">
+            <h1>9. Strategic Roadmap and Financial Targets</h1>
+
+            <div class="roadmap">
+                <div class="roadmap-item">
+                    <div class="roadmap-year">Year 1: Foundation and Professionalization</div>
+                    <p>CRM/ERP implementation, technician hiring, digital quoting</p>
+                    <p><strong>Revenue Target:</strong> $1.5M - $2M</p>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-year">Year 2: Market Expansion and Service Integration</div>
+                    <p>Adjacent markets, post-processing partnerships, process documentation</p>
+                    <p><strong>Revenue Target:</strong> $3M - $4M</p>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-year">Year 3: Innovation and Scale</div>
+                    <p>Subscription models, virtual engineering, robotic automation</p>
+                    <p><strong>Revenue Target:</strong> $5M - $6M</p>
+                    <p><strong>Target EBITDA:</strong> 35%+ (up from ~20% baseline)</p>
+                </div>
+            </div>
+
+            <h2>10. Trade Shows, Networks, and Lead Generation</h2>
+            <div class="card">
+                <p>Participation in industry events such as <strong>MD&M (Medical Design & Manufacturing)</strong> and <strong>BIOMEDevice</strong> is common among competitors and provides opportunities for lead generation, partnerships, and customer credibility building.</p>
+            </div>
+        </section>
+
+        <!-- Credibility -->
+        <section id="credibility" class="section">
+            <h1>11. Customer Credibility and Referenceable Projects</h1>
+
+            <div class="card">
+                <p>Sublime Laser features client testimonials highlighting its ability to:</p>
+                <ul>
+                    <li>Deliver parts in <strong>less than two weeks</strong></li>
+                    <li>Support <strong>fast-tracked R&D projects</strong></li>
+                    <li>Enable customers to <strong>iterate design ideas on-site</strong> through "Rent a Laser"</li>
+                    <li>Save <strong>weeks of turnaround time</strong> on development cycles</li>
+                </ul>
+                <p style="margin-top: 1rem;">These referenceable projects enhance Sublime's credibility with prospective buyers, particularly in the medtech startup and scaleup segments.</p>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section id="conclusion" class="section">
+            <h1>12. Conclusion</h1>
+
+            <div class="card">
+                <p>Sublime Laser occupies a <strong>distinctive position</strong> in the precision laser machining market, combining advanced femtosecond and fiber laser capabilities with ultra-fast turnaround, tight tolerances, and a unique on-demand engineering model.</p>
+                
+                <p>While larger competitors offer global scale and end-to-end solutions, Sublime's <strong>agility, rapid prototyping, and collaborative approach</strong> address critical pain points for medtech startups, R&D teams, and buyers facing urgent development timelines.</p>
+                
+                <p>Strategic investments in <strong>digital transformation, service integration, and adjacent market expansion</strong> will be key to sustaining growth and attracting high-value buyers.</p>
+                
+                <p>By leveraging its strengths and addressing operational risks, Sublime Laser is well-positioned to capture underserved niches and establish itself as a <strong>strategic engineering partner</strong> in the evolving precision manufacturing landscape.</p>
+            </div>
+        </section>
+
+        <!-- References -->
+        <section id="references" class="section">
+            <h1>References</h1>
+
+            <div class="reference-list">
+                <div class="reference-item">
+                    <span class="reference-number">1</span>
+                    <strong>Sublime Laser, Inc.</strong><br>
+                    <a href="https://www.sublimelaser.com/" class="reference-url" target="_blank">https://www.sublimelaser.com/</a>
+                </div>
+                <div class="reference-item">
+                    <span class="reference-number">2</span>
+                    <strong>Sublime Laser: 3-Year Strategic Business Plan - GitHub</strong><br>
+                    <a href="https://github.com/toddwmac/sublimeLaser/compare/main%40%7B1day%7D...main.diff" class="reference-url" target="_blank">https://github.com/toddwmac/sublimeLaser/compare/main%40%7B1day%7D...main.diff</a>
+                </div>
+                <div class="reference-item">
+                    <span class="reference-number">3</span>
+                    <strong>List of Sublime Laser Competitors.xlsx</strong><br>
+                    <a href="https://onedrive.live.com/?id=1e3995d6-365e-4f3b-8a90-ea8e7505608a&cid=417dc1882719afb5" class="reference-url" target="_blank">https://onedrive.live.com/...</a>
+                </div>
+                <div class="reference-item">
+                    <span class="reference-number">4</span>
+                    <strong>Resonetics Shows Off Medtech Manufacturing Ability</strong><br>
+                    <a href="https://www.mddionline.com/contract-manufacturing/resonetics-showcases-comprehensive-medical-device-manufacturing-capabilities" class="reference-url" target="_blank">https://www.mddionline.com/contract-manufacturing/resonetics-showcases...</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.section');
+            const nav = document.getElementById('navigation');
+            const overlay = document.querySelector('.overlay');
+
+            // Function to show a section
+            function showSection(sectionId) {
+                // Hide all sections
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                // Remove active class from all nav links
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+
+                // Show the target section
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+
+                // Add active class to clicked nav link
+                const activeLink = document.querySelector(`[data-section="${sectionId}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+
+                // Close mobile nav if open
+                if (window.innerWidth <= 1024) {
+                    nav.classList.remove('open');
+                    overlay.classList.remove('open');
+                }
+
+                // Scroll to top of main content
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Add click event listeners to nav links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    showSection(sectionId);
+                    
+                    // Update URL hash without scrolling
+                    history.pushState(null, null, '#' + sectionId);
+                });
+            });
+
+            // Handle initial hash in URL
+            if (window.location.hash) {
+                const sectionId = window.location.hash.substring(1);
+                showSection(sectionId);
+            }
+
+            // Handle browser back/forward buttons
+            window.addEventListener('popstate', function() {
+                if (window.location.hash) {
+                    const sectionId = window.location.hash.substring(1);
+                    showSection(sectionId);
+                } else {
+                    showSection('executive-summary');
+                }
+            });
+        });
+
+        // Toggle mobile navigation
+        function toggleNav() {
+            const nav = document.getElementById('navigation');
+            const overlay = document.querySelector('.overlay');
+            nav.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        // Close nav when clicking outside on mobile
+        document.addEventListener('click', function(e) {
+            const nav = document.getElementById('navigation');
+            const navToggle = document.querySelector('.nav-toggle');
+            
+            if (window.innerWidth <= 1024 && 
+                !nav.contains(e.target) && 
+                !navToggle.contains(e.target) &&
+                nav.classList.contains('open')) {
+                nav.classList.remove('open');
+                document.querySelector('.overlay').classList.remove('open');
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 1024) {
+                document.getElementById('navigation').classList.remove('open');
+                document.querySelector('.overlay').classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>
+```
