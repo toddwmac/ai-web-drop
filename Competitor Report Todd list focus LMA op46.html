@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sublime Laser — Competitive Research & Buyer Positioning Report</title>
+<style>
+  :root {
+    --bg-primary: #0a0e17;
+    --bg-secondary: #111827;
+    --bg-card: #1a2236;
+    --bg-card-hover: #1f2b45;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.25);
+    --accent2: #10b981;
+    --accent3: #f59e0b;
+    --accent4: #ef4444;
+    --accent5: #8b5cf6;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border: #1e293b;
+    --border-light: #334155;
+    --gradient-1: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    --gradient-2: linear-gradient(135deg, #10b981, #3b82f6);
+    --gradient-3: linear-gradient(135deg, #f59e0b, #ef4444);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Sidebar Navigation */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-header {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-header h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .sidebar-header p {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 0;
+  }
+
+  .sidebar-nav::-webkit-scrollbar { width: 3px; }
+  .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+  .sidebar-nav::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+
+  .nav-section-label {
+    padding: 16px 20px 6px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+  }
+
+  .nav-link:hover {
+    color: var(--text-primary);
+    background: rgba(59, 130, 246, 0.05);
+  }
+
+  .nav-link.active {
+    color: var(--accent);
+    background: rgba(59, 130, 246, 0.08);
+    border-left-color: var(--accent);
+  }
+
+  .nav-link .nav-icon {
+    width: 18px;
+    text-align: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  /* Main Content */
+  .main {
+    margin-left: 280px;
+    min-height: 100vh;
+  }
+
+  /* Top Bar */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(10, 14, 23, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .topbar-title {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .topbar-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+
+  .topbar-badge .dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Content Sections */
+  .content {
+    padding: 40px;
+    max-width: 1200px;
+  }
+
+  section {
+    margin-bottom: 60px;
+    scroll-margin-top: 70px;
+  }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 20px; height: 2px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+    line-height: 1.3;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 700px;
+    margin-bottom: 32px;
+  }
+
+  p {
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+    font-size: 14px;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 60px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  .hero-stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.3s;
+  }
+
+  .hero-stat:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .hero-stat .stat-number {
+    font-size: 36px;
+    font-weight: 700;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-stat .stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .hero-stat .stat-detail {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Cards */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+  }
+
+  .card:hover {
+    border-color: var(--border-light);
+    background: var(--bg-card-hover);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .card-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+
+  .badge-high {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+  }
+
+  .badge-medium {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+  }
+
+  .badge-low {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+
+  .badge-strategic {
+    background: rgba(139, 92, 246, 0.15);
+    color: #a78bfa;
+    border: 1px solid rgba(139, 92, 246, 0.25);
+  }
+
+  .badge-pe {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+  }
+
+  /* Grid Layouts */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+  /* Tables */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    background: var(--bg-card);
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody tr:hover td {
+    background: rgba(59, 130, 246, 0.03);
+  }
+
+  tbody tr.highlight td {
+    background: rgba(59, 130, 246, 0.06);
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .cell-company {
+    color: var(--text-primary);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* Score Bars */
+  .score-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .score-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 60px;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  .score-label {
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 28px;
+    text-align: right;
+  }
+
+  /* Radar / Positioning Chart */
+  .chart-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+
+  .chart-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .chart-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  /* Positioning Map */
+  .position-map {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 10% 10%;
+    overflow: hidden;
+  }
+
+  .position-map .axis-label {
+    position: absolute;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .position-map .axis-x {
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .position-map .axis-y {
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+  }
+
+  .position-map .axis-x-high { bottom: 10px; right: 16px; }
+  .position-map .axis-x-low { bottom: 10px; left: 16px; }
+  .position-map .axis-y-high { top: 10px; left: 16px; }
+  .position-map .axis-y-low { bottom: 10px; left: 16px; }
+
+  .map-dot {
+    position: absolute;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 2;
+  }
+
+  .map-dot::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    opacity: 0.3;
+  }
+
+  .map-dot:hover {
+    transform: translate(-50%, -50%) scale(1.5);
+    z-index: 10;
+  }
+
+  .map-dot .dot-label {
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 10px;
+    font-weight: 600;
+    background: var(--bg-primary);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    pointer-events: none;
+  }
+
+  .map-quadrant-label {
+    position: absolute;
+    font-size: 10px;
+    color: var(--text-muted);
+    opacity: 0.5;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  .map-center-x {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: var(--border-light);
+    opacity: 0.5;
+  }
+
+  .map-center-y {
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: 1px;
+    background: var(--border-light);
+    opacity: 0.5;
+  }
+
+  /* Capability Bars */
+  .capability-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .capability-row:last-child { border-bottom: none; }
+
+  .capability-name {
+    width: 180px;
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .capability-bars {
+    flex: 1;
+    display: flex;
+    gap: 3px;
+  }
+
+  .cap-segment {
+    height: 20px;
+    border-radius: 3px;
+    transition: all 0.3s;
+    min-width: 4px;
+  }
+
+  .cap-segment:hover { opacity: 0.8; filter: brightness(1.3); }
+
+  /* Lists */
+  .feature-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .feature-list li {
+    padding: 8px 0;
+    padding-left: 24px;
+    position: relative;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+  }
+
+  .feature-list li:last-child { border-bottom: none; }
+
+  .feature-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: bold;
+  }
+
+  /* SWOT */
+  .swot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .swot-card {
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid var(--border);
+  }
+
+  .swot-card h4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .swot-s { background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2) !important; }
+  .swot-s h4 { color: #34d399; }
+  .swot-w { background: rgba(245, 158, 11, 0.05); border-color: rgba(245, 158, 11, 0.2) !important; }
+  .swot-w h4 { color: #fbbf24; }
+  .swot-o { background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2) !important; }
+  .swot-o h4 { color: #60a5fa; }
+  .swot-t { background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2) !important; }
+  .swot-t h4 { color: #f87171; }
+
+  .swot-card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .swot-card li {
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .swot-card li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+  }
+
+  .swot-s li::before { color: #34d399; }
+  .swot-w li::before { color: #fbbf24; }
+  .swot-o li::before { color: #60a5fa; }
+  .swot-t li::before { color: #f87171; }
+
+  /* Buyer Cards */
+  .buyer-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 16px;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .buyer-card:hover {
+    border-color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  .buyer-card .buyer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .buyer-card .buyer-type {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .buyer-card .buyer-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .fit-meter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .fit-block {
+    width: 8px;
+    height: 24px;
+    border-radius: 2px;
+    background: var(--border);
+  }
+
+  .fit-block.active { background: var(--accent); }
+  .fit-block.active.high { background: var(--accent2); }
+  .fit-block.active.medium { background: var(--accent3); }
+
+  .buyer-rationale {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .tag {
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--accent);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 30px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    border: 3px solid var(--accent);
+  }
+
+  .timeline-item .tl-date {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .timeline-item .tl-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .timeline-item .tl-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  /* Tab system */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+  }
+
+  .tab-btn {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .tab-btn:hover { color: var(--text-secondary); }
+
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Callout */
+  .callout {
+    background: rgba(59, 130, 246, 0.06);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    margin: 20px 0;
+  }
+
+  .callout-warn {
+    background: rgba(245, 158, 11, 0.06);
+    border-color: rgba(245, 158, 11, 0.15);
+    border-left-color: var(--accent3);
+  }
+
+  .callout-success {
+    background: rgba(16, 185, 129, 0.06);
+    border-color: rgba(16, 185, 129, 0.15);
+    border-left-color: var(--accent2);
+  }
+
+  .callout-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .callout p {
+    margin: 0;
+    font-size: 13px;
+  }
+
+  /* Heatmap */
+  .heatmap-grid {
+    display: grid;
+    gap: 3px;
+  }
+
+  .heatmap-cell {
+    padding: 10px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .heatmap-cell:hover { transform: scale(1.05); z-index: 2; }
+
+  .heat-5 { background: rgba(16, 185, 129, 0.35); color: #34d399; }
+  .heat-4 { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+  .heat-3 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+  .heat-2 { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+  .heat-1 { background: rgba(239, 68, 68, 0.3); color: #f87171; }
+  .heat-0 { background: var(--bg-card); color: var(--text-muted); }
+  .heat-header { background: var(--bg-card); color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .heat-label { background: none; color: var(--text-secondary); text-align: left; font-size: 12px; font-weight: 500; white-space: nowrap; }
+
+  /* Separator */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 40px 0;
+  }
+
+  /* Print button */
+  .print-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+    z-index: 200;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .print-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(59, 130, 246, 0.5);
+  }
+
+  /* Mobile hamburger */
+  .hamburger {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 200;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-family: inherit;
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 90;
+  }
+
+  @media (max-width: 1024px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .hamburger { display: block; }
+    .overlay.show { display: block; }
+    .content { padding: 20px; }
+    .hero { padding: 30px 20px; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .swot-grid { grid-template-columns: 1fr; }
+    .topbar { padding: 14px 20px 14px 56px; }
+  }
+
+  @media print {
+    .sidebar, .topbar, .hamburger, .print-btn { display: none !important; }
+    .main { margin-left: 0; }
+    body { background: white; color: #111; }
+    .card, .chart-container { break-inside: avoid; }
+  }
+
+  /* Animated entrance */
+  .animate-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .animate-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Competitor logo placeholders */
+  .comp-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .detail-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--accent);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .detail-toggle:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--accent);
+  }
+
+  .hidden-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+
+  .hidden-detail.expanded {
+    max-height: 2000px;
+  }
+
+  /* Score pill */
+  .score-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>Sublime Laser</h2>
+    <p>Competitive Research Report</p>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Overview</div>
+    <a class="nav-link active" data-target="executive-summary">
+      <span class="nav-icon">◈</span> Executive Summary
+    </a>
+    <a class="nav-link" data-target="company-profile">
+      <span class="nav-icon">◇</span> Company Profile
+    </a>
+
+    <div class="nav-section-label">Competitive Analysis</div>
+    <a class="nav-link" data-target="competitor-overview">
+      <span class="nav-icon">⊞</span> Competitor Overview
+    </a>
+    <a class="nav-link" data-target="competitive-matrix">
+      <span class="nav-icon">◫</span> Competitive Matrix
+    </a>
+    <a class="nav-link" data-target="positioning-map">
+      <span class="nav-icon">◉</span> Positioning Map
+    </a>
+    <a class="nav-link" data-target="capability-heatmap">
+      <span class="nav-icon">▦</span> Capability Heatmap
+    </a>
+
+    <div class="nav-section-label">Strategic Assessment</div>
+    <a class="nav-link" data-target="swot-analysis">
+      <span class="nav-icon">◆</span> SWOT Analysis
+    </a>
+    <a class="nav-link" data-target="competitive-advantages">
+      <span class="nav-icon">★</span> Competitive Advantages
+    </a>
+    <a class="nav-link" data-target="market-dynamics">
+      <span class="nav-icon">◎</span> Market Dynamics
+    </a>
+
+    <div class="nav-section-label">Buyer Analysis</div>
+    <a class="nav-link" data-target="buyer-landscape">
+      <span class="nav-icon">⬡</span> Buyer Landscape
+    </a>
+    <a class="nav-link" data-target="strategic-buyers">
+      <span class="nav-icon">▸</span> Strategic Buyers
+    </a>
+    <a class="nav-link" data-target="pe-buyers">
+      <span class="nav-icon">▸</span> PE / Financial Buyers
+    </a>
+    <a class="nav-link" data-target="valuation">
+      <span class="nav-icon">◈</span> Valuation Framework
+    </a>
+
+    <div class="nav-section-label">Conclusion</div>
+    <a class="nav-link" data-target="recommendations">
+      <span class="nav-icon">◇</span> Recommendations
+    </a>
+    <a class="nav-link" data-target="deal-readiness">
+      <span class="nav-icon">◉</span> Deal Readiness
+    </a>
+  </div>
+  <div class="sidebar-footer">
+    CONFIDENTIAL &bull; Prepared Q1 2025<br>
+    For Discussion Purposes Only
+  </div>
+</nav>
+
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title">Competitive Research &amp; Buyer Positioning Report</span>
+    <span class="topbar-badge">
+      <span class="dot"></span>
+      Confidential
+    </span>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="section-label">Strategic Advisory Report</div>
+    <h1>Sublime Laser — Acquisition<br>Positioning &amp; Competitive Analysis</h1>
+    <p class="subtitle">
+      A comprehensive assessment of Sublime Laser's competitive positioning within the laser micro-manufacturing landscape, evaluating eight direct competitors and identifying the most likely strategic and financial buyer profiles.
+    </p>
+    <div class="hero-grid">
+      <div class="hero-stat">
+        <div class="stat-number">8</div>
+        <div class="stat-label">Direct Competitors Analyzed</div>
+        <div class="stat-detail">Ranging from PE-backed platforms to founder-led specialists</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-number">$4.8B+</div>
+        <div class="stat-label">Addressable Market (Laser Micro-Mfg)</div>
+        <div class="stat-detail">Growing at 8–11% CAGR through 2030, driven by minimally invasive devices</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-number">12+</div>
+        <div class="stat-label">Potential Buyer Profiles Identified</div>
+        <div class="stat-detail">Across strategic acquirers, PE platforms, and OEM integrators</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Key Differentiators Identified</div>
+        <div class="stat-detail">Geographic, technical, and operational advantages vs. peer group</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ========== EXECUTIVE SUMMARY ========== -->
+    <section id="executive-summary" class="animate-in">
+      <div class="section-label">Section 01</div>
+      <h2>Executive Summary</h2>
+      <div class="card">
+        <p style="color:var(--text-primary); font-size:15px; line-height:1.8;">
+          Sublime Laser of Salt Lake City, Utah, operates within one of the fastest-growing niches of medical device contract manufacturing: <strong>precision laser micro-machining and laser processing</strong>. The company competes across a fragmented landscape of approximately 30–50 meaningful players globally, with the eight firms analyzed in this report representing its most direct competitive overlap.
+        </p>
+        <p style="font-size:15px; line-height:1.8;">
+          The competitive landscape is undergoing significant consolidation, driven by private equity interest and OEM demand for vertically integrated supply chains. Resonetics, the category leader, has already demonstrated the PE playbook through its Apax Partners acquisition and subsequent bolt-on strategy. This creates a clear window for well-positioned mid-market companies like Sublime Laser to attract buyer interest — either as a <strong>platform acquisition</strong> or as a <strong>strategic bolt-on</strong> to an existing portfolio company.
+        </p>
+        <p style="font-size:15px; line-height:1.8;">
+          Sublime Laser's key advantages include its <strong>Salt Lake City location</strong> (within the growing Mountain West medical device corridor), its <strong>specialized technical capabilities</strong> in precision laser cutting and welding, and its <strong>operational agility</strong> as a lean, customer-responsive organization. These attributes are highly attractive to the buyer profiles outlined in this report.
+        </p>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title">🔑 Key Finding</div>
+        <p>The convergence of industry consolidation trends, growing demand for miniaturized medical devices, and Sublime's defensible positioning in the Mountain West region creates a favorable environment for a near-term transaction at attractive multiples relative to peer group comparables.</p>
+      </div>
+    </section>
+
+    <!-- ========== COMPANY PROFILE ========== -->
+    <section id="company-profile" class="animate-in">
+      <div class="section-label">Section 02</div>
+      <h2>Sublime Laser — Company Profile</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <h4>Company Overview</h4>
+          <table style="width:100%; font-size:13px;">
+            <tr><td style="color:var(--text-muted); padding:6px 0; border:none; width:140px;">Company</td><td style="padding:6px 0; border:none; color:var(--text-primary); font-weight:600;">Sublime Laser</td></tr>
+            <tr><td style="color:var(--text-muted); padding:6px 0; border:none;">Location</td><td style="padding:6px 0; border:none;">Salt Lake City, Utah</td></tr>
+            <tr><td style="color:var(--text-muted); padding:6px 0; border:none;">Website</td><td style="padding:6px 0; border:none;"><span style="color:var(--accent)">sublimelaser.com</span></td></tr>
+            <tr><td style="color:var(--text-muted); padding:6px 0; border:none;">Sector</td><td style="padding:6px 0; border:none;">Laser Micro-Manufacturing</td></tr>
+            <tr><td style="color:var(--text-muted); padding:6px 0; border:none;">End Markets</td><td style="padding:6px 0; border:none;">Medical Devices, Aerospace, Industrial</td></tr>
+            <tr><td style="color:var(--text-muted); padding:6px 0; border:none;">Ownership</td><td style="padding:6px 0; border:none;">Private / Founder-Led</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h4>Core Capabilities</h4>
+          <ul class="feature-list">
+            <li>Precision laser cutting (tube, flat stock, 3D geometries)</li>
+            <li>Laser welding &amp; micro-joining</li>
+            <li>Laser marking &amp; engraving (UDI compliance)</li>
+            <li>Nitinol and specialty alloy processing</li>
+            <li>Stent, hypotube, and catheter component manufacturing</li>
+            <li>Prototyping through production-volume runs</li>
+            <li>Quality systems aligned with FDA / ISO 13485 requirements</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4>Strategic Positioning Summary</h4>
+        <p style="font-size:14px; line-height:1.8;">
+          Sublime Laser occupies a compelling middle ground in the competitive landscape: <strong>technically sophisticated enough</strong> to serve demanding medical device OEMs, yet <strong>agile and responsive enough</strong> to outperform larger competitors on turnaround time, customer intimacy, and engineering flexibility. The company's Salt Lake City base positions it within one of the fastest-growing medical device manufacturing corridors in the United States, proximate to major OEM operations from Becton Dickinson, Merit Medical, Edwards Lifesciences, and others that have expanded into the Intermountain West.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========== COMPETITOR OVERVIEW ========== -->
+    <section id="competitor-overview" class="animate-in">
+      <div class="section-label">Section 03</div>
+      <h2>Competitor Overview</h2>
+      <p class="subtitle">Detailed profiles of Sublime Laser's eight primary competitors, segmented by scale and market positioning.</p>
+
+      <div class="tabs" id="compTabs">
+        <button class="tab-btn active" data-tab="comp-tier1">Tier 1 — Large Scale</button>
+        <button class="tab-btn" data-tab="comp-tier2">Tier 2 — Mid-Market</button>
+        <button class="tab-btn" data-tab="comp-tier3">Tier 3 — Specialists</button>
+      </div>
+
+      <!-- TIER 1 -->
+      <div class="tab-panel active" id="comp-tier1">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="comp-icon" style="background:rgba(239,68,68,0.15);color:#f87171;">R</div>
+                <div>
+                  <h3 style="margin:0;">Resonetics</h3>
+                  <span style="font-size:12px;color:var(--text-muted);">Nashua, NH &bull; Global Operations</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-badge badge-high">Primary Threat</span>
+          </div>
+          <p>Resonetics is the undisputed market leader in laser micro-manufacturing for medical devices, with estimated annual revenues exceeding <strong>$250M</strong>. Backed by Apax Partners, the company has pursued aggressive inorganic growth, acquiring multiple specialist firms to build a comprehensive vertically integrated platform spanning laser cutting, welding, marking, surface treatment, polymer processing, and nitinol shape-setting.</p>
+          <div class="grid-3" style="margin-top:16px;">
+            <div>
+              <h4 style="font-size:12px;color:var(--text-muted);">Strengths</h4>
+              <ul class="feature-list">
+                <li>Largest installed base of laser systems globally</li>
+                <li>Full vertical integration (materials → finished components)</li>
+                <li>Deep engineering bench and R&D investment</li>
+                <li>Global footprint (US, EU, Asia)</li>
+                <li>PE-backed with acquisition capital</li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="font-size:12px;color:var(--text-muted);">Weaknesses</h4>
+              <ul class="feature-list">
+                <li>Can be slow / bureaucratic for smaller customers</li>
+                <li>Premium pricing structure</li>
+                <li>Integration risk from multiple acquisitions</li>
+                <li>Less flexible on prototype / low-volume work</li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="font-size:12px;color:var(--text-muted);">Key Intelligence</h4>
+              <ul class="feature-list">
+                <li>Actively pursuing bolt-on acquisitions</li>
+                <li>May view Sublime as geographic expansion target</li>
+                <li>Setting market expectations on capability breadth</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="comp-icon" style="background:rgba(245,158,11,0.15);color:#fbbf24;">A</div>
+                <div>
+                  <h3 style="margin:0;">Admedes</h3>
+                  <span style="font-size:12px;color:var(--text-muted);">Pforzheim, Germany &bull; US Operations</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-badge badge-high">Primary Threat</span>
+          </div>
+          <p>Admedes is a German-headquartered specialist in nitinol-based medical device components, particularly cardiovascular stents and structural heart implants. With estimated revenues of <strong>$80–120M</strong>, they maintain deep expertise in shape-setting, laser cutting, and surface finishing of nitinol — a critical material in next-generation implantable devices. Their US presence gives them direct access to the largest medical device market globally.</p>
+          <div class="grid-3" style="margin-top:16px;">
+            <div>
+              <h4 style="font-size:12px;color:var(--text-muted);">Strengths</h4>
+              <ul class="feature-list">
+                <li>World-class nitinol expertise</li>
+                <li>Deep cardiovascular / structural heart focus</li>
+                <li>Integrated from raw material to finished device</li>
+                <li>Strong EU regulatory knowledge (MDR/IVDR)</li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="font-size:12px;color:var(--text-muted);">Weaknesses</h4>
+              <ul class="feature-list">
+                <li>Concentrated in nitinol / cardio niche</li>
+                <li>European HQ creates time-zone friction for US OEMs</li>
+                <li>Premium cost structure (German labor costs)</li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="font-size:12px;color:var(--text-muted);">Key Intelligence</h4>
+              <ul class="feature-list">
+                <li>May seek US acquisition to expand American footprint</li>
+                <li>Sublime's capabilities complement their material focus</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIER 2 -->
+      <div class="tab-panel" id="comp-tier2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="comp-icon" style="background:rgba(59,130,246,0.15);color:#60a5fa;">NN</div>
+                <div>
+                  <h3 style="margin:0;">Norman Noble</h3>
+                  <span style="font-size:12px;color:var(--text-muted);">Cleveland, OH</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-badge badge-medium">Direct Competitor</span>
+          </div>
+          <p>Norman Noble is an employee-owned contract manufacturer based in Cleveland, OH, with estimated revenues of <strong>$30–50M</strong>. They specialize in laser cutting, welding, EDM, and precision machining of complex medical device components. Their employee ownership model creates strong cultural stability and low turnover, but may limit appetite for aggressive growth or M&A.</p>
+          <div class="grid-2" style="margin-top:16px;">
+            <div>
+              <h4 style="font-size:12px;color:var(--text-muted);">Strengths</h4>
+              <ul class="feature-list">
+                <li>Strong reputation with cardiovascular OEMs</li>
+                <li>Multi-process capability (laser + EDM + machining)</li>
+                <li>Employee-owned culture drives quality/retention</li>
+                <li>ISO 13485 certified, FDA registered</li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="font-size:12px;color:var(--text-muted);">Weaknesses</h4>
+              <ul class="feature-list">
+                <li>Single-site concentration risk</li>
+                <li>ESOP structure may complicate M&A transactions</li>
+                <li>Limited geographic reach for West Coast OEMs</li>
+                <li>Moderate technology investment vs. PE-backed peers</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="comp-icon" style="background:rgba(139,92,246,0.15);color:#a78bfa;">SL</div>
+                <div>
+                  <h3 style="margin:0;">Symmetry Laser + ArcRev</h3>
+                  <span style="font-size:12px;color:var(--text-muted);">Combined Entity</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-badge badge-medium">Direct Competitor</span>
+          </div>
+          <p>Symmetry Laser, now combined with ArcRev's welding and joining capabilities, represents a mid-market competitor with an estimated combined revenue of <strong>$15–30M</strong>. The combination of laser cutting (Symmetry) with advanced welding/joining (ArcRev) creates a broader service offering that mirrors the vertical integration trend in the market.</p>
+          <div class="grid-2" style="margin-top:16px;">
+            <div>
+              <h4 style="font-size:12px;color:var(--text-muted);">Strengths</h4>
+              <ul class="feature-list">
+                <li>Combined cutting + welding/joining capability</li>
+                <li>Agile mid-market positioning</li>
+                <li>Growing customer base in interventional devices</li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="font-size:12px;color:var(--text-muted);">Weaknesses</h4>
+              <ul class="feature-list">
+                <li>Integration of two entities creates operational complexity</li>
+                <li>Limited brand recognition vs. larger players</li>
+                <li>Scaling challenges as combined entity</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="comp-icon" style="background:rgba(16,185,129,0.15);color:#34d399;">PG</div>
+                <div>
+                  <h3 style="margin:0;">Primo Group</h3>
+                  <span style="font-size:12px;color:var(--text-muted);">Contract Manufacturing Group</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-badge badge-medium">Direct Competitor</span>
+          </div>
+          <p>Primo Group operates as a diversified contract manufacturing organization with laser processing as one of several core capabilities. Estimated revenues of <strong>$20–40M</strong> across multiple service lines. Their broader manufacturing base gives them cross-selling opportunities but dilutes focus relative to pure-play laser specialists.</p>
+          <div class="grid-2" style="margin-top:16px;">
+            <div>
+              <h4 style="font-size:12px;color:var(--text-muted);">Strengths</h4>
+              <ul class="feature-list">
+                <li>Diversified manufacturing capabilities</li>
+                <li>Broader customer base across industries</li>
+                <li>Cross-selling opportunities within group</li>
+              </ul>
+            </div>
+            <div>
+              <h4 style="font-size:12px;color:var(--text-muted);">Weaknesses</h4>
+              <ul class="feature-list">
+                <li>Less focused on laser micro-machining specifically</li>
+                <li>May not have deepest technical expertise in laser</li>
+                <li>Attention split across multiple business units</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIER 3 -->
+      <div class="tab-panel" id="comp-tier3">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="comp-icon" style="background:rgba(245,158,11,0.15);color:#fbbf24;">L</div>
+                <div>
+                  <h3 style="margin:0;">Lighteum</h3>
+                  <span style="font-size:12px;color:var(--text-muted);">Laser Micro-Machining Specialist</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-badge badge-low">Niche Competitor</span>
+          </div>
+          <p>Lighteum is a focused laser micro-machining company with estimated revenues of <strong>$5–15M</strong>. They specialize in precision laser processing for medical and industrial applications, operating as a lean, technically driven organization. Their smaller scale limits competitive threat but they represent the type of firm that may be consolidated alongside Sublime by a platform buyer.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="comp-icon" style="background:rgba(59,130,246,0.15);color:#60a5fa;">Lu</div>
+                <div>
+                  <h3 style="margin:0;">Lumenous</h3>
+                  <span style="font-size:12px;color:var(--text-muted);">Medical Device Laser Processing</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-badge badge-low">Niche Competitor</span>
+          </div>
+          <p>Lumenous focuses on laser processing for the medical device industry with estimated revenues of <strong>$5–15M</strong>. They are positioned as a quality-focused, customer-intimate operation, likely competing directly with Sublime for similar OEM relationships. Their specialization in medical makes them a focused but capacity-limited competitor.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="comp-icon" style="background:rgba(239,68,68,0.15);color:#f87171;">MC</div>
+                <div>
+                  <h3 style="margin:0;">MicroCut</h3>
+                  <span style="font-size:12px;color:var(--text-muted);">Precision Micro-Cutting</span>
+                </div>
+              </div>
+            </div>
+            <span class="card-badge badge-low">Niche Competitor</span>
+          </div>
+          <p>MicroCut specializes in precision micro-cutting operations with estimated revenues of <strong>$5–15M</strong>. Their name telegraphs their core competency — high-precision, small-feature cutting that serves medical device, electronics, and other high-tolerance industries. They compete with Sublime primarily on cutting capability rather than broader laser processing services.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== COMPETITIVE MATRIX ========== -->
+    <section id="competitive-matrix" class="animate-in">
+      <div class="section-label">Section 04</div>
+      <h2>Competitive Comparison Matrix</h2>
+      <p class="subtitle">Side-by-side analysis of key competitive dimensions across all nine companies (Sublime + 8 competitors).</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Est. Revenue</th>
+              <th>Ownership</th>
+              <th>Geography</th>
+              <th>Primary Focus</th>
+              <th>Breadth</th>
+              <th>Scale</th>
+              <th>Threat Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight">
+              <td class="cell-company" style="color:var(--accent);">★ Sublime Laser</td>
+              <td>$10–25M*</td>
+              <td>Private</td>
+              <td>Salt Lake City, UT</td>
+              <td>Medical / Industrial</td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:65%;background:var(--accent);"></div></div><span class="score-label" style="color:var(--accent);">6.5</span></div>
+              </td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:50%;background:var(--accent);"></div></div><span class="score-label" style="color:var(--accent);">5.0</span></div>
+              </td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td class="cell-company">Resonetics</td>
+              <td>$250M+</td>
+              <td>PE (Apax)</td>
+              <td>Global (NH HQ)</td>
+              <td>Medical Devices</td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:95%;background:var(--accent4);"></div></div><span class="score-label">9.5</span></div>
+              </td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:95%;background:var(--accent4);"></div></div><span class="score-label">9.5</span></div>
+              </td>
+              <td><span class="card-badge badge-high" style="font-size:10px;">HIGH</span></td>
+            </tr>
+            <tr>
+              <td class="cell-company">Admedes</td>
+              <td>$80–120M</td>
+              <td>Private</td>
+              <td>Germany + US</td>
+              <td>Cardiovascular / Nitinol</td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:80%;background:var(--accent3);"></div></div><span class="score-label">8.0</span></div>
+              </td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:80%;background:var(--accent3);"></div></div><span class="score-label">8.0</span></div>
+              </td>
+              <td><span class="card-badge badge-high" style="font-size:10px;">HIGH</span></td>
+            </tr>
+            <tr>
+              <td class="cell-company">Norman Noble</td>
+              <td>$30–50M</td>
+              <td>ESOP</td>
+              <td>Cleveland, OH</td>
+              <td>Medical / Aerospace</td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:75%;background:var(--accent3);"></div></div><span class="score-label">7.5</span></div>
+              </td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:65%;background:var(--accent3);"></div></div><span class="score-label">6.5</span></div>
+              </td>
+              <td><span class="card-badge badge-medium" style="font-size:10px;">MED</span></td>
+            </tr>
+            <tr>
+              <td class="cell-company">Symmetry + ArcRev</td>
+              <td>$15–30M</td>
+              <td>Private</td>
+              <td>US</td>
+              <td>Medical Devices</td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:70%;background:var(--accent3);"></div></div><span class="score-label">7.0</span></div>
+              </td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:50%;background:var(--accent3);"></div></div><span class="score-label">5.0</span></div>
+              </td>
+              <td><span class="card-badge badge-medium" style="font-size:10px;">MED</span></td>
+            </tr>
+            <tr>
+              <td class="cell-company">Primo Group</td>
+              <td>$20–40M</td>
+              <td>Private</td>
+              <td>US</td>
+              <td>Multi-Industry Mfg</td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:60%;background:var(--accent2);"></div></div><span class="score-label">6.0</span></div>
+              </td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:55%;background:var(--accent2);"></div></div><span class="score-label">5.5</span></div>
+              </td>
+              <td><span class="card-badge badge-medium" style="font-size:10px;">MED</span></td>
+            </tr>
+            <tr>
+              <td class="cell-company">Lighteum</td>
+              <td>$5–15M</td>
+              <td>Private</td>
+              <td>US</td>
+              <td>Laser Micro-Machining</td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:50%;background:var(--accent2);"></div></div><span class="score-label">5.0</span></div>
+              </td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:35%;background:var(--accent2);"></div></div><span class="score-label">3.5</span></div>
+              </td>
+              <td><span class="card-badge badge-low" style="font-size:10px;">LOW</span></td>
+            </tr>
+            <tr>
+              <td class="cell-company">Lumenous</td>
+              <td>$5–15M</td>
+              <td>Private</td>
+              <td>US</td>
+              <td>Medical Devices</td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:50%;background:var(--accent2);"></div></div><span class="score-label">5.0</span></div>
+              </td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:35%;background:var(--accent2);"></div></div><span class="score-label">3.5</span></div>
+              </td>
+              <td><span class="card-badge badge-low" style="font-size:10px;">LOW</span></td>
+            </tr>
+            <tr>
+              <td class="cell-company">MicroCut</td>
+              <td>$5–15M</td>
+              <td>Private</td>
+              <td>US</td>
+              <td>Precision Cutting</td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:45%;background:var(--accent2);"></div></div><span class="score-label">4.5</span></div>
+              </td>
+              <td>
+                <div class="score-bar-wrap"><div class="score-bar"><div class="score-bar-fill" style="width:30%;background:var(--accent2);"></div></div><span class="score-label">3.0</span></div>
+              </td>
+              <td><span class="card-badge badge-low" style="font-size:10px;">LOW</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);font-style:italic;">*Revenue estimates based on publicly available information, employee count estimates, and industry benchmarks. Actual figures may vary.</p>
+    </section>
+
+    <!-- ========== POSITIONING MAP ========== -->
+    <section id="positioning-map" class="animate-in">
+      <div class="section-label">Section 05</div>
+      <h2>Competitive Positioning Map</h2>
+      <p class="subtitle">Two-dimensional mapping of competitors by service breadth vs. specialization depth, with bubble size indicating estimated revenue scale.</p>
+
+      <div class="chart-container">
+        <div class="chart-title">Service Breadth vs. Medical Device Specialization</div>
+        <div class="chart-subtitle">X-axis: Breadth of Service Offering → | Y-axis: Depth of Medical Device Focus ↑</div>
+        <div class="position-map" id="positionMap">
+          <div class="map-center-x"></div>
+          <div class="map-center-y"></div>
+
+          <span class="axis-label" style="bottom:8px;left:50%;transform:translateX(-50%);">SERVICE BREADTH →</span>
+          <span class="axis-label" style="left:12px;top:50%;transform:translateY(-50%) rotate(-90deg);white-space:nowrap;">MED DEVICE FOCUS →</span>
+
+          <span class="map-quadrant-label" style="top:15%;right:15%;">FULL-SERVICE<br>MEDTECH PLATFORM</span>
+          <span class="map-quadrant-label" style="top:15%;left:8%;">FOCUSED<br>SPECIALIST</span>
+          <span class="map-quadrant-label" style="bottom:15%;right:15%;">DIVERSIFIED<br>MANUFACTURER</span>
+          <span class="map-quadrant-label" style="bottom:15%;left:8%;">NICHE<br>PLAYER</span>
+
+          <!-- Dots positioned by % -->
+          <div class="map-dot" style="left:88%;top:10%;background:#f87171;color:#f87171;width:28px;height:28px;">
+            <span class="dot-label">Resonetics</span>
+          </div>
+          <div class="map-dot" style="left:60%;top:15%;background:#fbbf24;color:#fbbf24;width:22px;height:22px;">
+            <span class="dot-label">Admedes</span>
+          </div>
+          <div class="map-dot" style="left:55%;top:30%;background:#60a5fa;color:#60a5fa;width:18px;height:18px;">
+            <span class="dot-label">Norman Noble</span>
+          </div>
+          <div class="map-dot" style="left:50%;top:35%;background:#a78bfa;color:#a78bfa;width:15px;height:15px;">
+            <span class="dot-label">Symmetry+ArcRev</span>
+          </div>
+          <div class="map-dot" style="left:42%;top:55%;background:#34d399;color:#34d399;width:16px;height:16px;">
+            <span class="dot-label">Primo Group</span>
+          </div>
+          <div class="map-dot" style="left:30%;top:40%;background:#fbbf24;color:#fbbf24;width:12px;height:12px;">
+            <span class="dot-label">Lighteum</span>
+          </div>
+          <div class="map-dot" style="left:25%;top:28%;background:#60a5fa;color:#60a5fa;width:12px;height:12px;">
+            <span class="dot-label">Lumenous</span>
+          </div>
+          <div class="map-dot" style="left:20%;top:50%;background:#f87171;color:#f87171;width:11px;height:11px;">
+            <span class="dot-label">MicroCut</span>
+          </div>
+          <!-- SUBLIME - highlighted -->
+          <div class="map-dot" style="left:48%;top:25%;background:var(--accent);color:var(--accent);width:20px;height:20px;box-shadow:0 0 20px var(--accent-glow),0 0 40px var(--accent-glow);">
+            <span class="dot-label" style="background:var(--accent);color:white;border-color:var(--accent);font-size:11px;top:-28px;">★ SUBLIME LASER</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title">📍 Positioning Insight</div>
+        <p>Sublime Laser occupies a strategically valuable "sweet spot" — enough service breadth to be a meaningful partner to OEMs, with sufficient medical device focus to command quality premiums. This positions it as an ideal bolt-on for larger platforms seeking to expand geographic reach, or as a platform seed for PE investors looking to build in the Mountain West region.</p>
+      </div>
+    </section>
+
+    <!-- ========== CAPABILITY HEATMAP ========== -->
+    <section id="capability-heatmap" class="animate-in">
+      <div class="section-label">Section 06</div>
+      <h2>Capability Heatmap</h2>
+      <p class="subtitle">Comparative assessment of technical capabilities across all competitors. Scale: 5 = Industry Leading, 1 = Limited/None.</p>
+
+      <div class="table-wrap" style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th style="min-width:160px;">Capability</th>
+              <th style="text-align:center;">Sublime</th>
+              <th style="text-align:center;">Resonetics</th>
+              <th style="text-align:center;">Admedes</th>
+              <th style="text-align:center;">Norman Noble</th>
+              <th style="text-align:center;">Sym+ArcRev</th>
+              <th style="text-align:center;">Primo</th>
+              <th style="text-align:center;">Lighteum</th>
+              <th style="text-align:center;">Lumenous</th>
+              <th style="text-align:center;">MicroCut</th>
+            </tr>
+          </thead>
+          <tbody id="heatmapBody">
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">
+        <span style="display:inline-block;width:14px;height:14px;background:rgba(16,185,129,0.35);border-radius:3px;vertical-align:middle;margin-right:4px;"></span> 5 — Industry Leading &nbsp;
+        <span style="display:inline-block;width:14px;height:14px;background:rgba(16,185,129,0.2);border-radius:3px;vertical-align:middle;margin-right:4px;"></span> 4 — Strong &nbsp;
+        <span style="display:inline-block;width:14px;height:14px;background:rgba(245,158,11,0.2);border-radius:3px;vertical-align:middle;margin-right:4px;"></span> 3 — Adequate &nbsp;
+        <span style="display:inline-block;width:14px;height:14px;background:rgba(239,68,68,0.15);border-radius:3px;vertical-align:middle;margin-right:4px;"></span> 2 — Developing &nbsp;
+        <span style="display:inline-block;width:14px;height:14px;background:rgba(239,68,68,0.3);border-radius:3px;vertical-align:middle;margin-right:4px;"></span> 1 — Limited
+      </p>
+    </section>
+
+    <!-- ========== SWOT ========== -->
+    <section id="swot-analysis" class="animate-in">
+      <div class="section-label">Section 07</div>
+      <h2>SWOT Analysis — Sublime Laser</h2>
+      <p class="subtitle">Strategic assessment of Sublime Laser's internal strengths and weaknesses relative to external opportunities and threats.</p>
+
+      <div class="swot-grid">
+        <div class="swot-card swot-s">
+          <h4>▲ Strengths</h4>
+          <ul>
+            <li><strong>Mountain West Location:</strong> Proximity to Utah/Colorado med-tech corridor OEMs (Merit Medical, BD, Edwards, Stryker operations)</li>
+            <li><strong>Operational Agility:</strong> Faster turnaround times and more flexible engineering engagement than large-scale competitors</li>
+            <li><strong>Technical Depth:</strong> Strong capabilities in precision laser cutting, welding, and processing of advanced materials</li>
+            <li><strong>Customer Intimacy:</strong> Direct access to technical decision-makers; personalized project management</li>
+            <li><strong>Lean Cost Structure:</strong> Lower overhead vs. multi-site, PE-burdened competitors; favorable Utah labor costs</li>
+            <li><strong>Quality Systems:</strong> Established quality infrastructure aligned with FDA and ISO 13485 requirements</li>
+          </ul>
+        </div>
+        <div class="swot-card swot-w">
+          <h4>▼ Weaknesses</h4>
+          <ul>
+            <li><strong>Scale Limitations:</strong> Smaller revenue base limits negotiating power and investment capacity relative to Resonetics/Admedes</li>
+            <li><strong>Single Facility:</strong> Concentration risk from single-site operations; business continuity vulnerability</li>
+            <li><strong>Brand Awareness:</strong> Less market visibility than established national/global competitors</li>
+            <li><strong>Capacity Constraints:</strong> Growth may require significant capital investment in equipment and facilities</li>
+            <li><strong>Key Person Risk:</strong> Founder/owner dependency common in companies of this size</li>
+            <li><strong>Limited International Presence:</strong> No direct capability to serve EU or Asian OEM operations</li>
+          </ul>
+        </div>
+        <div class="swot-card swot-o">
+          <h4>● Opportunities</h4>
+          <ul>
+            <li><strong>Consolidation Wave:</strong> Active M&A environment with PE firms seeking platform and bolt-on acquisitions in the space</li>
+            <li><strong>Miniaturization Trend:</strong> Growing demand for micro-scale components in neurovascular, structural heart, and robotic surgery</li>
+            <li><strong>Reshoring Tailwinds:</strong> OEM preference for domestic supply chains post-COVID drives demand for US-based manufacturers</li>
+            <li><strong>Geographic White Space:</strong> Limited competitors in Mountain West region creates natural moat for local OEM relationships</li>
+            <li><strong>Adjacent Markets:</strong> Opportunity to expand into aerospace, defense, and semiconductor laser processing</li>
+            <li><strong>Regulatory Complexity:</strong> Increasing UDI and traceability requirements favor established laser marking providers</li>
+          </ul>
+        </div>
+        <div class="swot-card swot-t">
+          <h4>✕ Threats</h4>
+          <ul>
+            <li><strong>PE-Backed Consolidation:</strong> Resonetics and potential new PE platforms aggressively acquiring competitors</li>
+            <li><strong>Technology Disruption:</strong> Ultrafast laser technology and new processing methods require ongoing investment</li>
+            <li><strong>OEM Vertical Integration:</strong> Largest OEMs may bring laser processing in-house as volumes justify investment</li>
+            <li><strong>Talent Competition:</strong> Laser process engineers in high demand; retention risk from larger employers</li>
+            <li><strong>Customer Concentration:</strong> Dependency on small number of key accounts creates revenue vulnerability</li>
+            <li><strong>Pricing Pressure:</strong> Mature cutting applications subject to commoditization and price erosion</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== COMPETITIVE ADVANTAGES ========== -->
+    <section id="competitive-advantages" class="animate-in">
+      <div class="section-label">Section 08</div>
+      <h2>Sublime Laser's Competitive Advantages</h2>
+      <p class="subtitle">Three primary differentiators that position Sublime favorably for acquisition and continued growth.</p>
+
+      <div class="card" style="border-left:4px solid var(--accent2);">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(16,185,129,0.15);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">📍</div>
+          <div>
+            <h3 style="margin:0;">Advantage #1: Geographic Moat</h3>
+            <span style="font-size:12px;color:var(--accent2);">Mountain West Medical Device Corridor</span>
+          </div>
+        </div>
+        <p>Salt Lake City sits at the epicenter of a rapidly growing medical device manufacturing corridor. Utah's medtech industry employs 30,000+ workers across 400+ companies, with major OEM operations from Merit Medical (SLC headquarters), Becton Dickinson, Edwards Lifesciences, and others. Sublime's proximity to these customers provides a significant logistics and relationship advantage that no East Coast or Midwest competitor can replicate without establishing local operations.</p>
+        <p>For potential buyers, this geographic positioning provides <strong>immediate access to a customer base</strong> that is otherwise underserved by peer competitors. A PE buyer could leverage Sublime as a Mountain West platform, while a strategic acquirer gains West Coast coverage for their customer base.</p>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--accent);">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(59,130,246,0.15);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">⚡</div>
+          <div>
+            <h3 style="margin:0;">Advantage #2: Speed &amp; Agility</h3>
+            <span style="font-size:12px;color:var(--accent);">Operational Responsiveness as Competitive Weapon</span>
+          </div>
+        </div>
+        <p>In medical device development, time-to-market is critical. Sublime's lean organizational structure enables faster quoting, prototyping, and production transitions than larger, more bureaucratic competitors. OEM engineers consistently cite <strong>responsiveness and engineering accessibility</strong> as primary reasons for choosing smaller contract manufacturers over large-scale platforms like Resonetics.</p>
+        <p>This agility is particularly valuable during the R&D and pilot production phases, where iterative design changes require close collaboration between OEM engineers and the laser processing team. Once a product reaches validation, the relationship "stickiness" created during development creates significant switching costs for the OEM.</p>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--accent5);">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(139,92,246,0.15);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">🔬</div>
+          <div>
+            <h3 style="margin:0;">Advantage #3: Technical Specialization</h3>
+            <span style="font-size:12px;color:var(--accent5);">Deep Expertise in Complex Laser Applications</span>
+          </div>
+        </div>
+        <p>Sublime's technical team maintains deep expertise in the most demanding laser processing applications: micro-scale features in nitinol, titanium, cobalt-chrome, and stainless steel alloys used in cardiovascular, neurovascular, and orthopedic implants. This specialization creates barriers to entry for general-purpose machine shops and differentiates Sublime from competitors who may offer laser processing as one of many capabilities rather than a core competency.</p>
+        <p>The company's engineering-driven culture enables process development for novel applications — a capability that positions it at the innovation frontier alongside customers developing next-generation devices, particularly in the fast-growing structural heart and neurovascular intervention segments.</p>
+      </div>
+    </section>
+
+    <!-- ========== MARKET DYNAMICS ========== -->
+    <section id="market-dynamics" class="animate-in">
+      <div class="section-label">Section 09</div>
+      <h2>Market Dynamics &amp; Industry Trends</h2>
+
+      <div class="grid-2">
+        <div class="card">
+          <h4>📈 Growth Drivers</h4>
+          <ul class="feature-list">
+            <li><strong>Minimally Invasive Surgery:</strong> 
