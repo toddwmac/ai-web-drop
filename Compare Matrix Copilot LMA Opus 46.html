@@ -1,0 +1,709 @@
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sublime Laser — Competitive Intelligence Report</title>
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+        :root{
+            --bg:#0a0e17;
+            --surface:#111827;
+            --surface2:#1a2236;
+            --border:#1e293b;
+            --border-glow:rgba(56,189,248,.12);
+            --text:#e2e8f0;
+            --text-dim:#94a3b8;
+            --accent:#38bdf8;
+            --accent2:#818cf8;
+            --accent3:#34d399;
+            --sublime:#38bdf8;
+            --sublime-glow:rgba(56,189,248,.15);
+            --win:#34d399;
+            --caution:#fbbf24;
+            --weak:#f87171;
+            --radius:12px;
+            --transition:all .25s cubic-bezier(.4,0,.2,1);
+        }
+
+        html{scroll-behavior:smooth;font-size:15px}
+        body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+
+        /* Scrollbar */
+        ::-webkit-scrollbar{width:6px}
+        ::-webkit-scrollbar-track{background:var(--bg)}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+        ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+        /* ─── NAV ─── */
+        .nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(20px);background:rgba(10,14,23,.82);border-bottom:1px solid var(--border)}
+        .nav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:.75rem 2rem}
+        .nav-logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1.1rem;color:var(--accent);letter-spacing:-.02em}
+        .nav-logo svg{width:28px;height:28px}
+        .nav-links{display:flex;gap:.25rem;flex-wrap:wrap}
+        .nav-link{padding:.45rem .85rem;border-radius:8px;font-size:.78rem;font-weight:500;color:var(--text-dim);cursor:pointer;transition:var(--transition);border:none;background:none;text-decoration:none;white-space:nowrap}
+        .nav-link:hover,.nav-link.active{color:var(--accent);background:var(--sublime-glow)}
+        .nav-hamburger{display:none;background:none;border:none;color:var(--text);cursor:pointer;padding:.5rem}
+
+        /* ─── HERO ─── */
+        .hero{padding:7rem 2rem 3rem;text-align:center;position:relative;overflow:hidden}
+        .hero::before{content:'';position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(56,189,248,.06) 0%,transparent 70%);pointer-events:none}
+        .hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem 1rem;border-radius:99px;background:var(--sublime-glow);border:1px solid rgba(56,189,248,.2);font-size:.75rem;font-weight:600;color:var(--accent);margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:.06em}
+        .hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:1rem}
+        .hero h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .hero p{max-width:640px;margin:0 auto;color:var(--text-dim);font-size:1.05rem}
+
+        /* ─── LAYOUT ─── */
+        .container{max-width:1280px;margin:0 auto;padding:0 2rem}
+        section{padding:3.5rem 0}
+        .section-anchor{scroll-margin-top:5rem}
+
+        .section-header{margin-bottom:2rem}
+        .section-number{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.35rem}
+        .section-title{font-size:1.6rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.5rem}
+        .section-desc{color:var(--text-dim);max-width:700px;font-size:.92rem}
+
+        /* ─── TABLES ─── */
+        .table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);position:relative}
+        .table-wrap::after{content:'';position:absolute;right:0;top:0;bottom:0;width:40px;background:linear-gradient(to left,var(--surface),transparent);pointer-events:none;border-radius:0 var(--radius) var(--radius) 0;opacity:0;transition:opacity .3s}
+        .table-wrap.scrollable::after{opacity:1}
+
+        table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:900px}
+        thead{background:var(--surface2)}
+        th{padding:.75rem 1rem;text-align:left;font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--surface2);z-index:2}
+        td{padding:.7rem 1rem;border-bottom:1px solid var(--border);vertical-align:top}
+        tbody tr{transition:var(--transition)}
+        tbody tr:hover{background:rgba(56,189,248,.03)}
+        tbody tr:last-child td{border-bottom:none}
+
+        /* Sublime row highlight */
+        .row-sublime{background:rgba(56,189,248,.04)}
+        .row-sublime td:first-child{color:var(--accent);font-weight:700}
+
+        /* Column: company name */
+        td:first-child,th:first-child{position:sticky;left:0;z-index:1;background:inherit;min-width:140px}
+        thead th:first-child{z-index:3}
+        .row-sublime td:first-child{background:rgba(56,189,248,.06)}
+
+        /* Badges */
+        .badge{display:inline-flex;padding:.15rem .55rem;border-radius:6px;font-size:.7rem;font-weight:600;white-space:nowrap}
+        .badge-excellent{background:rgba(52,211,153,.12);color:#34d399}
+        .badge-strong{background:rgba(56,189,248,.12);color:#38bdf8}
+        .badge-yes{background:rgba(52,211,153,.12);color:#34d399}
+        .badge-mid{background:rgba(251,191,36,.1);color:#fbbf24}
+        .badge-limited{background:rgba(248,113,113,.1);color:#f87171}
+        .badge-weak{background:rgba(248,113,113,.1);color:#f87171}
+        .badge-poor{background:rgba(248,113,113,.12);color:#f87171}
+        .badge-high{background:rgba(52,211,153,.12);color:#34d399}
+        .badge-low{background:rgba(248,113,113,.1);color:#f87171}
+        .badge-short{background:rgba(52,211,153,.12);color:#34d399}
+        .badge-long{background:rgba(248,113,113,.1);color:#f87171}
+        .badge-most{background:rgba(251,191,36,.1);color:#fbbf24}
+        .badge-mixed{background:rgba(148,163,184,.12);color:#94a3b8}
+        .badge-likely{background:rgba(251,191,36,.1);color:#fbbf24}
+
+        /* ─── INSIGHT CARDS ─── */
+        .insights{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.25rem;margin-top:1.5rem}
+        .insight-card{border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);padding:1.5rem;transition:var(--transition)}
+        .insight-card:hover{border-color:rgba(56,189,248,.25);transform:translateY(-2px)}
+        .insight-card h3{font-size:.95rem;font-weight:700;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+        .insight-card p,.insight-card li{color:var(--text-dim);font-size:.85rem}
+        .insight-card ul{list-style:none;padding:0}
+        .insight-card li{padding:.3rem 0;padding-left:1.2rem;position:relative}
+        .insight-card li::before{content:'';position:absolute;left:0;top:.65rem;width:6px;height:6px;border-radius:50%}
+        .insight-card.win li::before{background:var(--win)}
+        .insight-card.caution li::before{background:var(--caution)}
+        .insight-card.compete li::before{background:var(--weak)}
+        .icon-circle{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+        .icon-win{background:rgba(52,211,153,.12);color:var(--win)}
+        .icon-caution{background:rgba(251,191,36,.1);color:var(--caution)}
+        .icon-compete{background:rgba(248,113,113,.1);color:var(--weak)}
+
+        /* ─── OPPORTUNITY TABLE ─── */
+        .opp-table td:nth-child(3){color:var(--accent);font-weight:600}
+
+        /* ─── KEY DIFFERENTIATOR STRIP ─── */
+        .diff-strip{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem}
+        .diff-chip{display:flex;align-items:center;gap:.5rem;padding:.55rem 1rem;border-radius:99px;background:var(--sublime-glow);border:1px solid rgba(56,189,248,.15);font-size:.8rem;font-weight:600;color:var(--accent)}
+        .diff-chip svg{width:16px;height:16px;flex-shrink:0}
+
+        /* ─── FOOTER ─── */
+        footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--text-dim);font-size:.75rem;margin-top:2rem}
+
+        /* ─── RESPONSIVE ─── */
+        @media(max-width:768px){
+            .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(10,14,23,.96);flex-direction:column;padding:1rem;border-bottom:1px solid var(--border)}
+            .nav-links.open{display:flex}
+            .nav-hamburger{display:block}
+            .container{padding:0 1rem}
+            .hero{padding:6rem 1rem 2rem}
+            section{padding:2.5rem 0}
+            table{min-width:700px}
+        }
+
+        /* Fade-in animation */
+        .fade-up{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+        .fade-up.visible{opacity:1;transform:translateY(0)}
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-inner">
+        <div class="nav-logo">
+            <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="currentColor" stroke-width="1.5"/><path d="M14 4 L14 24 M8 10 L14 4 L20 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="18" r="3" fill="currentColor" opacity=".3"/></svg>
+            Sublime Laser
+        </div>
+        <button class="nav-hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="nav-links">
+            <a class="nav-link active" href="#positioning" data-section="positioning">Positioning</a>
+            <a class="nav-link" href="#technical" data-section="technical">Technical</a>
+            <a class="nav-link" href="#quality" data-section="quality">Quality &amp; Reg</a>
+            <a class="nav-link" href="#buyer-value" data-section="buyer-value">Buyer Value</a>
+            <a class="nav-link" href="#strategic" data-section="strategic">Strategy</a>
+            <a class="nav-link" href="#opportunity" data-section="opportunity">Opportunities</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+    <div class="hero-badge">⚡ Competitive Intelligence Report — 2025</div>
+    <h1>Sublime Laser vs. <span>Key Competitors</span></h1>
+    <p>Precision laser micromachining &amp; medical device manufacturing ecosystem — a buyer-relevant competitive analysis.</p>
+</header>
+
+<main class="container">
+
+    <!-- 1. POSITIONING -->
+    <section id="positioning" class="section-anchor fade-up">
+        <div class="section-header">
+            <div class="section-number">Section 01</div>
+            <h2 class="section-title">High-Level Positioning Matrix</h2>
+            <p class="section-desc">How each competitor positions itself across the four core dimensions buyers evaluate: focus, scale, specialization, and responsiveness.</p>
+        </div>
+        <div class="table-wrap" id="table1-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Primary Focus</th>
+                        <th>Scale</th>
+                        <th>Specialization Depth</th>
+                        <th>Responsiveness / Agility</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row-sublime">
+                        <td>Sublime Laser</td>
+                        <td>Precision laser micromachining for medical components</td>
+                        <td>Small–Mid</td>
+                        <td><span class="badge badge-excellent">Very High</span></td>
+                        <td><span class="badge badge-excellent">Very High</span></td>
+                    </tr>
+                    <tr>
+                        <td>Resonetics</td>
+                        <td>Full-stack medical manufacturing + laser micromachining</td>
+                        <td>Large</td>
+                        <td><span class="badge badge-strong">High</span></td>
+                        <td><span class="badge badge-limited">Low–Mid</span></td>
+                    </tr>
+                    <tr>
+                        <td>Admedes</td>
+                        <td>Nitinol & metal component manufacturing</td>
+                        <td>Mid–Large</td>
+                        <td><span class="badge badge-excellent">Very High</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                    </tr>
+                    <tr>
+                        <td>Symmetry / ArcRev</td>
+                        <td>Laser processing + contract manufacturing</td>
+                        <td>Mid</td>
+                        <td><span class="badge badge-mid">Mid–High</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                    </tr>
+                    <tr>
+                        <td>Lighteum</td>
+                        <td>Laser micromachining</td>
+                        <td>Small–Mid</td>
+                        <td><span class="badge badge-strong">High</span></td>
+                        <td><span class="badge badge-strong">High</span></td>
+                    </tr>
+                    <tr>
+                        <td>Norman Noble</td>
+                        <td>High-precision micromachining + implants</td>
+                        <td>Large</td>
+                        <td><span class="badge badge-excellent">Very High</span></td>
+                        <td><span class="badge badge-limited">Low–Mid</span></td>
+                    </tr>
+                    <tr>
+                        <td>Lumenous</td>
+                        <td>Laser processing + microfabrication</td>
+                        <td>Mid</td>
+                        <td><span class="badge badge-strong">High</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                    </tr>
+                    <tr>
+                        <td>Primo Group</td>
+                        <td>Contract manufacturing</td>
+                        <td>Mid</td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                    </tr>
+                    <tr>
+                        <td>MicroCut</td>
+                        <td>Micro-machining</td>
+                        <td>Small</td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-strong">High</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 2. TECHNICAL -->
+    <section id="technical" class="section-anchor fade-up">
+        <div class="section-header">
+            <div class="section-number">Section 02</div>
+            <h2 class="section-title">Technical Capability Matrix</h2>
+            <p class="section-desc">Compares the technical stack buyers evaluate when selecting a laser micromachining partner.</p>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Capability</th>
+                        <th style="color:var(--accent)">Sublime</th>
+                        <th>Resonetics</th>
+                        <th>Admedes</th>
+                        <th>Symmetry</th>
+                        <th>Lighteum</th>
+                        <th>Norman Noble</th>
+                        <th>Lumenous</th>
+                        <th>Primo</th>
+                        <th>MicroCut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ultrafast (femto/pico) lasers</td>
+                        <td><span class="badge badge-yes">Yes ★</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-limited">Limited</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-limited">Limited</span></td>
+                        <td><span class="badge badge-limited">Limited</span></td>
+                    </tr>
+                    <tr>
+                        <td>Micro-cutting</td>
+                        <td><span class="badge badge-yes">Yes ★</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td>Micro-drilling</td>
+                        <td><span class="badge badge-yes">Yes ★</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td>Thin-wall tube processing</td>
+                        <td><span class="badge badge-yes">Yes ★</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                    </tr>
+                    <tr>
+                        <td>R&D prototyping</td>
+                        <td><span class="badge badge-excellent">Strong ★</span></td>
+                        <td><span class="badge badge-weak">Weak</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-strong">Strong</span></td>
+                        <td><span class="badge badge-weak">Weak</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-strong">Strong</span></td>
+                    </tr>
+                    <tr>
+                        <td>High-volume automation</td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-excellent">Strong ★</span></td>
+                        <td><span class="badge badge-strong">Strong</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-excellent">Strong ★</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-limited">Low</span></td>
+                    </tr>
+                    <tr>
+                        <td>Material expertise (Nitinol, CoCr, SS)</td>
+                        <td><span class="badge badge-strong">High ★</span></td>
+                        <td><span class="badge badge-strong">High</span></td>
+                        <td><span class="badge badge-excellent">Very High ★</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-strong">High</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                    </tr>
+                    <tr>
+                        <td>Cleanroom manufacturing</td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-excellent">Strong ★</span></td>
+                        <td><span class="badge badge-strong">Strong</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-excellent">Strong ★</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-limited">Low</span></td>
+                        <td><span class="badge badge-limited">Low</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 3. QUALITY / REGULATORY -->
+    <section id="quality" class="section-anchor fade-up">
+        <div class="section-header">
+            <div class="section-number">Section 03</div>
+            <h2 class="section-title">Regulatory &amp; Quality Matrix</h2>
+            <p class="section-desc">Buyers in medical device manufacturing evaluate partners heavily on quality systems and regulatory readiness.</p>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Quality / Certification</th>
+                        <th style="color:var(--accent)">Sublime</th>
+                        <th>Resonetics</th>
+                        <th>Admedes</th>
+                        <th>Norman Noble</th>
+                        <th>Lumenous</th>
+                        <th>Others</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ISO 13485</td>
+                        <td><span class="badge badge-yes">Yes ★</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-most">Most</span></td>
+                    </tr>
+                    <tr>
+                        <td>FDA-registered</td>
+                        <td><span class="badge badge-likely">Likely ⓘ</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-yes">Yes</span></td>
+                        <td><span class="badge badge-mixed">Mixed</span></td>
+                    </tr>
+                    <tr>
+                        <td>Class III implant experience</td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-excellent">Strong ★</span></td>
+                        <td><span class="badge badge-excellent">Strong ★</span></td>
+                        <td><span class="badge badge-excellent">Strong ★</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mixed">Mixed</span></td>
+                    </tr>
+                    <tr>
+                        <td>Design for Manufacturability (DFM)</td>
+                        <td><span class="badge badge-excellent">High ★</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="margin-top:1rem;padding:1rem 1.25rem;border-radius:var(--radius);background:var(--sublime-glow);border:1px solid rgba(56,189,248,.15);font-size:.85rem">
+            <strong style="color:var(--accent)">⚡ Sublime Standout:</strong> <span style="color:var(--text-dim)">DFM + R&D collaboration is rare among small shops and often weak in large OEM suppliers — this is a genuine competitive moat.</span>
+        </div>
+    </section>
+
+    <!-- 4. BUYER VALUE -->
+    <section id="buyer-value" class="section-anchor fade-up">
+        <div class="section-header">
+            <div class="section-number">Section 04</div>
+            <h2 class="section-title">Buyer-Value Differentiator Matrix</h2>
+            <p class="section-desc">What buyers actually care about — and where Sublime wins.</p>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Buyer Priority</th>
+                        <th style="color:var(--accent)">Sublime</th>
+                        <th>Resonetics</th>
+                        <th>Admedes</th>
+                        <th>Norman Noble</th>
+                        <th>Lighteum</th>
+                        <th>MicroCut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Fast prototyping</td>
+                        <td><span class="badge badge-excellent">Excellent ★</span></td>
+                        <td><span class="badge badge-poor">Poor</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-poor">Poor</span></td>
+                        <td><span class="badge badge-excellent">Excellent</span></td>
+                        <td><span class="badge badge-excellent">Excellent</span></td>
+                    </tr>
+                    <tr>
+                        <td>Engineering collaboration</td>
+                        <td><span class="badge badge-excellent">Excellent ★</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-limited">Low</span></td>
+                        <td><span class="badge badge-strong">High</span></td>
+                        <td><span class="badge badge-strong">High</span></td>
+                    </tr>
+                    <tr>
+                        <td>Complex geometries</td>
+                        <td><span class="badge badge-strong">Strong ★</span></td>
+                        <td><span class="badge badge-strong">Strong</span></td>
+                        <td><span class="badge badge-strong">Strong</span></td>
+                        <td><span class="badge badge-strong">Strong</span></td>
+                        <td><span class="badge badge-strong">Strong</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                    </tr>
+                    <tr>
+                        <td>Small-batch production</td>
+                        <td><span class="badge badge-excellent">Excellent ★</span></td>
+                        <td><span class="badge badge-weak">Weak</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-weak">Weak</span></td>
+                        <td><span class="badge badge-strong">High</span></td>
+                        <td><span class="badge badge-strong">High</span></td>
+                    </tr>
+                    <tr>
+                        <td>Lead times</td>
+                        <td><span class="badge badge-short">Short ★</span></td>
+                        <td><span class="badge badge-long">Long</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-long">Long</span></td>
+                        <td><span class="badge badge-short">Short</span></td>
+                        <td><span class="badge badge-short">Short</span></td>
+                    </tr>
+                    <tr>
+                        <td>Cost flexibility</td>
+                        <td><span class="badge badge-high">High ★</span></td>
+                        <td><span class="badge badge-low">Low</span></td>
+                        <td><span class="badge badge-low">Low</span></td>
+                        <td><span class="badge badge-low">Low</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-high">High</span></td>
+                    </tr>
+                    <tr>
+                        <td>Custom process development</td>
+                        <td><span class="badge badge-excellent">Strong ★</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                        <td><span class="badge badge-limited">Low</span></td>
+                        <td><span class="badge badge-strong">High</span></td>
+                        <td><span class="badge badge-mid">Mid</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="diff-strip">
+            <div class="diff-chip">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+                Speed
+            </div>
+            <div class="diff-chip">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+                Engineering Partnership
+            </div>
+            <div class="diff-chip">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+                Custom Process Development
+            </div>
+            <div class="diff-chip">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/></svg>
+                Small-Batch Agility
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. STRATEGIC POSITIONING -->
+    <section id="strategic" class="section-anchor fade-up">
+        <div class="section-header">
+            <div class="section-number">Section 05</div>
+            <h2 class="section-title">Strategic Positioning Summary</h2>
+            <p class="section-desc">Where Sublime wins — and where competitors dominate.</p>
+        </div>
+        <div class="insights">
+            <div class="insight-card win">
+                <h3><span class="icon-circle icon-win">✓</span> Where Sublime Wins</h3>
+                <ul>
+                    <li>Prototype → Pilot → Early Production workflows</li>
+                    <li>High-complexity, low-volume medical components</li>
+                    <li>R&D-heavy customers needing iterative development</li>
+                    <li>Companies frustrated with slow timelines from large suppliers</li>
+                    <li>Buyers needing ultrafast laser precision without enterprise-level overhead</li>
+                </ul>
+            </div>
+            <div class="insight-card caution">
+                <h3><span class="icon-circle icon-caution">!</span> Large-Scale Competitors</h3>
+                <ul>
+                    <li><strong>Resonetics, Norman Noble, Admedes</strong> — dominate high-volume, regulated, implant-grade manufacturing</li>
+                    <li>Strong large OEM relationships and established supply agreements</li>
+                    <li>Deep cleanroom and automation infrastructure</li>
+                </ul>
+            </div>
+            <div class="insight-card compete">
+                <h3><span class="icon-circle icon-compete">⚡</span> Adjacent Competitors</h3>
+                <ul>
+                    <li><strong>Lighteum, MicroCut</strong> — small-shop agility, but less depth in process engineering</li>
+                    <li><strong>Symmetry/ArcRev, Lumenous</strong> — broader manufacturing footprint, but less laser specialization</li>
+                    <li><strong>Primo Group</strong> — general contract manufacturing; less differentiated</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. OPPORTUNITY -->
+    <section id="opportunity" class="section-anchor fade-up">
+        <div class="section-header">
+            <div class="section-number">Section 06</div>
+            <h2 class="section-title">Opportunity Matrix: Underserved Buyer Segments</h2>
+            <p class="section-desc">Segments where Sublime has a clear competitive opening.</p>
+        </div>
+        <div class="table-wrap">
+            <table class="opp-table">
+                <thead>
+                    <tr>
+                        <th>Buyer Segment</th>
+                        <th>Pain Point</th>
+                        <th>Why Sublime Wins</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Early-stage medical device startups</td>
+                        <td>Need fast prototypes + engineering help</td>
+                        <td>⚡ Speed + collaboration</td>
+                    </tr>
+                    <tr>
+                        <td>Mid-size OEMs with slow incumbent suppliers</td>
+                        <td>Long lead times from current vendors</td>
+                        <td>⚡ Agility + responsiveness</td>
+                    </tr>
+                    <tr>
+                        <td>R&D teams exploring new geometries / materials</td>
+                        <td>Need process development partnership</td>
+                        <td>⚡ Ultrafast laser + engineering depth</td>
+                    </tr>
+                    <tr>
+                        <td>Companies needing low-volume, high-precision runs</td>
+                        <td>Large suppliers too expensive for small lots</td>
+                        <td>⚡ Cost flexibility</td>
+                    </tr>
+                    <tr>
+                        <td>Device companies needing design iteration</td>
+                        <td>Need multiple rapid-turn cycles</td>
+                        <td>⚡ Prototype-friendly workflow</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>Sublime Laser — Competitive Intelligence Report &copy; 2025. For internal strategy use. Data compiled from public sources, interviews, and market analysis.</p>
+</footer>
+
+<script>
+// Intersection observer for fade-up animations
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Active nav link on scroll
+const sections = document.querySelectorAll('.section-anchor');
+const navLinks = document.querySelectorAll('.nav-link[data-section]');
+
+function updateActiveNav() {
+    let current = '';
+    sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 120) {
+            current = section.id;
+        }
+    });
+    navLinks.forEach(link => {
+        link.classList.toggle('active', link.dataset.section === current);
+    });
+}
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+
+// Close mobile nav on link click
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        document.querySelector('.nav-links').classList.remove('open');
+    });
+});
+
+// Detect table horizontal scroll
+document.querySelectorAll('.table-wrap').forEach(wrap => {
+    const checkScroll = () => {
+        wrap.classList.toggle('scrollable', wrap.scrollWidth > wrap.clientWidth && wrap.scrollLeft < wrap.scrollWidth - wrap.clientWidth - 2);
+    };
+    checkScroll();
+    wrap.addEventListener('scroll', checkScroll, { passive: true });
+    window.addEventListener('resize', checkScroll, { passive: true });
+});
+</script>
+
+</body>
+</html>
+```
