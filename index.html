@@ -232,24 +232,24 @@
         "https://api.github.com/repos/" + repoInfo.owner + "/" + repoInfo.repo + "/git/trees/" + encodeURIComponent(branch) + "?recursive=1"
       );
 
-      const htmlFiles = (tree.tree || [])
+      const documents = (tree.tree || [])
         .filter((item) => item.type === "blob")
         .map((item) => item.path)
-        .filter((path) => path.toLowerCase().endsWith(".html"))
+        .filter((path) => path.toLowerCase().endsWith(".html") || path.toLowerCase().endsWith(".pdf"))
         .filter((path) => path.toLowerCase() !== "index.html")
         .filter((path) => path.toLowerCase() !== "manifest.json")
         .sort((a, b) => a.localeCompare(b));
 
-      if (htmlFiles.length === 0) {
+      if (documents.length === 0) {
         setState("No documents available yet.");
         return;
       }
 
       setState("");
 
-      htmlFiles.forEach((filePath) => {
+      documents.forEach((filePath) => {
         const href = repoInfo.siteBasePath + encodePath(filePath);
-        const name = filePath.split("/").pop().replace(/\.html$/i, "");
+        const name = filePath.split("/").pop().replace(/\.(html|pdf)$/i, "");
         const description = manifest[filePath] || "";
 
         const li = document.createElement("li");
