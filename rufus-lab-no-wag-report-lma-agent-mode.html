@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Rufus Lab - No Wag Report</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;--panel:#ffffff;--panel2:#eef3f8;--text:#162033;--muted:#5e6b7e;--line:#d9e1ea;
+      --brand:#1d6f8f;--brand2:#f19d38;--good:#16865b;--warn:#a66300;--bad:#b42318;--shadow:0 18px 40px rgba(22,32,51,.12);
+      --note:#fff8df;--note-line:#f0d47b;--chip:#e8f6fb;--link:#0b6585;
+    }
+    html[data-theme="dark"]{
+      --bg:#0b1220;--panel:#121c2b;--panel2:#182437;--text:#edf4ff;--muted:#a9b7c9;--line:#2b3d56;
+      --brand:#55c4e8;--brand2:#ffb35a;--good:#64d39b;--warn:#ffbf62;--bad:#ff8c80;--shadow:0 18px 44px rgba(0,0,0,.45);
+      --note:#1c2433;--note-line:#735f25;--chip:#102d3a;--link:#7bdcff;
+    }
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+    a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}.wrap{max-width:1180px;margin:auto;padding:24px}.hero{position:relative;overflow:hidden;border-radius:28px;background:linear-gradient(135deg,#10263a 0%,#1d6f8f 52%,#f19d38 100%);color:#fff;box-shadow:var(--shadow);padding:38px}.hero:before{content:"";position:absolute;inset:auto -60px -140px auto;width:430px;height:430px;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 62%);border-radius:50%}.kicker{letter-spacing:.13em;text-transform:uppercase;font-weight:800;font-size:.78rem;opacity:.92}.hero h1{font-size:clamp(2.2rem,5vw,4.4rem);line-height:.98;margin:.35rem 0}.hero p{max-width:850px;font-size:1.1rem;margin:0 0 18px}.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:99px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);font-weight:700}.toolbar{position:sticky;top:0;z-index:10;margin:18px 0;padding:12px;border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(14px);border-radius:18px;box-shadow:0 8px 22px rgba(0,0,0,.08);display:flex;gap:10px;flex-wrap:wrap;align-items:center}.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:10px 13px;border-radius:12px;font-weight:800;cursor:pointer}.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.12)}.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}.btn.warn{background:transparent;color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}.small{font-size:.88rem;color:var(--muted)}.grid{display:grid;grid-template-columns:1.02fr .98fr;gap:18px}@media(max-width:900px){.grid{grid-template-columns:1fr}.toolbar{position:relative}.hero{padding:28px}.wrap{padding:14px}}.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:22px;margin:18px 0}.card h2{font-size:1.65rem;margin:.1rem 0 12px}.card h3{font-size:1.15rem;margin:18px 0 8px}.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.toc a{display:block;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--panel2);font-weight:800}.callout{border-left:5px solid var(--brand2);background:var(--panel2);border-radius:16px;padding:15px;margin:14px 0}.verdict{border-left-color:var(--good)}.caution{border-left-color:var(--bad)}.noteBox{margin-top:16px;background:var(--note);border:1px solid var(--note-line);border-radius:16px;padding:12px}.noteBox label{display:flex;align-items:center;justify-content:space-between;font-weight:900;margin-bottom:8px}.noteBox textarea{width:100%;min-height:110px;resize:vertical;border:1px solid var(--note-line);border-radius:12px;background:color-mix(in srgb,var(--panel) 80%,transparent);color:var(--text);padding:12px;font:14px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.status{font-size:.78rem;color:var(--muted);font-weight:700}.score{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.score div{padding:12px;border-radius:15px;background:var(--panel2);border:1px solid var(--line);text-align:center}.score b{display:block;font-size:1.5rem;color:var(--brand)}table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:16px;background:var(--panel)}th,td{padding:12px 13px;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--panel2);text-align:left;font-size:.88rem;text-transform:uppercase;letter-spacing:.04em}tr:last-child td{border-bottom:0}.proscons{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:750px){.proscons{grid-template-columns:1fr}.score{grid-template-columns:1fr 1fr}}.pc{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--panel2)}.pc h4{margin:0 0 8px}.pc.pro h4{color:var(--good)}.pc.con h4{color:var(--bad)}ul{padding-left:21px}.badge{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--chip);border:1px solid var(--line);font-weight:800;font-size:.78rem}.ref{font-size:.93rem}.ref li{margin:10px 0}.printOnly{display:none}.footer{color:var(--muted);text-align:center;padding:30px 0}.twoCol{columns:2;column-gap:30px}@media(max-width:850px){.twoCol{columns:1}}.meter{height:10px;background:var(--panel2);border-radius:999px;overflow:hidden;border:1px solid var(--line)}.meter span{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--brand2))}@media print{.toolbar,.noteBox .status,.btn,.noPrint{display:none!important}.noteBox textarea{border:0;min-height:70px}.card,.hero{box-shadow:none;break-inside:avoid}.wrap{max-width:none}.printOnly{display:block}body{background:white;color:#111}a{color:#111;text-decoration:underline}.hero{color:white}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="kicker">The Rufus Lab</div>
+      <h1>No Wag Report</h1>
+      <p>A researched comparison of the Equal-i-zer 4-Point Sway Control weight distribution system and the Andersen No-Sway / No-Bounce system for a 2026 Forest River Solera 22N4X4 Class C motorhome towing a 5,000–6,000 lb enclosed trailer in the Rocky Mountains.</p>
+      <div class="meta">
+        <span class="pill">Prepared: May 18, 2026</span>
+        <span class="pill">Tow vehicle: Solera 22N4X4 / Ford E-450 4x4</span>
+        <span class="pill">Trailer scenario: 5k–6k enclosed bumper-pull</span>
+      </div>
+    </header>
+
+    <nav class="toolbar noPrint" aria-label="Report tools">
+      <button class="btn primary" id="themeBtn">Toggle dark / light</button>
+      <button class="btn" id="exportBtn">Export notes</button>
+      <label class="btn" for="importFile">Import notes</label><input id="importFile" type="file" accept="application/json" hidden>
+      <button class="btn" id="printBtn">Print report</button>
+      <button class="btn warn" id="clearBtn">Clear notes</button>
+      <span class="small" id="noteSummary">Notes autosave locally in this browser.</span>
+    </nav>
+
+    <section class="card" id="toc">
+      <h2>Report navigation</h2>
+      <div class="toc">
+        <a href="#executive">Executive recommendation</a>
+        <a href="#rig">Rig and weight assumptions</a>
+        <a href="#systems">How the systems work</a>
+        <a href="#comparison">Head-to-head comparison</a>
+        <a href="#mountains">Rocky Mountain factors</a>
+        <a href="#setup">Setup checklist</a>
+        <a href="#feedback">Owner feedback themes</a>
+        <a href="#references">References</a>
+      </div>
+    </section>
+
+    <section class="card" id="executive" data-note-title="Executive Recommendation">
+      <h2>Executive recommendation</h2>
+      <div class="callout verdict">
+        <strong>Bottom line:</strong> For a 5,000–6,000 lb enclosed trailer behind the 2026 Forest River Solera 22N4X4 in the Rockies, the <strong>Equal-i-zer 4-Point Sway Control</strong> is the more conservative default choice if the Solera receiver is confirmed to be weight-distribution rated. It offers stronger, more adjustable front-axle load restoration and a long record of controlling sway on heavy, broadside trailers. The tradeoff is noise, mass, grease, and a harsher feel.
+      </div>
+      <p>The <strong>Andersen No-Sway</strong> remains attractive if the owner prioritizes a quiet, clean, lighter, smoother system and if scale weights show the Solera’s front axle, rear axle, and receiver loads are all within specification with Andersen’s lower weight-transfer behavior. It is less compelling when front-axle restoration is critical, when tongue weight approaches the high end of the estimate, or when trailer coupler / A-frame geometry is unusual.</p>
+      <div class="score" aria-label="Summary scores out of five">
+        <div><span class="badge">Equal-i-zer</span><b>5</b><small>Sway control confidence</small></div>
+        <div><span class="badge">Equal-i-zer</span><b>5</b><small>Weight transfer adjustability</small></div>
+        <div><span class="badge">Andersen</span><b>5</b><small>Quiet / clean handling</small></div>
+        <div><span class="badge">Andersen</span><b>5</b><small>Ease of storage</small></div>
+        <div><span class="badge">Equal-i-zer</span><b>4</b><small>Rockies margin</small></div>
+      </div>
+      <h3>Recommended sizing for this scenario</h3>
+      <ul>
+        <li><strong>Expected loaded tongue weight:</strong> 500–900 lb using the common 10–15% bumper-pull guideline for a 5,000–6,000 lb trailer. Enclosed trailers often need disciplined loading because broad side area and rear cargo placement can worsen sway.</li>
+        <li><strong>Equal-i-zer:</strong> likely the <strong>90-00-1000</strong> kit if measured tongue weight stays between 600–1,000 lb; consider <strong>90-00-1200</strong> only if verified loaded tongue weight exceeds 1,000 lb or future trailer weight demands it. Do not overspring unnecessarily.</li>
+        <li><strong>Andersen:</strong> choose by ball size, shank drop/rise, receiver size, and frame brackets. A 2-5/16 in ball / 2 in shank Andersen kit is commonly appropriate for 5k–6k enclosed cargo trailers, but the trailer coupler and frame must be compatible.</li>
+      </ul>
+      <div class="callout caution"><strong>Non-negotiable:</strong> verify the actual receiver label on the Solera. Ford notes that a hitch label provides both weight-carrying and weight-distributing capacities; the installed RV receiver and Forest River frame extension determine whether WD equipment is allowed.</div>
+    </section>
+
+    <section class="card" id="rig" data-note-title="Rig and Weight Assumptions">
+      <h2>Rig and weight assumptions</h2>
+      <table>
+        <thead><tr><th>Item</th><th>Data gathered</th><th>Implication</th></tr></thead>
+        <tbody>
+          <tr><td>Motorhome</td><td>2026 Forest River Solera 22N4X4, Ford E-450 4x4 chassis, Ford 7.3L V8 Premium, 158 in wheelbase, 24 ft 6 in length, 11 ft 6 in height.</td><td>Short motorhome length is good for maneuverability; the 158 in wheelbase and rear overhang make hitch setup and rear-axle loading important.</td></tr>
+          <tr><td>Ratings reported by Forest River / dealers</td><td>GVWR 14,500 lb, GCWR 22,000 lb, hitch 7,500 lb, front GAWR 5,000 lb, rear GAWR 9,600 lb.</td><td>At GVWR, the GCWR arithmetic leaves 7,500 lb for trailer weight, matching the listed hitch rating. A 6,000 lb trailer is feasible only if axle, receiver, tongue, and actual loaded weights remain in range.</td></tr>
+          <tr><td>Trailer</td><td>5,000–6,000 lb enclosed bumper-pull cargo trailer.</td><td>Target 10–15% measured tongue weight: about 500–900 lb. Too little tongue weight is a sway trigger; too much can overload the Solera rear axle.</td></tr>
+          <tr><td>Operating environment</td><td>Rocky Mountain grades, crosswinds, passing trucks, altitude, curving descents, and weather changes.</td><td>Prioritize steering authority, braking stability, verified trailer brakes, conservative speed, and scale-confirmed setup over convenience alone.</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Weight math to do before purchase:</strong> load the Solera as for a trip, load the enclosed trailer as for the trip, then weigh on a CAT scale: motorhome alone by axle; motorhome + trailer coupled without WD engaged; and motorhome + trailer with WD engaged. Confirm GVWR, GCWR, front GAWR, rear GAWR, trailer GVWR, tire ratings, and the receiver’s WD tongue limit.</p>
+    </section>
+
+    <section class="card" id="systems" data-note-title="How the Systems Work">
+      <h2>How the systems work</h2>
+      <div class="grid">
+        <div>
+          <h3>Equal-i-zer 4-Point Sway Control</h3>
+          <p>Equal-i-zer uses traditional spring bars plus integrated friction. Manufacturer material describes four sway-control points: two friction points in the hitch head where the spring-arm sockets rotate, and two at the rigid L-brackets mounted to the trailer frame. The spring bars both distribute tongue weight and provide friction resistance to trailer yaw.</p>
+          <p>Manufacturer specifications list models from 400/4,000 lb through 1,600/16,000 lb. The 90-00-1000 model is rated for 1,000 lb maximum tongue weight and 10,000 lb maximum gross trailer weight; the 90-00-1200 is rated for 1,200/12,000 lb.</p>
+        </div>
+        <div>
+          <h3>Andersen No-Sway / No-Bounce</h3>
+          <p>Andersen replaces spring bars with tension chains, urethane springs, and a tapered friction-cone ball housing. Andersen says the ball turns with the trailer, the system is grease-free, and sway control self-adjusts as tongue load pushes the tapered ball into brake-like friction material.</p>
+          <p>Andersen lists kits up to 16,000 lb GTWR and 1,600 lb tongue weight depending on shank/receiver. Its help material states that with about 900 lb of tongue weight, users can expect roughly 30% of the weight to be transferred, leaving the rest on the rear of the tow vehicle.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="comparison" data-note-title="Head-to-Head Comparison">
+      <h2>Head-to-head comparison</h2>
+      <table>
+        <thead><tr><th>Category</th><th>Equal-i-zer 4-Point</th><th>Andersen No-Sway</th><th>Advantage for this Solera + enclosed trailer</th></tr></thead>
+        <tbody>
+          <tr><td>Sway resistance</td><td>Strong, mechanical friction at four points; widely praised for highway and wind stability.</td><td>Strong friction-cone damping; many users praise quiet sway control and reduced push from semis.</td><td><strong>Equal-i-zer</strong> by conservative margin, especially for a tall enclosed trailer in gusts.</td></tr>
+          <tr><td>Weight distribution / front-axle restoration</td><td>Highly adjustable using head tilt, washers, bracket height, and spring-bar rating.</td><td>Manufacturer acknowledges partial transfer; user reports often say it transfers less weight than bar systems on heavier trailers.</td><td><strong>Equal-i-zer</strong> where front axle and steering feel matter on mountain descents.</td></tr>
+          <tr><td>Ride comfort</td><td>Can feel stiff and can transmit noise, pop, and bounce.</td><td>Designed for anti-bounce damping with urethane springs; commonly described as smooth and quiet.</td><td><strong>Andersen</strong>.</td></tr>
+          <tr><td>Noise / maintenance</td><td>Known for groaning, popping, and grease at the head. Bracket jackets can reduce noise but may slightly reduce friction at brackets.</td><td>Grease-free ball system; quiet in normal use.</td><td><strong>Andersen</strong>.</td></tr>
+          <tr><td>Handling hardware</td><td>Heavy shank and spring bars; bars must be lifted into place.</td><td>Under 60 lb total system per Andersen; no heavy spring bars.</td><td><strong>Andersen</strong>.</td></tr>
+          <tr><td>Compatibility issues</td><td>Needs A-frame bracket space and proper frame height; generally broad compatibility.</td><td>Must confirm coupler compatibility; Andersen notes incompatibility with some Atwood couplers. Chain alignment and bracket movement can be issues on some frames.</td><td><strong>Equal-i-zer</strong>.</td></tr>
+          <tr><td>Backing / tight turns</td><td>Can back up without disconnecting when installed correctly; noise increases in tight turns.</td><td>Can generally back up; very sharp alignment can complicate hookup for some users.</td><td>Tie, with usability preference depending on owner.</td></tr>
+          <tr><td>Mountain safety margin</td><td>Better when the goal is restoring steering axle load and resisting sway under crosswind / evasive maneuvers.</td><td>Better comfort and reduced bounce, but verify weight restoration at the scale.</td><td><strong>Equal-i-zer</strong>.</td></tr>
+        </tbody>
+      </table>
+      <div class="proscons">
+        <div class="pc pro"><h4>Equal-i-zer — pros</h4><ul><li>Strong front-axle load restoration adjustability.</li><li>Integrated sway control with no separate friction bar.</li><li>Proven and widely supported by RV dealers.</li><li>Good fit for higher tongue weights in the 600–1,000 lb range.</li><li>Can be tuned using objective fender-height and scale data.</li></ul></div>
+        <div class="pc con"><h4>Equal-i-zer — cons</h4><ul><li>Noisy at low speed and in tight turns.</li><li>Heavy components; greasy head sockets.</li><li>Can create a stiffer, more abrupt ride on rough pavement.</li><li>Requires careful setup and correct torque.</li><li>May need accessory brackets if trailer frame is unusual or crowded.</li></ul></div>
+        <div class="pc pro"><h4>Andersen — pros</h4><ul><li>Light, clean, and easy to store.</li><li>Quiet, grease-free ball/coupler movement.</li><li>Urethane springs damp bounce and chucking.</li><li>Users often praise smooth towing and simple routine hookup once dialed in.</li><li>Good option when tow vehicle has ample axle margin and only moderate weight transfer is needed.</li></ul></div>
+        <div class="pc con"><h4>Andersen — cons</h4><ul><li>Often transfers less weight to the front axle than spring-bar hitches.</li><li>Coupler geometry, underslung couplers, and frame-bracket movement can reduce performance.</li><li>Some couplers are specifically not compatible.</li><li>Less compelling near axle/receiver limits.</li><li>Friction cone and chains are unique wear/load paths that require inspection.</li></ul></div>
+      </div>
+    </section>
+
+    <section class="card" id="mountains" data-note-title="Rocky Mountain Factors">
+      <h2>Rocky Mountain operating factors</h2>
+      <div class="callout caution"><strong>Why the Rockies change the decision:</strong> the issue is not merely whether the hitch can tow 6,000 lb. It is whether the complete rig remains controllable during descending curves, gusts in passes, rough expansion joints, emergency braking, and when a semi passes a tall enclosed trailer.</div>
+      <ul class="twoCol">
+        <li><strong>Front axle authority:</strong> A WD hitch should restore enough front axle load for predictable steering. Ford’s current towing guidance recommends 50% front axle load restoration when using load bars.</li>
+        <li><strong>Rear axle reserve:</strong> The Solera’s 9,600 lb rear GAWR must absorb passengers, gear, water, the motorhome body, rear storage, hitch hardware, and a 500–900 lb tongue load before WD transfer.</li>
+        <li><strong>Enclosed trailer side area:</strong> Box trailers catch wind. Proper tongue weight and anti-sway damping matter more than with a low utility trailer.</li>
+        <li><strong>Trailer brakes:</strong> A 5k–6k enclosed trailer needs well-adjusted electric brakes, a quality controller, breakaway battery, and tires rated for sustained highway heat.</li>
+        <li><strong>Altitude and grades:</strong> The 7.3L gas V8 is strong, but naturally aspirated engines lose power at elevation. Descending control and brake temperature become the bigger safety concern.</li>
+        <li><strong>4x4 lift:</strong> The Solera 22N4X4’s lift and off-road tires may require more drop in the hitch shank to keep the trailer level or slightly nose-down.</li>
+      </ul>
+      <h3>Decision rule</h3>
+      <p>If CAT-scale results show the Andersen restores adequate front axle load while keeping rear axle and receiver loads under rating, Andersen is a valid comfort-focused choice. If the front axle remains light, rear axle is close to rating, or trailer sway appears in wind, choose the Equal-i-zer and tune it carefully.</p>
+    </section>
+
+    <section class="card" id="setup" data-note-title="Setup Checklist">
+      <h2>Setup checklist for this rig</h2>
+      <ol>
+        <li><strong>Confirm receiver label:</strong> record weight-carrying maximum trailer weight, weight-carrying tongue weight, weight-distributing trailer weight, and weight-distributing tongue weight.</li>
+        <li><strong>Confirm Forest River approval:</strong> RV frame extensions can be the limiting component even when the Ford chassis has high GCWR.</li>
+        <li><strong>Measure loaded tongue weight:</strong> target 10–15% of actual trailer weight; for 6,000 lb, that is 600–900 lb.</li>
+        <li><strong>Set trailer level:</strong> loaded trailer should be level or slightly nose-down, not nose-high.</li>
+        <li><strong>Scale the rig:</strong> record front axle, rear axle, trailer axles, and combined weight with WD off and on.</li>
+        <li><strong>Tune WD:</strong> aim for compliant front-axle restoration without exceeding rear GAWR, front GAWR, hitch rating, or trailer A-frame limits.</li>
+        <li><strong>Road test conservatively:</strong> start on local roads, then highway, then mild grades before high passes.</li>
+        <li><strong>Inspect after 50–100 miles:</strong> bracket movement, torque, chain/spring condition, hitch head bolts, coupler latch, trailer brake temperatures, and tire pressures.</li>
+      </ol>
+      <table>
+        <thead><tr><th>Scale value</th><th>Target / pass-fail</th></tr></thead>
+        <tbody>
+          <tr><td>Motorhome front axle with WD engaged</td><td>Not over 5,000 lb; restored toward unloaded height/weight per Ford and hitch setup instructions.</td></tr>
+          <tr><td>Motorhome rear axle with WD engaged</td><td>Not over 9,600 lb; leave margin for water, passengers, and cargo changes.</td></tr>
+          <tr><td>Combined weight</td><td>Not over 22,000 lb GCWR.</td></tr>
+          <tr><td>Trailer loaded weight</td><td>Not over trailer GVWR and within receiver rating; user scenario 5,000–6,000 lb.</td></tr>
+          <tr><td>Tongue weight</td><td>Normally 10–15% of loaded trailer weight and within hitch/receiver limits.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card" id="feedback" data-note-title="User Feedback Themes">
+      <h2>Manufacturer data + user feedback themes</h2>
+      <h3>Equal-i-zer feedback themes</h3>
+      <ul>
+        <li>Users commonly report excellent sway control and confidence in wind and bad weather.</li>
+        <li>The most repeated complaint is noise: creaking, groaning, and popping during slow turns. Some users add bracket jackets/noise reducers.</li>
+        <li>Owners like that, once adjusted, connection/disconnection is repeatable and backing is allowed.</li>
+        <li>Some users dislike grease and the weight of spring bars and head assembly.</li>
+      </ul>
+      <h3>Andersen feedback themes</h3>
+      <ul>
+        <li>Users commonly praise the quiet, clean, light design and smooth ride.</li>
+        <li>Several forum reports praise sway control but criticize limited front-axle load restoration on heavier trailers.</li>
+        <li>Some owners with underslung couplers or unusual A-frame geometry report chain-angle problems, bracket movement, or the need for longer/welded brackets.</li>
+        <li>Reports on customer support are mixed: many praise Andersen support, while some older forum threads contain concerns about wear, coupler stress, and long-term reliability.</li>
+      </ul>
+      <div class="callout"><strong>Interpretation:</strong> user feedback aligns with the engineering tradeoff. Equal-i-zer is the stronger mechanical weight-distribution tool; Andersen is the cleaner comfort tool with strong sway damping but potentially less load restoration.</div>
+    </section>
+
+    <section class="card" id="references" data-note-title="References and Source Notes">
+      <h2>Detailed references</h2>
+      <ol class="ref">
+        <li><strong>Forest River — Solera 22N4X4 print page.</strong> Lists the 4x4 Off-Road Extreme Package, Ford E450 chassis, 4 in lift, Bilstein shocks, 200 W solar, and 7,500 lb towing hitch. Also defines GVWR, GCWR, and CCC. <a href="https://forestriverinc.com/rvs/print/solera/22N4X4/14174">forestriverinc.com/rvs/print/solera/22N4X4/14174</a></li>
+        <li><strong>Forest River — Solera Class C motorhomes page.</strong> Lists exterior equipment including 7,500 lb hitch / 7-pin for E450, 5,000 lb for E350/Chevy, and 4,200 lb for Mercedes. <a href="https://forestriverinc.com/rvs/class-c-motorhomes/solera">forestriverinc.com/rvs/class-c-motorhomes/solera</a></li>
+        <li><strong>Dealer specification example — 2026 Forest River Solera 22N4X4.</strong> Provides 24 ft 6 in length, 11 ft 6 in height, 7,500 lb hitch, GVWR 14,500 lb, GCWR 22,000 lb, Ford 7.3L V8 Premium, E450 4x4 chassis, 5,000 lb front axle and 9,600 lb rear axle. <a href="https://www.parrisrv.com/product/new-2026-forest-river-rv-solera-22n4x4-3444728-16">parrisrv.com/product/new-2026-forest-river-rv-solera-22n4x4-3444728-16</a></li>
+        <li><strong>Ford — 2026 E-Series Towing Guide.</strong> Shows E-450 DRW with 7.3L V8 Premium and 4.56 axle at 14,500 lb GVWR and 22,000 lb GCWR; states maximum trailer weight is GCWR minus vehicle GVW or 10,000 lb, whichever is less. <a href="https://www.vdm.ford.com/content/dam/brand_ford/en_us/brand/towing/pdf/2026-Ford-E-Series-Towing-Guide.pdf">2026 Ford E-Series Towing Guide PDF</a></li>
+        <li><strong>Ford — 2026 RV & Trailer Towing Guide.</strong> Notes that the hitch receiver label provides weight-carrying and weight-distributing capacities; includes Ford setup steps and recommends 50% front axle load restoration when using weight distribution load bars. <a href="https://www.vdm.ford.com/content/dam/brand_ford/en_us/brand/towing/pdf/2026-Ford-RV-and-Trailer-Towing-Guide_v2.pdf">2026 Ford RV & Trailer Towing Guide PDF</a></li>
+        <li><strong>Equal-i-zer manufacturer product page.</strong> Describes 4-Point Sway Control, no-drill rigid brackets, friction at the hitch head and brackets, frame height compatibility, and specifications from 400/4,000 through 1,600/16,000 lb. <a href="https://www.equalizerhitch.com/products/equal-i-zer-hitch/">equalizerhitch.com/products/equal-i-zer-hitch/</a></li>
+        <li><strong>Equal-i-zer model specifications — 90-00-1000.</strong> Dealer spec page reflecting manufacturer model details: 1,000 lb max tongue weight, 10,000 lb max trailer weight, 2 in receiver shank, 3 in drop / 7 in rise, standard brackets up to 6 in frame. <a href="https://www.rigidhitch.com/90-00-1000-weight-distributing-1000-lb.html">rigidhitch.com/90-00-1000-weight-distributing-1000-lb.html</a></li>
+        <li><strong>Equal-i-zer model specifications — 90-00-1200.</strong> Lists 1,200 lb tongue and 12,000 lb trailer capacity for the next heavier model. <a href="https://www.reesehitches.com/90-00-1200-weight-distributing-1200-lb.html">reesehitches.com/90-00-1200-weight-distributing-1200-lb.html</a></li>
+        <li><strong>Andersen manufacturer product page.</strong> Describes the Weight Distribution Hitch, patented tension-chain system, friction cone ball housing, grease-free operation, anti-bounce design, and up to 16,000 lb GTWR / 1,600 lb tongue rating. <a href="https://andersenhitches.com/products/weight-distribution-hitch">andersenhitches.com/products/weight-distribution-hitch</a></li>
+        <li><strong>Andersen product catalog / specs.</strong> Lists part numbers, ball sizes, shank sizes, bracket sizes, GTWR, and tongue weight for 4 in and 8 in drop/rise WD hitches. <a href="https://andersenhitches.com/Catalog/andersen-nosway-weight-distribution-hitch.aspx">andersenhitches.com/Catalog/andersen-nosway-weight-distribution-hitch.aspx</a></li>
+        <li><strong>Andersen help guide.</strong> States the system weighs under 60 lb and explains choosing by drop/rise, ball size, receiver size, and tongue bracket size. <a href="https://help.andersenhitches.com/weight-distribution-help-guide">help.andersenhitches.com/weight-distribution-help-guide</a></li>
+        <li><strong>Andersen FAQ — how No-Sway works.</strong> Explains tapered ball, friction cone/brake-like material, self-adjusting friction with tongue load, and at least 300 lb tongue weight recommendation for the mechanism. <a href="https://help.andersenhitches.com/faq/how-does-the-no-sway-weight-distribution-hitch-work">help.andersenhitches.com/faq/how-does-the-no-sway-weight-distribution-hitch-work</a></li>
+        <li><strong>Andersen FAQ — 900 lb tongue weight.</strong> States that with 900 lb tongue weight, users can expect about 30% weight transfer, with the remainder on the rear of the tow vehicle. <a href="https://help.andersenhitches.com/faq/my-tongue-weight-is-about-900-lbs-will-the-andersen-wd-hitch-work-for-me">help.andersenhitches.com/faq/my-tongue-weight-is-about-900-lbs-will-the-andersen-wd-hitch-work-for-me</a></li>
+        <li><strong>Andersen trailer kit note.</strong> Notes coupler incompatibility with Atwood 88007, 88010, 88555, and 88600 couplers. <a href="https://andersenhitches.com/product/wd-trailer-kit-for-extra-trailers/">andersenhitches.com/product/wd-trailer-kit-for-extra-trailers/</a></li>
+        <li><strong>Forest River Forums — hitch reviews thread.</strong> User feedback comparing Andersen and Equal-i-zer: Andersen praised for quiet sway control, Equal-i-zer praised for stronger weight distribution and sway control; noise noted. <a href="https://www.forestriverforums.com/threads/hitch-reviews.264681/">forestriverforums.com/threads/hitch-reviews.264681/</a></li>
+        <li><strong>Forest River Forums — Equalizer hitch recommendation.</strong> Users describe Equal-i-zer as proven, easy once dialed in, strong at WD/sway, but noisy; Andersen described as potentially fine when tow vehicle has ample margin but less satisfactory for restoring all lost front-wheel weight. <a href="https://forestriverforums.com/forums/f12/equalizer-hitch-recommendation-47160.html">forestriverforums.com/forums/f12/equalizer-hitch-recommendation-47160.html</a></li>
+        <li><strong>Reddit r/GoRVing — WDH preferences.</strong> User comments include long-term Equal-i-zer satisfaction in bad weather, reports of Andersen being easier to store, and complaints that an Andersen setup was out of balance for one user. <a href="https://www.reddit.com/r/GoRVing/comments/115xjv3/which_weight_distribution_hitch_do_you_like/">reddit.com/r/GoRVing/comments/115xjv3/which_weight_distribution_hitch_do_you_like/</a></li>
+        <li><strong>Ford-Trucks forum — Andersen review.</strong> User reported no sway and reduced bounce after bracket position/tension tuning; praised faster connection and lighter hardware. <a href="https://www.ford-trucks.com/forums/1501484-review-andersen-no-sway-no-bounce-weight-distribution-hitch.html">ford-trucks.com/forums/1501484-review-andersen-no-sway-no-bounce-weight-distribution-hitch.html</a></li>
+        <li><strong>Jayco Owners — Andersen underslung WD hitch experiment.</strong> User praised anti-sway but initially found weak front axle load restoration; improved after correcting trailer attitude, using longer brackets, and welding brackets. <a href="https://www.jaycoowners.com/threads/andersen-underslung-wd-hitch-experiment.513782/">jaycoowners.com/threads/andersen-underslung-wd-hitch-experiment.513782/</a></li>
+        <li><strong>Hi-Lo Trailer Forum — Andersen No-Sway review.</strong> User praised light weight and good sway control on mountain/freeway roads but reported inadequate weight distribution due to coupler/bracket geometry. <a href="https://www.hilotrailerforum.com/threads/andersen-no-sway-weight-distribution-hitch.399665/">hilotrailerforum.com/threads/andersen-no-sway-weight-distribution-hitch.399665/</a></li>
+        <li><strong>Air Forums / Good Sam discussion summaries.</strong> Older discussions record both positive Andersen owner experiences and recurring concerns: front axle weight transfer, bracket movement, coupler stress/wear, and mixed customer-service reports. <a href="https://www.airforums.com/threads/andersen-no-sway-weight-distribution.1297096/">airforums.com/threads/andersen-no-sway-weight-distribution.1297096/</a> and <a href="https://community.goodsam.com/discussions/rvtipstricks/andersen-no-sway-experience/664394">community.goodsam.com/discussions/rvtipstricks/andersen-no-sway-experience/664394</a></li>
+        <li><strong>Trailer tongue-weight guidance.</strong> Multiple towing guides and trailer resources state conventional bumper-pull trailers should generally run 10–15% tongue weight; low tongue weight increases sway risk, high tongue weight can overload the tow vehicle. Example: <a href="https://www.trailersplus.com/blog/trailer-weight-guide/">trailersplus.com/blog/trailer-weight-guide/</a></li>
+      </ol>
+    </section>
+
+    <footer class="footer">
+      <strong>The Rufus Lab - No Wag Report</strong><br>
+      This report is an aid to decision-making, not a substitute for the Solera owner’s manual, receiver label, hitch manufacturer instructions, trailer manufacturer limits, or certified scale weights.
+    </footer>
+  </div>
+
+  <script>
+    const noteKey = 'rufusLabNoWagNotes.v1';
+    const themeKey = 'rufusLabNoWagTheme.v1';
+    const sections = [...document.querySelectorAll('[data-note-title]')];
+    const savedTheme = localStorage.getItem(themeKey) || 'light';
+    document.documentElement.dataset.theme = savedTheme;
+
+    function loadNotes(){
+      try{return JSON.parse(localStorage.getItem(noteKey) || '{}')}catch(e){return {}}
+    }
+    function saveNotes(notes){
+      localStorage.setItem(noteKey, JSON.stringify(notes));
+      updateSummary();
+    }
+    function addNoteBoxes(){
+      const notes = loadNotes();
+      sections.forEach(sec=>{
+        const id = sec.id;
+        const box = document.createElement('div');
+        box.className = 'noteBox';
+        box.innerHTML = `<label for="note-${id}">Local notes: ${sec.dataset.noteTitle}<span class="status" id="status-${id}">autosaved</span></label><textarea id="note-${id}" placeholder="Type private notes for this section. Notes are stored only in this browser unless exported."></textarea>`;
+        sec.appendChild(box);
+        const ta = box.querySelector('textarea');
+        ta.value = notes[id] || '';
+        let timer;
+        ta.addEventListener('input',()=>{
+          const all = loadNotes(); all[id] = ta.value; saveNotes(all);
+          const status = document.getElementById('status-'+id);
+          status.textContent = 'saving…'; clearTimeout(timer);
+          timer = setTimeout(()=>status.textContent = 'autosaved', 350);
+        });
+      });
+      updateSummary();
+    }
+    function updateSummary(){
+      const notes = loadNotes();
+      const count = Object.values(notes).filter(v => v && v.trim()).length;
+      document.getElementById('noteSummary').textContent = `${count} section note${count===1?'':'s'} saved locally in this browser.`;
+    }
+    function refreshTextareas(){
+      const notes = loadNotes();
+      sections.forEach(sec=>{ const ta=document.getElementById('note-'+sec.id); if(ta) ta.value=notes[sec.id]||''; });
+      updateSummary();
+    }
+    document.getElementById('themeBtn').addEventListener('click',()=>{
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next; localStorage.setItem(themeKey,next);
+    });
+    document.getElementById('exportBtn').addEventListener('click',()=>{
+      const payload = {report:'The Rufus Lab - No Wag Report', exportedAt:new Date().toISOString(), notes:loadNotes()};
+      const blob = new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'rufus-lab-no-wag-notes.json';
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
+    });
+    document.getElementById('importFile').addEventListener('change', async (e)=>{
+      const file = e.target.files[0]; if(!file) return;
+      try{
+        const data = JSON.parse(await file.text());
+        const imported = data.notes || data;
+        if(typeof imported !== 'object' || Array.isArray(imported)) throw new Error('Invalid notes file');
+        const current = loadNotes();
+        saveNotes({...current, ...imported}); refreshTextareas(); alert('Notes imported successfully.');
+      }catch(err){ alert('Could not import notes: '+err.message); }
+      e.target.value = '';
+    });
+    document.getElementById('printBtn').addEventListener('click',()=>window.print());
+    document.getElementById('clearBtn').addEventListener('click',()=>{
+      if(confirm('Clear all local notes for this report in this browser? This cannot be undone unless you exported a backup.')){ localStorage.removeItem(noteKey); refreshTextareas(); }
+    });
+    addNoteBoxes();
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9fdd4fd868d636ed',t:'MTc3OTEzMjk5OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
