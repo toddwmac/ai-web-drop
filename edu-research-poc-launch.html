@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Applied AI Labs — AI-Enhanced Research Showcase</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #06060c;
+      --bg-elevated: #0e0e18;
+      --bg-card: #12121e;
+      --bg-card-hover: #181828;
+      --text: #e8e8ed;
+      --text-muted: #8a8a9a;
+      --text-dim: #55556a;
+      --border: rgba(255,255,255,0.06);
+      --border-hover: rgba(255,255,255,0.12);
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --accent-blue: #3b82f6;
+      --accent-teal: #0d9488;
+      --accent-gold: #f0a500;
+      --accent-emerald: #10b981;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --font-display: 'Space Grotesk', system-ui, sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── BG PATTERN ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139,92,246,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(6,182,212,0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page { position: relative; z-index: 1; }
+
+    /* ── HEADER ── */
+    header {
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      background: rgba(6,6,12,0.8);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-text {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .logo-text span {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .header-link {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 500;
+    }
+
+    .header-link:hover { color: var(--accent-cyan); }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 5rem 2rem 3rem;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(139,92,246,0.08);
+      border: 1px solid rgba(139,92,246,0.2);
+      border-radius: 999px;
+      padding: 0.4rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-purple);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-purple);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 0.4; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-cyan) 50%, var(--accent-emerald) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── DISCLAIMER ── */
+    .disclaimer {
+      max-width: 860px;
+      margin: 0 auto 3rem;
+      padding: 0 2rem;
+    }
+
+    .disclaimer-box {
+      background: rgba(245,158,11,0.06);
+      border: 1px solid rgba(245,158,11,0.18);
+      border-left: 4px solid rgba(245,158,11,0.6);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .disclaimer-icon {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(245,158,11,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: #f59e0b;
+      margin-top: 1px;
+    }
+
+    .disclaimer-content h3 {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fbbf24;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.4rem;
+    }
+
+    .disclaimer-content p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ── REPORTS SECTION ── */
+    .reports-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+    }
+
+    .section-label {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .reports-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* ── REPORT CARD ── */
+    .report-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s ease, border-color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+    }
+
+    .report-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      border-color: var(--border-hover);
+    }
+
+    .card-accent {
+      height: 4px;
+      width: 100%;
+    }
+
+    .card-accent.purple-cyan {
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+    }
+
+    .card-accent.blue-light {
+      background: linear-gradient(90deg, #3b82f6, #06b6d4);
+    }
+
+    .card-accent.navy-gold {
+      background: linear-gradient(90deg, #00346e, #f0a500);
+    }
+
+    .card-accent.teal-emerald {
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-emerald));
+    }
+
+    .card-body {
+      padding: 1.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .llm-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      line-height: 1;
+    }
+
+    .llm-badge.gemini {
+      background: rgba(66,133,244,0.12);
+      color: #4285f4;
+      border: 1px solid rgba(66,133,244,0.2);
+    }
+
+    .llm-badge.opus {
+      background: rgba(204,120,50,0.12);
+      color: #cc7832;
+      border: 1px solid rgba(204,120,50,0.2);
+    }
+
+    .llm-badge.multi {
+      background: rgba(139,92,246,0.12);
+      color: var(--accent-purple);
+      border: 1px solid rgba(139,92,246,0.2);
+    }
+
+    .card-format {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+      transition: color 0.2s;
+    }
+
+    .report-card:hover .card-title {
+      color: #fff;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      flex: 1;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 5px;
+      background: rgba(255,255,255,0.04);
+      color: var(--text-dim);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-stats {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .card-stat {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+
+    .card-stat strong {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .card-cta {
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: gap 0.2s, color 0.2s;
+    }
+
+    .report-card:hover .card-cta {
+      gap: 0.6rem;
+      color: #22d3ee;
+    }
+
+    .card-cta svg {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s;
+    }
+
+    .report-card:hover .card-cta svg {
+      transform: translateX(2px);
+    }
+
+    /* ── ABOUT ── */
+    .about-section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .about-block h3 {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+    }
+
+    .about-block p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .llm-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .llm-chip {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-brand a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-brand a:hover {
+      color: #22d3ee;
+    }
+
+    .footer-note {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fade-up 0.6s cubic-bezier(0.23,1,0.32,1) both;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      header { padding: 1rem 1.25rem; }
+      .hero { padding: 3rem 1.25rem 2rem; }
+      .hero p { font-size: 0.95rem; }
+      .disclaimer, .reports-section, .about-section { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .reports-grid { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .card-body { padding: 1.25rem; }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 1.65rem; }
+      .card-title { font-size: 1.05rem; }
+      .card-stats { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-group">
+      <div class="logo-mark">AL</div>
+      <div class="logo-text">Applied AI Labs <span>Research</span></div>
+    </div>
+    <a href="https://www.appliedailabs.com" target="_blank" rel="noopener" class="header-link">appliedailabs.com</a>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero animate-in">
+    <div class="hero-badge">AI-Enhanced Research Showcase</div>
+    <h1>Demonstrating the <span class="gradient">breadth and depth</span> of AI-powered research and reporting</h1>
+    <p>Four example research reports produced for EDU Board audiences, showcasing how multi-model AI workflows can synthesize complex topics into polished, data-rich deliverables with sourced citations.</p>
+  </section>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer animate-in delay-1">
+    <div class="disclaimer-box">
+      <div class="disclaimer-icon">&#9888;</div>
+      <div class="disclaimer-content">
+        <h3>Proof of Concept Notice</h3>
+        <p>These reports were produced as demonstrations of AI-enhanced research capabilities. While every effort was made to cite authoritative sources, limited effort was put into cross-checking reference details. Any specific statistics or claims should be independently verified before use in decision-making.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORTS -->
+  <section class="reports-section">
+    <div class="section-label">Featured Reports</div>
+
+    <div class="reports-grid">
+
+      <!-- Card 1 -->
+      <a href="ai-geo-future-enrollment-lmc-AppliedAILabs.html" class="report-card animate-in delay-1">
+        <div class="card-accent purple-cyan"></div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="llm-badge multi">Multi-LLM</span>
+            <span class="card-format">Interactive &middot; Dark Theme</span>
+          </div>
+          <h2 class="card-title">AI, GEO, and the Future of Enrollment</h2>
+          <p class="card-desc">Explores how Generative Engine Optimization and Answer Engine Optimization are reshaping enrollment marketing, with a strategic case study for a nursing-focused university.</p>
+          <div class="card-tags">
+            <span class="tag">GEO / AEO</span>
+            <span class="tag">Enrollment Marketing</span>
+            <span class="tag">Nursing Education</span>
+            <span class="tag">SEO Strategy</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-stats">
+              <span class="card-stat"><strong>D3.js</strong> network graph</span>
+              <span class="card-stat"><strong>Chart.js</strong> visualizations</span>
+            </div>
+            <div class="card-cta">
+              View Report
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="algorithmic-nexus-nblm-lma-gemini-AppliedAILabs.html" class="report-card animate-in delay-2">
+        <div class="card-accent blue-light"></div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="llm-badge gemini">Gemini Deep Research</span>
+            <span class="card-format">Long-form &middot; Light Theme</span>
+          </div>
+          <h2 class="card-title">The Algorithmic Nexus: AI &amp; Higher Education Discovery</h2>
+          <p class="card-desc">A comprehensive empirical analysis of the shift from keyword search to generative AI discovery, covering stealth applicants, zero-click search erosion, trust dynamics, and GEO strategy.</p>
+          <div class="card-tags">
+            <span class="tag">AI Search Behavior</span>
+            <span class="tag">Stealth Applicants</span>
+            <span class="tag">Zero-Click Search</span>
+            <span class="tag">41 References</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-stats">
+              <span class="card-stat"><strong>9</strong> data tables</span>
+              <span class="card-stat"><strong>41</strong> cited sources</span>
+            </div>
+            <div class="card-cta">
+              View Report
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 3 -->
+      <a href="algorithmic-nexus-nblm-lma-opus--AppliedAILabs.html" class="report-card animate-in delay-3">
+        <div class="card-accent navy-gold"></div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="llm-badge opus">Claude Opus</span>
+            <span class="card-format">Long-form &middot; Navy/Gold Theme</span>
+          </div>
+          <h2 class="card-title">The Algorithmic Nexus: AI &amp; Higher Education Discovery</h2>
+          <p class="card-desc">The same research topic as the Gemini version, produced independently by Claude Opus to demonstrate how different frontier models synthesize identical source material with distinct editorial framing.</p>
+          <div class="card-tags">
+            <span class="tag">Multi-Model Comparison</span>
+            <span class="tag">AI Search Behavior</span>
+            <span class="tag">GEO Strategy</span>
+            <span class="tag">41 References</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-stats">
+              <span class="card-stat"><strong>14</strong> sections</span>
+              <span class="card-stat"><strong>Progress bars</strong> &amp; badges</span>
+            </div>
+            <div class="card-cta">
+              View Report
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 4 -->
+      <a href="strategic-ai-integration-lmc-AppliedAILabs.html" class="report-card animate-in delay-4">
+        <div class="card-accent teal-emerald"></div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="llm-badge multi">Multi-LLM</span>
+            <span class="card-format">Interactive &middot; Dark Theme</span>
+          </div>
+          <h2 class="card-title">Strategic AI Integration in Healthcare and Education</h2>
+          <p class="card-desc">A cross-sector analysis spanning healthcare diagnostics, frontline nursing adoption, higher education pedagogy, EdTech market projections, and the ethical governance challenges of AI deployment.</p>
+          <div class="card-tags">
+            <span class="tag">Healthcare AI</span>
+            <span class="tag">Nursing Workforce</span>
+            <span class="tag">EdTech Market</span>
+            <span class="tag">Ethics &amp; Governance</span>
+          </div>
+          <div class="card-footer">
+            <div class="card-stats">
+              <span class="card-stat"><strong>D3.js</strong> network graph</span>
+              <span class="card-stat"><strong>3</strong> Chart.js charts</span>
+            </div>
+            <div class="card-cta">
+              View Report
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about-section">
+    <div class="section-label">About These Reports</div>
+    <div class="about-grid">
+      <div class="about-block">
+        <h3>Multi-Model Research Pipeline</h3>
+        <p>These reports were produced using a multi-model AI workflow, leveraging the distinct strengths of different frontier models to research, synthesize, and format complex topics. Each model brings unique capabilities in deep research, long-form reasoning, and visual presentation.</p>
+        <div class="llm-list">
+          <span class="llm-chip">Gemini Deep Research</span>
+          <span class="llm-chip">Claude Opus</span>
+          <span class="llm-chip">Copilot</span>
+        </div>
+      </div>
+      <div class="about-block">
+        <h3>Comparative Methodology</h3>
+        <p>The two Algorithmic Nexus reports cover identical research topics but were produced by different models (Gemini vs. Claude Opus). This side-by-side comparison demonstrates how frontier models differ in editorial voice, data synthesis, visual design choices, and citation methodology when given the same research brief.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">
+      <a href="https://www.appliedailabs.com" target="_blank" rel="noopener">Applied AI Labs</a>
+    </div>
+    <p class="footer-note">
+      AI-enhanced research and reporting &middot; Always check references<br>
+      These reports are proof-of-concept demonstrations and should not be used as primary sources without independent verification.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>
