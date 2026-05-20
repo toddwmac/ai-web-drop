@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Applied AI Labs — AI-Enhanced Research Showcase</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      var t = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -527,6 +533,159 @@
     .delay-3 { animation-delay: 0.3s; }
     .delay-4 { animation-delay: 0.4s; }
 
+    /* ── THEME TOGGLE ── */
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+
+    .theme-toggle svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.3s cubic-bezier(0.23,1,0.32,1);
+    }
+
+    .theme-toggle:hover svg { transform: rotate(15deg); }
+
+    .theme-toggle .icon-sun,
+    .theme-toggle .icon-moon { display: none; }
+
+    [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+    [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+    [data-theme="light"] .theme-toggle .icon-sun { display: none; }
+    [data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* ── LIGHT THEME ── */
+    [data-theme="light"] {
+      --bg: #f4f5f9;
+      --bg-elevated: #ebedf3;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f8f9fc;
+      --text: #1a1a2e;
+      --text-muted: #555570;
+      --text-dim: #8888a0;
+      --border: rgba(0,0,0,0.07);
+      --border-hover: rgba(0,0,0,0.13);
+    }
+
+    [data-theme="light"] body::before {
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139,92,246,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(6,182,212,0.04) 0%, transparent 50%);
+    }
+
+    [data-theme="light"] header {
+      background: rgba(244,245,249,0.85);
+    }
+
+    [data-theme="light"] .theme-toggle:hover {
+      background: rgba(0,0,0,0.04);
+    }
+
+    [data-theme="light"] .hero-badge {
+      background: rgba(139,92,246,0.06);
+      border-color: rgba(139,92,246,0.18);
+    }
+
+    [data-theme="light"] .hero h1 .gradient {
+      background: linear-gradient(135deg, #7c3aed 0%, #0891b2 50%, #059669 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    [data-theme="light"] .disclaimer-box {
+      background: rgba(245,158,11,0.05);
+      border-color: rgba(245,158,11,0.15);
+      border-left-color: rgba(217,119,6,0.7);
+    }
+
+    [data-theme="light"] .disclaimer-icon {
+      background: rgba(245,158,11,0.08);
+      color: #d97706;
+    }
+
+    [data-theme="light"] .disclaimer-content h3 {
+      color: #b45309;
+    }
+
+    [data-theme="light"] .report-card:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+    }
+
+    [data-theme="light"] .report-card:hover .card-title {
+      color: var(--text);
+    }
+
+    [data-theme="light"] .llm-badge.gemini {
+      background: rgba(66,133,244,0.08);
+      border-color: rgba(66,133,244,0.18);
+    }
+
+    [data-theme="light"] .llm-badge.opus {
+      background: rgba(180,83,9,0.08);
+      color: #b45309;
+      border-color: rgba(180,83,9,0.18);
+    }
+
+    [data-theme="light"] .llm-badge.multi {
+      background: rgba(124,58,237,0.08);
+      color: #7c3aed;
+      border-color: rgba(124,58,237,0.18);
+    }
+
+    [data-theme="light"] .tag {
+      background: rgba(0,0,0,0.03);
+      border-color: rgba(0,0,0,0.06);
+    }
+
+    [data-theme="light"] .llm-chip {
+      background: rgba(0,0,0,0.03);
+      border-color: rgba(0,0,0,0.07);
+    }
+
+    [data-theme="light"] .section-label::after {
+      background: var(--border);
+    }
+
+    [data-theme="light"] .footer-brand a {
+      color: #0891b2;
+    }
+
+    [data-theme="light"] .footer-brand a:hover {
+      color: #0e7490;
+    }
+
+    [data-theme="light"] .card-cta {
+      color: #0891b2;
+    }
+
+    [data-theme="light"] .report-card:hover .card-cta {
+      color: #0e7490;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       header { padding: 1rem 1.25rem; }
@@ -554,7 +713,13 @@
       <div class="logo-mark">AL</div>
       <div class="logo-text">Applied AI Labs <span>Research</span></div>
     </div>
-    <a href="https://www.appliedailabs.com" target="_blank" rel="noopener" class="header-link">appliedailabs.com</a>
+    <div class="header-right">
+      <a href="https://www.appliedailabs.com" target="_blank" rel="noopener" class="header-link">appliedailabs.com</a>
+      <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
   </header>
 
   <!-- HERO -->
@@ -582,7 +747,7 @@
     <div class="reports-grid">
 
       <!-- Card 1 -->
-      <a href="ai-geo-future-enrollment-lmc-AppliedAILabs.html" class="report-card animate-in delay-1">
+      <a href="ai-geo-future-enrollment-lmc-AppliedAILabs.html" target="_blank" rel="noopener" class="report-card animate-in delay-1">
         <div class="card-accent purple-cyan"></div>
         <div class="card-body">
           <div class="card-meta">
@@ -611,7 +776,7 @@
       </a>
 
       <!-- Card 2 -->
-      <a href="algorithmic-nexus-nblm-lma-gemini-AppliedAILabs.html" class="report-card animate-in delay-2">
+      <a href="algorithmic-nexus-nblm-lma-gemini-AppliedAILabs.html" target="_blank" rel="noopener" class="report-card animate-in delay-2">
         <div class="card-accent blue-light"></div>
         <div class="card-body">
           <div class="card-meta">
@@ -640,7 +805,7 @@
       </a>
 
       <!-- Card 3 -->
-      <a href="algorithmic-nexus-nblm-lma-opus--AppliedAILabs.html" class="report-card animate-in delay-3">
+      <a href="algorithmic-nexus-nblm-lma-opus--AppliedAILabs.html" target="_blank" rel="noopener" class="report-card animate-in delay-3">
         <div class="card-accent navy-gold"></div>
         <div class="card-body">
           <div class="card-meta">
@@ -669,7 +834,7 @@
       </a>
 
       <!-- Card 4 -->
-      <a href="strategic-ai-integration-lmc-AppliedAILabs.html" class="report-card animate-in delay-4">
+      <a href="strategic-ai-integration-lmc-AppliedAILabs.html" target="_blank" rel="noopener" class="report-card animate-in delay-4">
         <div class="card-accent teal-emerald"></div>
         <div class="card-body">
           <div class="card-meta">
@@ -732,5 +897,27 @@
   </footer>
 
 </div>
+
+<script>
+  function getPreferredTheme() {
+    const saved = localStorage.getItem('theme');
+    if (saved) return saved;
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  }
+
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  }
+
+  // Apply saved/preferred theme on load (before paint)
+  setTheme(getPreferredTheme());
+</script>
+
 </body>
 </html>
