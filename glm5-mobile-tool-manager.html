@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1e1a13">
+    <title>Rufus Tools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f5f0e7;
+            --bg-deep: #ebe4d8;
+            --surface: #faf7f2;
+            --surface-raised: #ffffff;
+            --charcoal: #1e1a13;
+            --charcoal-mid: #2c2418;
+            --charcoal-light: #4a3f30;
+            --copper: #c2650a;
+            --copper-light: #e07b14;
+            --copper-glow: rgba(194, 101, 10, 0.12);
+            --copper-glow-strong: rgba(194, 101, 10, 0.22);
+            --amber: #e8a823;
+            --amber-glow: rgba(232, 168, 35, 0.15);
+            --red: #c0392b;
+            --red-soft: rgba(192, 57, 43, 0.08);
+            --green: #2e7d44;
+            --green-soft: rgba(46, 125, 68, 0.1);
+            --blue: #2e6090;
+            --text: #1e1a13;
+            --text-sec: #5c5040;
+            --text-muted: #8c7e6c;
+            --border: #ddd3c4;
+            --border-light: #ece5da;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --nav-h: 64px;
+            --header-h: 56px;
+            --font-display: 'Bricolage Grotesque', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100dvh;
+            overscroll-behavior: none;
+            -webkit-font-smoothing: antialiased;
+            background-image:
+                radial-gradient(circle, rgba(30,26,19,0.025) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* ── Header ── */
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--charcoal);
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            border-bottom: 2px solid var(--copper);
+        }
+        .app-header::after {
+            content: '';
+            position: absolute;
+            bottom: -6px; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(to bottom, rgba(30,26,19,0.08), transparent);
+            pointer-events: none;
+        }
+        .app-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: #fff;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .app-title .gear {
+            width: 22px; height: 22px;
+            border: 2.5px solid var(--copper);
+            border-radius: 50%;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .app-title .gear::after {
+            content: '';
+            width: 6px; height: 6px;
+            background: var(--copper);
+            border-radius: 50%;
+        }
+        .count-pill {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--copper-light);
+            background: rgba(194,101,10,0.12);
+            padding: 0.2rem 0.55rem;
+            border-radius: 20px;
+        }
+
+        /* ── Main Content ── */
+        .app-main {
+            padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 1rem);
+            min-height: calc(100dvh - var(--header-h));
+        }
+
+        /* ── Views ── */
+        .view { display: none; }
+        .view.active { display: block; animation: viewFade 0.2s ease; }
+        @keyframes viewFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ── Search Bar ── */
+        .search-bar {
+            padding: 0.75rem 1rem;
+            position: sticky;
+            top: var(--header-h);
+            z-index: 40;
+            background: var(--bg);
+            background-image:
+                radial-gradient(circle, rgba(30,26,19,0.025) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .search-bar::after {
+            content: '';
+            position: absolute;
+            bottom: -8px; left: 0; right: 0;
+            height: 8px;
+            background: linear-gradient(to bottom, var(--bg), transparent);
+            pointer-events: none;
+        }
+        .search-input-wrap {
+            position: relative;
+        }
+        .search-input-wrap svg {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px; height: 18px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+        .search-input {
+            width: 100%;
+            padding: 0.7rem 0.75rem 0.7rem 2.6rem;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--text);
+            background: var(--surface-raised);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--copper);
+            box-shadow: 0 0 0 3px var(--copper-glow-strong);
+        }
+        .search-input::placeholder { color: var(--text-muted); }
+
+        /* ── Filter Chips ── */
+        .chip-strip {
+            display: flex;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem 0.25rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .chip-strip::-webkit-scrollbar { display: none; }
+        .chip {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.72rem;
+            letter-spacing: 0.02em;
+            padding: 0.4rem 0.75rem;
+            border-radius: 20px;
+            border: 1.5px solid var(--border);
+            background: var(--surface-raised);
+            color: var(--text-sec);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        .chip:active { transform: scale(0.95); }
+        .chip.active {
+            background: var(--charcoal);
+            color: #fff;
+            border-color: var(--charcoal);
+        }
+        .chip-star.active {
+            background: var(--amber);
+            color: var(--charcoal);
+            border-color: var(--amber);
+        }
+
+        /* ── Tool Cards ── */
+        .card-list {
+            padding: 0.5rem 1rem;
+        }
+        .tool-card {
+            background: var(--surface-raised);
+            border-radius: 14px;
+            border: 1px solid var(--border-light);
+            padding: 0.9rem 1rem;
+            margin-bottom: 0.6rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.15s, box-shadow 0.15s;
+            animation: cardSlide 0.25s ease both;
+        }
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: var(--border);
+        }
+        .tool-card:active {
+            transform: scale(0.985);
+        }
+        @keyframes cardSlide {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tool-card.starred::before { background: var(--amber); }
+        .tool-card .card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        .tool-card .tool-name {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--charcoal);
+            line-height: 1.3;
+            flex: 1;
+        }
+        .star-toggle {
+            width: 40px; height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            color: var(--border);
+            font-size: 1.4rem;
+            cursor: pointer;
+            border-radius: 50%;
+            flex-shrink: 0;
+            transition: color 0.15s, background 0.15s;
+            margin: -0.3rem -0.3rem -0.3rem 0;
+        }
+        .star-toggle:active { transform: scale(0.85); }
+        .star-toggle.on {
+            color: var(--amber);
+        }
+        .card-badges {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .cat-badge {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.6rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 0.18rem 0.5rem;
+            border-radius: 4px;
+            color: #fff;
+        }
+        .cat-Fastening { background: #5a4a35; }
+        .cat-Electrical { background: #2e6090; }
+        .cat-Plumbing { background: #2e7d5b; }
+        .cat-Safety { background: #a63d2f; }
+        .cat-Misc { background: #6b5e4f; }
+        .size-badge {
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: var(--bg-deep);
+            padding: 0.15rem 0.45rem;
+            border-radius: 3px;
+        }
+        .loc-badge {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .loc-badge svg { width: 10px; height: 10px; opacity: 0.6; }
+        .tool-use {
+            font-size: 0.8rem;
+            color: var(--text-sec);
+            line-height: 1.45;
+            margin-top: 0.35rem;
+        }
+        .tool-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--copper);
+            text-decoration: none;
+            margin-top: 0.3rem;
+        }
+        .card-actions-row {
+            display: flex;
+            gap: 0.4rem;
+            margin-top: 0.6rem;
+            padding-top: 0.55rem;
+            border-top: 1px solid var(--border-light);
+        }
+        .card-btn {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.78rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.12s;
+        }
+        .card-btn:active { transform: scale(0.94); }
+        .card-btn-edit {
+            background: var(--copper-glow-strong);
+            color: var(--copper);
+        }
+        .card-btn-del {
+            background: var(--red-soft);
+            color: var(--red);
+        }
+
+        /* ── Empty State ── */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-muted);
+        }
+        .empty-state .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.4;
+        }
+        .empty-state p {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-sec);
+        }
+        .empty-state span {
+            font-size: 0.85rem;
+        }
+
+        /* ── Bottom Nav ── */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: calc(var(--nav-h) + var(--safe-bottom));
+            padding-bottom: var(--safe-bottom);
+            background: var(--charcoal);
+            display: flex;
+            z-index: 100;
+            border-top: 2px solid var(--copper);
+        }
+        .bottom-nav::before {
+            content: '';
+            position: absolute;
+            top: -10px; left: 0; right: 0;
+            height: 10px;
+            background: linear-gradient(to top, rgba(30,26,19,0.06), transparent);
+            pointer-events: none;
+        }
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.2rem;
+            border: none;
+            background: none;
+            color: rgba(255,255,255,0.4);
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.6rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.15s;
+            padding: 0;
+            position: relative;
+        }
+        .nav-item svg {
+            width: 22px; height: 22px;
+            transition: transform 0.15s;
+        }
+        .nav-item:active svg { transform: scale(0.88); }
+        .nav-item.active {
+            color: var(--copper-light);
+        }
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 25%; right: 25%;
+            height: 2px;
+            background: var(--copper);
+            border-radius: 0 0 2px 2px;
+        }
+        .nav-item.nav-add {
+            color: var(--copper-light);
+        }
+        .nav-item.nav-add .add-circle {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            background: var(--copper);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -8px;
+            box-shadow: 0 2px 10px rgba(194,101,10,0.35);
+        }
+        .nav-item.nav-add .add-circle svg {
+            color: #fff;
+            width: 20px; height: 20px;
+        }
+        .nav-item.nav-add:active .add-circle {
+            transform: scale(0.9);
+        }
+
+        /* ── Fullscreen Modal (slide-up sheet) ── */
+        .sheet-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(30, 26, 19, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+        .sheet {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            max-height: 92dvh;
+            background: var(--surface-raised);
+            border-radius: 20px 20px 0 0;
+            z-index: 201;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+        .sheet.open { transform: translateY(0); }
+        .sheet-handle {
+            width: 36px; height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin: 10px auto 0;
+        }
+        .sheet-header {
+            padding: 0.75rem 1.25rem 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .sheet-header h2 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: var(--charcoal);
+        }
+        .sheet-close {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-deep);
+            color: var(--text-sec);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+        .sheet-body {
+            padding: 0.5rem 1.25rem 1.5rem;
+        }
+
+        /* ── Forms ── */
+        .field {
+            margin-bottom: 0.9rem;
+        }
+        .field label {
+            display: block;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+            padding: 0.65rem 0.75rem;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--text);
+            background: var(--surface);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            outline: none;
+            border-color: var(--copper);
+            box-shadow: 0 0 0 3px var(--copper-glow-strong);
+        }
+        .field textarea { resize: vertical; min-height: 70px; }
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.65rem;
+        }
+        .btn-save {
+            width: 100%;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.85rem;
+            border: none;
+            border-radius: 12px;
+            background: var(--copper);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.12s;
+            margin-top: 0.5rem;
+        }
+        .btn-save:active { transform: scale(0.97); filter: brightness(0.9); }
+
+        /* ── Settings View ── */
+        .settings-section {
+            padding: 1rem;
+        }
+        .settings-section + .settings-section {
+            border-top: 8px solid var(--bg-deep);
+        }
+        .settings-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 1rem;
+            background: var(--surface-raised);
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--border-light);
+        }
+        .settings-item-label {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--charcoal);
+        }
+        .settings-item-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+        .settings-btn {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.78rem;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.12s;
+        }
+        .settings-btn:active { transform: scale(0.95); }
+        .settings-btn-primary {
+            background: var(--copper);
+            color: #fff;
+        }
+        .settings-btn-outline {
+            background: transparent;
+            color: var(--copper);
+            border: 1.5px solid var(--copper);
+        }
+        .settings-btn-danger {
+            background: var(--red-soft);
+            color: var(--red);
+        }
+        .settings-textarea {
+            width: 100%;
+            padding: 0.65rem 0.75rem;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            color: var(--text);
+            background: var(--surface);
+            margin-top: 0.5rem;
+            resize: vertical;
+        }
+        .settings-textarea:focus {
+            outline: none;
+            border-color: var(--copper);
+            box-shadow: 0 0 0 3px var(--copper-glow-strong);
+        }
+        .confirm-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        .confirm-bar .settings-btn { flex: 1; text-align: center; }
+
+        /* ── Stats pill in header ── */
+        .stat-line {
+            padding: 0.5rem 1rem 0;
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .stat-line strong {
+            color: var(--text-sec);
+            font-weight: 700;
+        }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            bottom: calc(var(--nav-h) + var(--safe-bottom) + 1rem);
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--charcoal);
+            color: #fff;
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.82rem;
+            padding: 0.65rem 1.2rem;
+            border-radius: 12px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(30,26,19,0.3);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ── Import file input ── */
+        .file-input-wrap {
+            position: relative;
+            overflow: hidden;
+        }
+        .file-input-wrap input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            font-size: 100px;
+        }
+
+        /* ── Scrollbar hide ── */
+        .card-list::-webkit-scrollbar { display: none; }
+        .card-list { scrollbar-width: none; }
+
+        /* ── Desktop Enhancement ── */
+        @media (min-width: 600px) {
+            body { max-width: 480px; margin: 0 auto; box-shadow: 0 0 40px rgba(30,26,19,0.1); }
+            .bottom-nav { max-width: 480px; left: 50%; transform: translateX(-50%); }
+            .sheet { max-width: 480px; left: 50%; transform: translateX(-50%) translateY(100%); }
+            .sheet.open { transform: translateX(-50%) translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="app-header">
+    <div class="app-title">
+        <span class="gear"></span>
+        Rufus Tools
+    </div>
+    <span class="count-pill" id="headerCount"></span>
+</header>
+
+<!-- Main -->
+<main class="app-main">
+
+    <!-- View: All Tools -->
+    <div class="view active" id="viewTools">
+        <div class="search-bar">
+            <div class="search-input-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+                <input class="search-input" type="text" id="searchInput" placeholder="Find a tool...">
+            </div>
+        </div>
+        <div class="chip-strip" id="catChips"></div>
+        <div class="stat-line" id="statLine"></div>
+        <div class="card-list" id="cardList"></div>
+    </div>
+
+    <!-- View: Starred -->
+    <div class="view" id="viewStarred">
+        <div style="padding:1.25rem 1rem 0.5rem;">
+            <h2 style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;color:var(--charcoal);display:flex;align-items:center;gap:0.4rem;">
+                <span style="color:var(--amber);">&#9733;</span> Starred Tools
+            </h2>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.2rem;">Your go-to favorites for quick access</p>
+        </div>
+        <div class="card-list" id="starredList"></div>
+    </div>
+
+    <!-- View: Settings -->
+    <div class="view" id="viewSettings">
+        <div style="padding:1.25rem 1rem 0.5rem;">
+            <h2 style="font-family:var(--font-display);font-weight:800;font-size:1.2rem;color:var(--charcoal);">Settings</h2>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-title">Data</div>
+            <div class="settings-item">
+                <div>
+                    <div class="settings-item-label">Export Inventory</div>
+                    <div class="settings-item-desc">Download as JSON file</div>
+                </div>
+                <button class="settings-btn settings-btn-outline" onclick="App.exportData()">Export</button>
+            </div>
+            <div class="settings-item">
+                <div>
+                    <div class="settings-item-label">Import Inventory</div>
+                    <div class="settings-item-desc">Load from JSON file</div>
+                </div>
+                <div class="file-input-wrap">
+                    <button class="settings-btn settings-btn-outline">Import</button>
+                    <input type="file" accept=".json" onchange="App.importData(event)">
+                </div>
+            </div>
+            <div class="settings-item">
+                <div>
+                    <div class="settings-item-label">Reset to Defaults</div>
+                    <div class="settings-item-desc">Restore original 40 tools</div>
+                </div>
+                <button class="settings-btn settings-btn-danger" onclick="App.resetData()">Reset</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-title">Categories</div>
+            <textarea class="settings-textarea" id="catsList" rows="2" placeholder="Comma separated..."></textarea>
+            <div class="confirm-bar">
+                <button class="settings-btn settings-btn-primary" onclick="App.saveCats()">Save Categories</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-title">Locations</div>
+            <textarea class="settings-textarea" id="locsList" rows="2" placeholder="Comma separated..."></textarea>
+            <div class="confirm-bar">
+                <button class="settings-btn settings-btn-primary" onclick="App.saveLocs()">Save Locations</button>
+                <button class="settings-btn settings-btn-danger" onclick="App.clearLocs()">Clear All</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+    <button class="nav-item active" data-view="viewTools" onclick="App.switchView('viewTools', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        Tools
+    </button>
+    <button class="nav-item" data-view="viewStarred" onclick="App.switchView('viewStarred', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Starred
+    </button>
+    <button class="nav-item nav-add" onclick="App.openAddSheet()">
+        <div class="add-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+        Add
+    </button>
+    <button class="nav-item" data-view="viewSettings" onclick="App.switchView('viewSettings', this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Settings
+    </button>
+</nav>
+
+<!-- Sheet: Add/Edit -->
+<div class="sheet-backdrop" id="sheetBackdrop" onclick="App.closeSheet()"></div>
+<div class="sheet" id="editSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+        <h2 id="sheetTitle">Add Tool</h2>
+        <button class="sheet-close" onclick="App.closeSheet()">&times;</button>
+    </div>
+    <div class="sheet-body">
+        <form onsubmit="App.saveTool(event)">
+            <input type="hidden" id="editIdx" value="-1">
+            <div class="field">
+                <label>Tool Name</label>
+                <input type="text" id="fName" placeholder="e.g. Socket Set" required>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>Size</label>
+                    <input type="text" id="fSize" placeholder='1/4"–3/4"'>
+                </div>
+                <div class="field">
+                    <label>Category</label>
+                    <select id="fCat"></select>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>Location</label>
+                    <select id="fLoc"></select>
+                </div>
+                <div class="field">
+                    <label>Link</label>
+                    <input type="url" id="fLink" placeholder="Product URL">
+                </div>
+            </div>
+            <div class="field">
+                <label>Primary Use</label>
+                <textarea id="fUse" placeholder="What is this tool used for?"></textarea>
+            </div>
+            <button type="submit" class="btn-save">Save Tool</button>
+        </form>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const INITIAL_TOOLS = [
+  { "tool": "SAE Socket Set (deep + shallow)", "size": "1/4\"–3/4\"", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Chassis bolts, battery tray, generator mounts, sway bar links", "starred": false },
+  { "tool": "Metric Socket Set", "size": "8mm–17mm", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "House hardware, awning, steps, solar brackets", "starred": false },
+  { "tool": "Breaker Bar", "size": "18–24 inch, 1/2\" drive", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Lug nuts, suspension bolts, stubborn fasteners", "starred": false },
+  { "tool": "Torque Wrench", "size": "20–150 ft-lb, 1/2\" drive", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Lug nuts, hitch bolts, sway bar hardware", "starred": false },
+  { "tool": "SAE Combination Wrenches", "size": "1/4\"–3/4\"", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Chassis components in tight spaces", "starred": false },
+  { "tool": "Metric Combination Wrenches", "size": "8mm–17mm", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Water pump, interior hardware, appliances", "starred": false },
+  { "tool": "Adjustable Wrench", "size": "10–12 inch", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "LP fittings, odd-size nuts", "starred": false },
+  { "tool": "Vise-Grips", "size": "Standard + needle-nose", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Broken bolts, clamps, emergency fixes", "starred": false },
+  { "tool": "Screwdrivers", "size": "Phillips #1/#2, flat #3/#5", "cat": "Fastening", "loc": "Inside Cabinet", "link": "", "use": "Interior panels, electrical covers", "starred": false },
+  { "tool": "Torx Bit Set", "size": "T15–T50", "cat": "Fastening", "loc": "Inside Cabinet", "link": "", "use": "Ford trim, step motors, latches", "starred": false },
+  { "tool": "Allen/Hex Keys", "size": "SAE + metric", "cat": "Fastening", "loc": "Inside Cabinet", "link": "", "use": "Furniture, brackets, electronics", "starred": false },
+  { "tool": "Multimeter", "size": "Auto-ranging", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "12V diagnostics, battery checks, fuses", "starred": false },
+  { "tool": "Non-contact Voltage Tester", "size": "Standard", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "AC pedestal safety check", "starred": false },
+  { "tool": "12V Test Light", "size": "Standard", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "Quick fuse/line diagnostics", "starred": false },
+  { "tool": "Crimping Tool + Heat-Shrink Connectors", "size": "12–16 AWG", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "RV wiring repairs, solar wiring", "starred": false },
+  { "tool": "Wire Strippers", "size": "10–18 AWG", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "Electrical work", "starred": false },
+  { "tool": "Electrical Tape", "size": "Standard", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "Harness repairs, temporary fixes", "starred": false },
+  { "tool": "ATC/ATO Fuses", "size": "5A–40A", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "RV fuse panel replacements", "starred": false },
+  { "tool": "Heat Gun or Butane Torch", "size": "Standard", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "Heat-shrink connectors", "starred": false },
+  { "tool": "Zip Ties", "size": "4–12 inch", "cat": "Misc", "loc": "Front Storage", "link": "", "use": "Cable management, emergency repairs", "starred": false },
+  { "tool": "Duct Tape", "size": "Standard", "cat": "Misc", "loc": "Front Storage", "link": "", "use": "Temporary seals, hose fixes", "starred": false },
+  { "tool": "Gorilla Tape", "size": "Standard", "cat": "Misc", "loc": "Front Storage", "link": "", "use": "Heavy-duty emergency repairs", "starred": false },
+  { "tool": "Utility Knife", "size": "Standard", "cat": "Misc", "loc": "Front Storage", "link": "", "use": "Cutting tape, hoses, packaging", "starred": false },
+  { "tool": "Pliers Set", "size": "Slip-joint, needle-nose, channel-lock", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Plumbing, electrical, clamps", "starred": false },
+  { "tool": "Channel-Lock Pliers", "size": "12 inch", "cat": "Plumbing", "loc": "Bay 1", "link": "", "use": "Water hose fittings, sewer fittings", "starred": false },
+  { "tool": "Rubber Mallet", "size": "Standard", "cat": "Misc", "loc": "Garage", "link": "", "use": "Leveling blocks, nudging stuck parts", "starred": false },
+  { "tool": "Tire Pressure Gauge", "size": "80–120 PSI", "cat": "Safety", "loc": "Garage", "link": "", "use": "E-450 tire checks", "starred": false },
+  { "tool": "Portable Air Compressor", "size": "120 PSI capable", "cat": "Safety", "loc": "Garage", "link": "", "use": "Top off E-450 tires (80–95 PSI)", "starred": false },
+  { "tool": "Lug Nut Socket", "size": "1-1/16 inch", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Ford E-450 wheel lug nuts", "starred": false },
+  { "tool": "Work Gloves", "size": "Leather + nitrile", "cat": "Safety", "loc": "Front Storage", "link": "", "use": "Sewer, electrical, mechanical work", "starred": false },
+  { "tool": "Headlamp", "size": "Standard", "cat": "Safety", "loc": "Front Storage", "link": "", "use": "Night repairs, under-coach work", "starred": false },
+  { "tool": "Small Pry Bar", "size": "8–12 inch", "cat": "Misc", "loc": "Bay 1", "link": "", "use": "Removing trim, stuck panels", "starred": false },
+  { "tool": "Caulking Gun", "size": "Standard", "cat": "Plumbing", "loc": "Garage", "link": "", "use": "Roof sealant, exterior repairs", "starred": false },
+  { "tool": "Self-Leveling Lap Sealant", "size": "Dicor or Alpha", "cat": "Plumbing", "loc": "Garage", "link": "", "use": "Roof maintenance", "starred": false },
+  { "tool": "Butyl Tape", "size": "Standard", "cat": "Plumbing", "loc": "Garage", "link": "", "use": "Window/fixture resealing", "starred": false },
+  { "tool": "Sewer Wrench", "size": "Standard", "cat": "Plumbing", "loc": "Bay 1", "link": "", "use": "Stubborn bayonet fittings", "starred": false },
+  { "tool": "Silicone Spray", "size": "Standard", "cat": "Misc", "loc": "Garage", "link": "", "use": "Steps, hinges, slides", "starred": false },
+  { "tool": "Dry Lube (Graphite/PTFE)", "size": "Standard", "cat": "Misc", "loc": "Garage", "link": "", "use": "Locks, latches", "starred": false },
+  { "tool": "Torque-Seal Paint", "size": "Standard", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Marking critical bolts (sway bars, hitch)", "starred": false }
+];
+
+const STORE = 'rufus_mobile_v1';
+
+const App = {
+    activeCat: '',
+    state: {
+        tools: JSON.parse(localStorage.getItem(STORE)) || [...INITIAL_TOOLS],
+        cats: ['Fastening', 'Electrical', 'Plumbing', 'Safety', 'Misc'],
+        locs: ['Garage', 'Bay 1', 'Front Storage', 'Inside Cabinet']
+    },
+
+    init() {
+        this.render();
+        this.renderSettings();
+        document.getElementById('searchInput').addEventListener('input', () => this.render());
+    },
+
+    persist() {
+        localStorage.setItem(STORE, JSON.stringify(this.state.tools));
+    },
+
+    esc(s) {
+        const d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    },
+
+    toast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(this._toastTimer);
+        this._toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+    },
+
+    switchView(viewId, navBtn) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        if (navBtn) navBtn.classList.add('active');
+        if (viewId === 'viewStarred') this.renderStarred();
+        if (viewId === 'viewSettings') this.renderSettings();
+    },
+
+    render() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const tools = this.state.tools;
+
+        // Chips
+        const catChips = document.getElementById('catChips');
+        catChips.innerHTML =
+            `<button class="chip ${this.activeCat === '' ? 'active' : ''}" onclick="App.activeCat='';App.render()">All</button>` +
+            this.state.cats.map(c =>
+                `<button class="chip ${this.activeCat === c ? 'active' : ''}" onclick="App.activeCat='${c}';App.render()">${this.esc(c)}</button>`
+            ).join('');
+
+        // Filter & sort
+        const filtered = tools.filter(t => {
+            if (this.activeCat && t.cat !== this.activeCat) return false;
+            if (search && !t.tool.toLowerCase().includes(search) && !t.use.toLowerCase().includes(search) && !t.cat.toLowerCase().includes(search)) return false;
+            return true;
+        }).sort((a, b) => {
+            if (a.starred !== b.starred) return a.starred ? -1 : 1;
+            return a.tool.localeCompare(b.tool);
+        });
+
+        // Header count
+        const starCount = tools.filter(t => t.starred).length;
+        document.getElementById('headerCount').textContent = `${tools.length} tools`;
+        document.getElementById('statLine').innerHTML =
+            `Showing <strong>${filtered.length}</strong> of ${tools.length}` +
+            (starCount ? ` &middot; <strong>${starCount}</strong> starred` : '');
+
+        // Cards
+        const list = document.getElementById('cardList');
+        if (filtered.length === 0) {
+            list.innerHTML = `<div class="empty-state">
+                <div class="empty-icon">&#128296;</div>
+                <p>No tools found</p>
+                <span>Try a different search or filter</span>
+            </div>`;
+            return;
+        }
+
+        list.innerHTML = filtered.map((t, i) => {
+            const idx = this.state.tools.indexOf(t);
+            return `<div class="tool-card ${t.starred ? 'starred' : ''}" style="animation-delay:${Math.min(i * 25, 250)}ms">
+                <div class="card-head">
+                    <div class="tool-name">${this.esc(t.tool)}</div>
+                    <button class="star-toggle ${t.starred ? 'on' : ''}" onclick="App.toggleStar(${idx})" aria-label="${t.starred ? 'Unstar' : 'Star'}">&#9733;</button>
+                </div>
+                <div class="card-badges">
+                    <span class="cat-badge cat-${this.esc(t.cat)}">${this.esc(t.cat)}</span>
+                    ${t.size ? `<span class="size-badge">${this.esc(t.size)}</span>` : ''}
+                    ${t.loc ? `<span class="loc-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${this.esc(t.loc)}</span>` : ''}
+                </div>
+                <div class="tool-use">${this.esc(t.use)}</div>
+                ${t.link ? `<a href="${this.esc(t.link)}" target="_blank" rel="noopener" class="tool-link">&#8599; Product Page</a>` : ''}
+                <div class="card-actions-row">
+                    <button class="card-btn card-btn-edit" onclick="App.openEdit(${idx})">Edit</button>
+                    <button class="card-btn card-btn-del" onclick="App.del(${idx})">Delete</button>
+                </div>
+            </div>`;
+        }).join('');
+    },
+
+    renderStarred() {
+        const starred = this.state.tools.filter(t => t.starred).sort((a, b) => a.tool.localeCompare(b.tool));
+        const list = document.getElementById('starredList');
+        if (starred.length === 0) {
+            list.innerHTML = `<div class="empty-state">
+                <div class="empty-icon">&#9734;</div>
+                <p>No starred tools</p>
+                <span>Tap the star on any tool to add it here</span>
+            </div>`;
+            return;
+        }
+        list.innerHTML = starred.map((t, i) => {
+            const idx = this.state.tools.indexOf(t);
+            return `<div class="tool-card starred" style="animation-delay:${Math.min(i * 25, 250)}ms">
+                <div class="card-head">
+                    <div class="tool-name">${this.esc(t.tool)}</div>
+                    <button class="star-toggle on" onclick="App.toggleStar(${idx})" aria-label="Unstar">&#9733;</button>
+                </div>
+                <div class="card-badges">
+                    <span class="cat-badge cat-${this.esc(t.cat)}">${this.esc(t.cat)}</span>
+                    ${t.size ? `<span class="size-badge">${this.esc(t.size)}</span>` : ''}
+                    ${t.loc ? `<span class="loc-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${this.esc(t.loc)}</span>` : ''}
+                </div>
+                <div class="tool-use">${this.esc(t.use)}</div>
+                <div class="card-actions-row">
+                    <button class="card-btn card-btn-edit" onclick="App.openEdit(${idx})">Edit</button>
+                    <button class="card-btn card-btn-del" onclick="App.del(${idx})">Delete</button>
+                </div>
+            </div>`;
+        }).join('');
+    },
+
+    renderSettings() {
+        document.getElementById('catsList').value = this.state.cats.join(', ');
+        document.getElementById('locsList').value = this.state.locs.join(', ');
+    },
+
+    toggleStar(idx) {
+        this.state.tools[idx].starred = !this.state.tools[idx].starred;
+        this.persist();
+        this.render();
+        this.renderStarred();
+        this.toast(this.state.tools[idx].starred ? 'Starred' : 'Unstarred');
+    },
+
+    del(idx) {
+        const name = this.state.tools[idx].tool;
+        if (confirm(`Delete "${name}"?`)) {
+            this.state.tools.splice(idx, 1);
+            this.persist();
+            this.render();
+            this.renderStarred();
+            this.toast('Tool deleted');
+        }
+    },
+
+    // ── Sheet ──
+    openAddSheet() {
+        document.getElementById('sheetTitle').textContent = 'Add Tool';
+        document.getElementById('editIdx').value = -1;
+        this.populateSelects();
+        document.getElementById('editSheet').querySelector('form').reset();
+        this.openSheet();
+    },
+
+    openEdit(idx) {
+        const t = this.state.tools[idx];
+        document.getElementById('sheetTitle').textContent = 'Edit Tool';
+        document.getElementById('editIdx').value = idx;
+        this.populateSelects();
+        document.getElementById('fName').value = t.tool;
+        document.getElementById('fSize').value = t.size;
+        document.getElementById('fCat').value = t.cat;
+        document.getElementById('fLoc').value = t.loc;
+        document.getElementById('fLink').value = t.link || '';
+        document.getElementById('fUse').value = t.use;
+        this.openSheet();
+    },
+
+    populateSelects() {
+        document.getElementById('fCat').innerHTML = this.state.cats.map(c => `<option value="${this.esc(c)}">${this.esc(c)}</option>`).join('');
+        document.getElementById('fLoc').innerHTML = this.state.locs.map(l => `<option value="${this.esc(l)}">${this.esc(l)}</option>`).join('');
+    },
+
+    openSheet() {
+        document.getElementById('sheetBackdrop').classList.add('open');
+        document.getElementById('editSheet').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    },
+
+    closeSheet() {
+        document.getElementById('sheetBackdrop').classList.remove('open');
+        document.getElementById('editSheet').classList.remove('open');
+        document.body.style.overflow = '';
+    },
+
+    saveTool(e) {
+        e.preventDefault();
+        const idx = parseInt(document.getElementById('editIdx').value);
+        const data = {
+            tool: document.getElementById('fName').value.trim(),
+            size: document.getElementById('fSize').value.trim(),
+            cat: document.getElementById('fCat').value,
+            loc: document.getElementById('fLoc').value,
+            link: document.getElementById('fLink').value.trim(),
+            use: document.getElementById('fUse').value.trim(),
+            starred: idx > -1 ? this.state.tools[idx].starred : false
+        };
+        if (idx > -1) this.state.tools[idx] = data;
+        else this.state.tools.push(data);
+        this.persist();
+        this.closeSheet();
+        this.render();
+        this.renderStarred();
+        this.toast(idx > -1 ? 'Tool updated' : 'Tool added');
+    },
+
+    // ── Settings ──
+    saveCats() {
+        this.state.cats = document.getElementById('catsList').value.split(',').map(s => s.trim()).filter(Boolean);
+        this.persist();
+        this.render();
+        this.toast('Categories updated');
+    },
+
+    saveLocs() {
+        this.state.locs = document.getElementById('locsList').value.split(',').map(s => s.trim()).filter(Boolean);
+        this.persist();
+        this.render();
+        this.toast('Locations updated');
+    },
+
+    clearLocs() {
+        if (!confirm('Remove location from all tools?')) return;
+        this.state.tools.forEach(t => t.loc = '');
+        this.persist();
+        this.render();
+        this.toast('Locations cleared');
+    },
+
+    // ── Import / Export ──
+    exportData() {
+        const payload = JSON.stringify({ tools: this.state.tools, cats: this.state.cats, locs: this.state.locs }, null, 2);
+        const blob = new Blob([payload], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rufus-tools-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        this.toast('Exported successfully');
+    },
+
+    importData(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            try {
+                const data = JSON.parse(ev.target.result);
+                if (!Array.isArray(data.tools)) throw new Error('Invalid format');
+                this.state.tools = data.tools;
+                if (data.cats) this.state.cats = data.cats;
+                if (data.locs) this.state.locs = data.locs;
+                this.persist();
+                this.render();
+                this.renderStarred();
+                this.renderSettings();
+                this.toast(`Imported ${data.tools.length} tools`);
+            } catch (err) {
+                this.toast('Import failed: bad file');
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+    },
+
+    resetData() {
+        if (!confirm('Reset to the original 40 tools? This will replace all your changes.')) return;
+        this.state.tools = JSON.parse(JSON.stringify(INITIAL_TOOLS));
+        this.state.cats = ['Fastening', 'Electrical', 'Plumbing', 'Safety', 'Misc'];
+        this.state.locs = ['Garage', 'Bay 1', 'Front Storage', 'Inside Cabinet'];
+        this.persist();
+        this.render();
+        this.renderStarred();
+        this.renderSettings();
+        this.toast('Reset to defaults');
+    }
+};
+
+App.init();
+</script>
+</body>
+</html>

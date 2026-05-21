@@ -1,0 +1,2392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rufus Tool Manager - An Applied AI Labs Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;600;700;800&family=Anybody:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #f5f0e8;
+      --bg-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      --surface: #ffffff;
+      --surface-2: #faf7f2;
+      --surface-3: #f0ebe3;
+      --text: #2c2416;
+      --muted: #8a7d6b;
+      --line: #ddd5c8;
+      --line-strong: #c9bfb0;
+      --primary: #c2650a;
+      --primary-2: #a8550a;
+      --primary-glow: rgba(194, 101, 10, 0.12);
+      --success: #3d7c47;
+      --warning: #b8860b;
+      --danger: #b5302a;
+      --sae: #5b4acf;
+      --metric: #c72582;
+      --both: #0a7b6e;
+      --shadow: 0 8px 32px rgba(44, 36, 22, 0.08);
+      --shadow-lg: 0 16px 48px rgba(44, 36, 22, 0.12);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --max: 1440px;
+      --print-muted: #444;
+      --font-display: 'Anybody', sans-serif;
+      --font-body: 'Albert Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body{
+      font-family: var(--font-body);
+      color: var(--text);
+      background: var(--bg);
+      background-image: var(--bg-grain);
+      min-height: 100vh;
+    }
+
+    a { color: var(--primary); }
+
+    .app-shell{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin: 0 auto 18px;
+      backdrop-filter: blur(16px);
+      background: rgba(255,252,247,0.88);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .topbar-grid{
+      display: grid;
+      grid-template-columns: 1.3fr 2fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .brand h1{
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 1.65rem;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--primary);
+    }
+    .brand p{
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .brand .subtle{
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .toolbar{
+      display: grid;
+      grid-template-columns: minmax(240px, 1.3fr) repeat(2, minmax(140px, 180px)) auto auto auto auto auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search-wrap{
+      position: relative;
+      min-width: 220px;
+    }
+    .search-wrap input{
+      width: 100%;
+      padding: 12px 40px 12px 38px;
+      border-radius: 12px;
+      border: 1.5px solid var(--line);
+      background: #fff;
+      font-size: 0.95rem;
+      font-family: var(--font-body);
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .search-wrap input:focus{
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .search-wrap .icon{
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.95rem;
+      pointer-events: none;
+    }
+    .search-wrap .clear-search{
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      display: none;
+      font-family: var(--font-body);
+    }
+    .search-wrap .clear-search.show{ display: inline-flex; align-items:center; justify-content:center; }
+    .search-wrap .clear-search:hover{ background: var(--surface-3); }
+
+    .field-block{
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .field-block label{
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .field-block select,
+    .field-block input,
+    .field-block textarea{
+      width: 100%;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 11px 12px;
+      font-size: 0.95rem;
+      font-family: var(--font-body);
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .field-block select:focus,
+    .field-block input:focus,
+    .field-block textarea:focus{
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .btn{
+      appearance: none;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 11px 14px;
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      white-space: nowrap;
+      transition: all 0.18s ease;
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 4px 12px rgba(44,36,22,0.08); }
+    .btn:active{ transform: translateY(0); }
+    .btn.primary{
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .btn.primary:hover{ background: var(--primary-2); }
+    .btn.secondary{
+      border-color: var(--line);
+      background: #fff;
+    }
+    .btn.secondary:hover{ background: var(--surface-2); }
+    .btn.danger{
+      background: var(--danger);
+      border-color: var(--danger);
+      color: white;
+    }
+    .btn.ghost{
+      background: transparent;
+      border-color: var(--line);
+    }
+    .btn.small{
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      border-radius: 10px;
+    }
+
+    .stats-row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 18px;
+    }
+    .stat{
+      background: rgba(255,252,247,0.9);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .stat strong{ color: var(--text); }
+
+    .sections{
+      display: grid;
+      gap: 16px;
+    }
+
+    .group{
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 18px;
+      overflow: hidden;
+      backdrop-filter: blur(6px);
+    }
+
+    .group-header{
+      width: 100%;
+      background: linear-gradient(180deg, #fffdf8 0%, var(--surface-2) 100%);
+      border: none;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      padding: 14px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-family: var(--font-body);
+    }
+    .group-header:hover{ background: var(--surface-2); }
+    .group-title-wrap{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .group-title{
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .group-count{
+      background: var(--primary-glow);
+      color: var(--primary-2);
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .group-header .caret{
+      color: var(--muted);
+      font-size: 1rem;
+      transition: transform 0.18s ease;
+      flex: 0 0 auto;
+    }
+    .group-header.collapsed .caret{ transform: rotate(-90deg); }
+
+    .group-body{
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 14px;
+    }
+    .group-body.collapsed{ display: none; }
+
+    .tool-card{
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--line-strong);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0;
+      position: relative;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .tool-card:hover{
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+    .tool-card.metric{ border-left-color: var(--metric); }
+    .tool-card.sae{ border-left-color: var(--sae); }
+    .tool-card.both{ border-left-color: var(--both); }
+    .tool-card.starred{
+      box-shadow: 0 8px 28px var(--primary-glow);
+      outline: 2px solid rgba(194, 101, 10, 0.15);
+    }
+
+    .tool-head{
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .tool-title{
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      line-height: 1.28;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      word-break: break-word;
+    }
+    .tool-title-wrap{
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+    .badge-row{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      line-height: 1;
+      border: 1px solid transparent;
+    }
+    .badge.category{
+      background: #fef3e2;
+      color: var(--primary-2);
+      border-color: #f5d9a8;
+    }
+    .badge.location{
+      background: var(--surface-3);
+      color: #4a3f2f;
+      border-color: var(--line);
+    }
+    .badge.custom{
+      background: #e8f5e9;
+      color: #2e6b34;
+      border-color: #b6dfb8;
+    }
+    .badge.sae{
+      background: #ede8fd;
+      color: var(--sae);
+      border-color: #d5cef0;
+    }
+    .badge.metric{
+      background: #fce4f0;
+      color: var(--metric);
+      border-color: #f0c0d8;
+    }
+    .badge.both{
+      background: #e0f5f3;
+      color: var(--both);
+      border-color: #a8e0da;
+    }
+    .badge.star{
+      background: var(--primary-glow);
+      color: var(--primary-2);
+      border-color: #f5c88a;
+    }
+
+    .star-btn{
+      border: 1.5px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      flex: 0 0 auto;
+      transition: all 0.2s;
+    }
+    .star-btn:hover{ background: var(--primary-glow); color: var(--primary); }
+    .star-btn.active{
+      background: var(--primary-glow);
+      border-color: #f5c88a;
+      color: var(--primary);
+    }
+
+    .tool-meta{
+      display: grid;
+      gap: 8px;
+    }
+    .meta-line{
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 8px;
+      align-items: start;
+      font-size: 0.92rem;
+    }
+    .meta-line .label{
+      color: var(--muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.03em;
+      padding-top: 2px;
+    }
+    .meta-line .value{
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    .tool-link{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .location-row{
+      display: grid;
+      gap: 6px;
+    }
+    .location-row label{
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .location-input-wrap{
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+    .location-input-wrap input{
+      width: 100%;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.92rem;
+      background: var(--surface-2);
+      font-family: var(--font-body);
+      transition: border-color 0.2s;
+    }
+    .location-input-wrap input:focus{
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .note-row{
+      display: grid;
+      gap: 6px;
+      margin-top: 2px;
+    }
+    .note-row label{
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .note-row textarea{
+      width: 100%;
+      min-height: 84px;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.93rem;
+      font-family: var(--font-body);
+      background: var(--surface-2);
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+    .note-row textarea:focus{
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .card-actions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .empty-state{
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 18px;
+      padding: 34px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .modal{
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(44, 36, 22, 0.4);
+      backdrop-filter: blur(6px);
+      z-index: 50;
+    }
+    .modal.open{ display: flex; }
+
+    .modal-card{
+      width: min(860px, 100%);
+      max-height: min(90vh, 920px);
+      overflow: auto;
+      background: #fffdf8;
+      border-radius: 18px;
+      box-shadow: 0 24px 80px rgba(44, 36, 22, 0.22);
+      border: 1px solid var(--line);
+    }
+
+    .modal-header{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      background: rgba(255,253,248,0.96);
+      backdrop-filter: blur(8px);
+      z-index: 2;
+    }
+    .modal-header h2{
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      letter-spacing: -0.01em;
+    }
+    .close-btn{
+      border: 1.5px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-family: var(--font-body);
+    }
+
+    .modal-body{
+      padding: 20px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid-2{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .grid-1{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .helper{
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .check{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+
+    .modal-footer{
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 20px;
+      border-top: 1px solid var(--line);
+      position: sticky;
+      bottom: 0;
+      background: rgba(255,253,248,0.96);
+      backdrop-filter: blur(8px);
+    }
+    .modal-footer .right{
+      display: flex;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .manage-list{
+      display: grid;
+      gap: 10px;
+    }
+    .manage-row{
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface-2);
+    }
+    .manage-row.readonly{
+      grid-template-columns: 1fr auto;
+      opacity: 0.95;
+    }
+    .manage-row input{
+      width: 100%;
+      border: 1.5px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #fff;
+      font-size: 0.95rem;
+      font-family: var(--font-body);
+    }
+    .usage{
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .section-note{
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-top: -6px;
+    }
+
+    .screen-only{ display: block; }
+    .print-only{ display: none; }
+
+    /* ---------- PRINT ---------- */
+    @media print {
+      @page{
+        size: letter;
+        margin: 0.55in;
+      }
+
+      body{
+        background: #fff;
+        color: #000;
+        font-size: 9pt;
+      }
+
+      .screen-only{
+        display: none !important;
+      }
+
+      .print-only{
+        display: block !important;
+      }
+
+      #printRoot{
+        display: block !important;
+      }
+
+      .print-header{
+        margin-bottom: 16pt;
+        border-bottom: 2px solid #000;
+        padding-bottom: 8pt;
+      }
+      .print-header h1{
+        margin: 0;
+        font-size: 18pt;
+      }
+      .print-header .sub{
+        margin-top: 3pt;
+        font-size: 10pt;
+        color: #111;
+      }
+      .print-header .meta{
+        margin-top: 6pt;
+        font-size: 9pt;
+        color: var(--print-muted);
+      }
+
+      .print-group{
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin: 0 0 14pt;
+      }
+      .print-group-title{
+        font-size: 11.5pt;
+        font-weight: 800;
+        border-bottom: 1px solid #555;
+        padding-bottom: 3pt;
+        margin-bottom: 8pt;
+      }
+
+      .print-columns{
+        column-count: 2;
+        column-gap: 22pt;
+      }
+
+      .print-item{
+        break-inside: avoid;
+        page-break-inside: avoid;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 0 0 8pt;
+        margin: 0 0 8pt;
+      }
+
+      .print-item .title{
+        font-weight: 800;
+        font-size: 9.4pt;
+        margin-bottom: 2pt;
+      }
+      .print-item .line{
+        color: #111;
+        margin-bottom: 2pt;
+      }
+      .print-item .line.meta{
+        color: var(--print-muted);
+      }
+      .print-item .note{
+        color: #333;
+        font-style: italic;
+        margin-top: 4pt;
+        white-space: pre-wrap;
+      }
+      .print-chip{
+        display: inline-block;
+        border: 1px solid #777;
+        border-radius: 999px;
+        padding: 1px 5px;
+        font-size: 7.4pt;
+        margin-left: 4pt;
+      }
+    }
+
+    @media (max-width: 1180px){
+      .topbar-grid{
+        grid-template-columns: 1fr;
+      }
+      .toolbar{
+        grid-template-columns: 1fr 1fr 1fr auto auto auto auto auto;
+      }
+    }
+
+    @media (max-width: 980px){
+      .toolbar{
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .grid-2{
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px){
+      .app-shell{ padding: 12px; }
+      .toolbar{
+        grid-template-columns: 1fr 1fr;
+      }
+      .group-body{
+        grid-template-columns: 1fr;
+      }
+      .manage-row{
+        grid-template-columns: 1fr;
+      }
+      .manage-row.readonly{
+        grid-template-columns: 1fr;
+      }
+      .modal-footer{
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .modal-footer .right{
+        margin-left: 0;
+        width: 100%;
+        justify-content: stretch;
+      }
+      .modal-footer .right .btn,
+      .modal-footer > .btn{
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell screen-only">
+    <header class="topbar">
+      <div class="topbar-grid">
+        <div class="brand">
+          <h1>Rufus Tool Manager</h1>
+          <p>An Applied AI Labs Project</p>
+          <div class="subtle">All notes and changes save locally in this browser.</div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-wrap">
+            <span class="icon">&#128269;</span>
+            <input id="searchInput" type="text" placeholder="Search tools, notes, categories, locations, links..." />
+            <button id="clearSearchBtn" class="clear-search" title="Clear search">&#10005;</button>
+          </div>
+
+          <div class="field-block">
+            <label for="browseViewSelect">Browse</label>
+            <select id="browseViewSelect">
+              <option value="category">By Category</option>
+              <option value="location">By Location</option>
+              <option value="alpha">Alphabetically</option>
+            </select>
+          </div>
+
+          <div class="field-block">
+            <label for="printViewSelect">Print</label>
+            <select id="printViewSelect">
+              <option value="category">By Category</option>
+              <option value="location">By Location</option>
+              <option value="alpha">Alphabetically</option>
+            </select>
+          </div>
+
+          <button id="addToolBtn" class="btn primary">+ Add Tool</button>
+          <button id="manageCategoriesBtn" class="btn secondary">Categories</button>
+          <button id="manageLocationsBtn" class="btn secondary">Locations</button>
+          <button id="exportBtn" class="btn secondary">Download Text</button>
+          <button id="printBtn" class="btn secondary">Print</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="stats-row" id="statsRow"></div>
+    <main class="sections" id="app"></main>
+  </div>
+
+  <datalist id="globalLocationList"></datalist>
+
+  <section id="printRoot" class="print-only"></section>
+
+  <!-- Tool Modal -->
+  <div class="modal" id="toolModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="toolModalTitle">Add Tool</h2>
+        <button class="close-btn" data-close-modal="toolModal" title="Close">&#10005;</button>
+      </div>
+
+      <form id="toolForm">
+        <div class="modal-body">
+          <input type="hidden" id="toolIdInput" />
+          <input type="hidden" id="toolModeInput" value="add" />
+
+          <div class="helper" id="toolModalHelper"></div>
+
+          <div class="grid-2">
+            <div class="field-block">
+              <label for="toolNameInput">Tool Name</label>
+              <input id="toolNameInput" type="text" required />
+            </div>
+            <div class="field-block">
+              <label for="toolSizeInput">Size / Specs</label>
+              <input id="toolSizeInput" type="text" />
+            </div>
+          </div>
+
+          <div class="grid-1">
+            <div class="field-block">
+              <label for="toolUseInput">Primary Use</label>
+              <input id="toolUseInput" type="text" />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field-block">
+              <label for="toolCategorySelect">Category Override</label>
+              <select id="toolCategorySelect"></select>
+              <div class="helper" id="autoCategoryHint"></div>
+            </div>
+
+            <div class="field-block">
+              <label for="toolLocationInput">Location</label>
+              <input id="toolLocationInput" type="text" list="globalLocationList" placeholder="e.g. Driver-side bin" />
+              <div class="helper">Leave blank for no location. New locations are added automatically.</div>
+            </div>
+          </div>
+
+          <div class="grid-1">
+            <div class="field-block">
+              <label for="toolLinkInput">Hyperlink</label>
+              <input id="toolLinkInput" type="text" inputmode="url" placeholder="https://example.com/item" />
+            </div>
+          </div>
+
+          <div class="grid-1">
+            <div class="field-block">
+              <label for="toolNoteInput">Notes</label>
+              <textarea id="toolNoteInput" rows="5" placeholder="Condition, brand, purchase date, missing pieces, torque notes, replacement link notes, etc."></textarea>
+            </div>
+          </div>
+
+          <label class="check">
+            <input id="toolStarInput" type="checkbox" />
+            Star / pin this tool so it always stays at the top
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button id="deleteToolBtn" type="button" class="btn danger" style="display:none;">Delete Tool</button>
+          <div class="right">
+            <button type="button" class="btn secondary" data-close-modal="toolModal">Cancel</button>
+            <button type="submit" class="btn primary">Save Tool</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Category Manager Modal -->
+  <div class="modal" id="categoryModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Manage Categories</h2>
+        <button class="close-btn" data-close-modal="categoryModal" title="Close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <form id="addCategoryForm" class="grid-2">
+          <div class="field-block">
+            <label for="newCategoryInput">Add New Category</label>
+            <input id="newCategoryInput" type="text" placeholder="e.g. Specialty Diagnostics" />
+          </div>
+          <div style="display:flex; align-items:end;">
+            <button type="submit" class="btn primary" style="width:100%;">Add Category</button>
+          </div>
+        </form>
+
+        <div class="section-note">System categories are built in. Custom categories can be renamed or deleted. Deleting a custom category clears manual assignments to that category.</div>
+
+        <div>
+          <h3 style="margin:0 0 10px;">System Categories</h3>
+          <div class="manage-list" id="systemCategoryList"></div>
+        </div>
+
+        <div>
+          <h3 style="margin:0 0 10px;">Custom Categories</h3>
+          <div class="manage-list" id="customCategoryList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Location Manager Modal -->
+  <div class="modal" id="locationModal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Manage Locations</h2>
+        <button class="close-btn" data-close-modal="locationModal" title="Close">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <form id="addLocationForm" class="grid-2">
+          <div class="field-block">
+            <label for="newLocationInput">Add New Location</label>
+            <input id="newLocationInput" type="text" placeholder="e.g. Rear storage bin A" />
+          </div>
+          <div style="display:flex; align-items:end;">
+            <button type="submit" class="btn primary" style="width:100%;">Add Location</button>
+          </div>
+        </form>
+
+        <div class="section-note">Deleting a location removes that location from all assigned tools.</div>
+
+        <div>
+          <h3 style="margin:0 0 10px;">Known Locations</h3>
+          <div class="manage-list" id="locationList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = 'rufus_tool_manager_v3';
+      const LEGACY_STATE_KEYS = {
+        userTools: ['rufus_user_tools', 'rv_user_tools'],
+        notes: ['rufus_notes', 'rv_tool_notes'],
+        categories: ['rv_tool_categories']
+      };
+
+      const DEFAULT_TOOLS = [
+        { id: 'd001', tool: 'SAE Socket Set (deep + shallow)', size: '1/4"–3/4"', use: 'Chassis bolts, battery tray, generator mounts, sway bar links' },
+        { id: 'd002', tool: 'Metric Socket Set', size: '8mm–17mm', use: 'House hardware, awning, steps, solar brackets' },
+        { id: 'd003', tool: 'Breaker Bar', size: '18–24 inch, 1/2" drive', use: 'Lug nuts, suspension bolts, stubborn fasteners' },
+        { id: 'd004', tool: 'Torque Wrench', size: '20–150 ft-lb, 1/2" drive', use: 'Lug nuts, hitch bolts, sway bar hardware' },
+        { id: 'd005', tool: 'SAE Combination Wrenches', size: '1/4"–3/4"', use: 'Chassis components in tight spaces' },
+        { id: 'd006', tool: 'Metric Combination Wrenches', size: '8mm–17mm', use: 'Water pump, interior hardware, appliances' },
+        { id: 'd007', tool: 'Adjustable Wrench', size: '10–12 inch', use: 'LP fittings, odd-size nuts' },
+        { id: 'd008', tool: 'Vise-Grips', size: 'Standard + needle-nose', use: 'Broken bolts, clamps, emergency fixes' },
+        { id: 'd009', tool: 'Screwdrivers', size: 'Phillips #1/#2, flat #3/#5', use: 'Interior panels, electrical covers' },
+        { id: 'd010', tool: 'Torx Bit Set', size: 'T15–T50', use: 'Ford trim, step motors, latches' },
+        { id: 'd011', tool: 'Allen/Hex Keys', size: 'SAE + metric', use: 'Furniture, brackets, electronics' },
+        { id: 'd012', tool: 'Multimeter', size: 'Auto-ranging', use: '12V diagnostics, battery checks, fuses' },
+        { id: 'd013', tool: 'Non-contact Voltage Tester', size: 'Standard', use: 'AC pedestal safety check' },
+        { id: 'd014', tool: '12V Test Light', size: 'Standard', use: 'Quick fuse/line diagnostics' },
+        { id: 'd015', tool: 'Crimping Tool + Heat-Shrink Connectors', size: '12–16 AWG', use: 'RV wiring repairs, solar wiring' },
+        { id: 'd016', tool: 'Wire Strippers', size: '10–18 AWG', use: 'Electrical work' },
+        { id: 'd017', tool: 'Electrical Tape', size: 'Standard', use: 'Harness repairs, temporary fixes' },
+        { id: 'd018', tool: 'ATC/ATO Fuses', size: '5A–40A', use: 'RV fuse panel replacements' },
+        { id: 'd019', tool: 'Heat Gun or Butane Torch', size: 'Standard', use: 'Heat-shrink connectors' },
+        { id: 'd020', tool: 'Zip Ties', size: '4–12 inch', use: 'Cable management, emergency repairs' },
+        { id: 'd021', tool: 'Duct Tape', size: 'Standard', use: 'Temporary seals, hose fixes' },
+        { id: 'd022', tool: 'Gorilla Tape', size: 'Standard', use: 'Heavy-duty emergency repairs' },
+        { id: 'd023', tool: 'Utility Knife', size: 'Standard', use: 'Cutting tape, hoses, packaging' },
+        { id: 'd024', tool: 'Pliers Set', size: 'Slip-joint, needle-nose, channel-lock', use: 'Plumbing, electrical, clamps' },
+        { id: 'd025', tool: 'Channel-Lock Pliers', size: '12 inch', use: 'Water hose fittings, sewer fittings' },
+        { id: 'd026', tool: 'Rubber Mallet', size: 'Standard', use: 'Leveling blocks, nudging stuck parts' },
+        { id: 'd027', tool: 'Tire Pressure Gauge', size: '80–120 PSI', use: 'E-450 tire checks' },
+        { id: 'd028', tool: 'Portable Air Compressor', size: '120 PSI capable', use: 'Top off E-450 tires (80–95 PSI)' },
+        { id: 'd029', tool: 'Lug Nut Socket', size: '1-1/16 inch', use: 'Ford E-450 wheel lug nuts' },
+        { id: 'd030', tool: 'Work Gloves', size: 'Leather + nitrile', use: 'Sewer, electrical, mechanical work' },
+        { id: 'd031', tool: 'Headlamp', size: 'Standard', use: 'Night repairs, under-coach work' },
+        { id: 'd032', tool: 'Small Pry Bar', size: '8–12 inch', use: 'Removing trim, stuck panels' },
+        { id: 'd033', tool: 'Caulking Gun', size: 'Standard', use: 'Roof sealant, exterior repairs' },
+        { id: 'd034', tool: 'Self-Leveling Lap Sealant', size: 'Dicor or Alpha', use: 'Roof maintenance' },
+        { id: 'd035', tool: 'Butyl Tape', size: 'Standard', use: 'Window/fixture resealing' },
+        { id: 'd036', tool: 'Sewer Wrench', size: 'Standard', use: 'Stubborn bayonet fittings' },
+        { id: 'd037', tool: 'Silicone Spray', size: 'Standard', use: 'Steps, hinges, slides' },
+        { id: 'd038', tool: 'Dry Lube (Graphite/PTFE)', size: 'Standard', use: 'Locks, latches' },
+        { id: 'd039', tool: 'Torque-Seal Paint', size: 'Standard', use: 'Marking critical bolts (sway bars, hitch)' }
+      ];
+
+      const SYSTEM_CATEGORIES = [
+        'Sockets',
+        'Wrenches',
+        'Pliers & Grips',
+        'Electrical & Diagnostic',
+        'Fasteners & Adhesives',
+        'Cutting & Prying',
+        'Vehicle Maintenance',
+        'Safety & Comfort',
+        'Plumbing & Sewer',
+        'Interior & Furniture',
+        'HVAC',
+        'Cleaning & Repair',
+        'User Added',
+        'Miscellaneous'
+      ];
+
+      const DEFAULT_META = () => ({
+        note: '',
+        categoryOverride: '',
+        location: '',
+        link: '',
+        starred: false
+      });
+
+      const DEFAULT_STATE = {
+        userTools: [],
+        toolMeta: {},
+        customCategories: [],
+        locations: [],
+        browseView: 'category',
+        printView: 'category',
+        search: '',
+        collapsed: {}
+      };
+
+      const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+      let state = structuredCloneSafe(DEFAULT_STATE);
+      state = loadState();
+      let noteSaveTimer = null;
+
+      const els = {
+        app: document.getElementById('app'),
+        statsRow: document.getElementById('statsRow'),
+        searchInput: document.getElementById('searchInput'),
+        clearSearchBtn: document.getElementById('clearSearchBtn'),
+        browseViewSelect: document.getElementById('browseViewSelect'),
+        printViewSelect: document.getElementById('printViewSelect'),
+        addToolBtn: document.getElementById('addToolBtn'),
+        manageCategoriesBtn: document.getElementById('manageCategoriesBtn'),
+        manageLocationsBtn: document.getElementById('manageLocationsBtn'),
+        exportBtn: document.getElementById('exportBtn'),
+        printBtn: document.getElementById('printBtn'),
+        printRoot: document.getElementById('printRoot'),
+        globalLocationList: document.getElementById('globalLocationList'),
+
+        toolModal: document.getElementById('toolModal'),
+        toolForm: document.getElementById('toolForm'),
+        toolModalTitle: document.getElementById('toolModalTitle'),
+        toolModalHelper: document.getElementById('toolModalHelper'),
+        toolIdInput: document.getElementById('toolIdInput'),
+        toolModeInput: document.getElementById('toolModeInput'),
+        toolNameInput: document.getElementById('toolNameInput'),
+        toolSizeInput: document.getElementById('toolSizeInput'),
+        toolUseInput: document.getElementById('toolUseInput'),
+        toolCategorySelect: document.getElementById('toolCategorySelect'),
+        autoCategoryHint: document.getElementById('autoCategoryHint'),
+        toolLocationInput: document.getElementById('toolLocationInput'),
+        toolLinkInput: document.getElementById('toolLinkInput'),
+        toolNoteInput: document.getElementById('toolNoteInput'),
+        toolStarInput: document.getElementById('toolStarInput'),
+        deleteToolBtn: document.getElementById('deleteToolBtn'),
+
+        categoryModal: document.getElementById('categoryModal'),
+        addCategoryForm: document.getElementById('addCategoryForm'),
+        newCategoryInput: document.getElementById('newCategoryInput'),
+        systemCategoryList: document.getElementById('systemCategoryList'),
+        customCategoryList: document.getElementById('customCategoryList'),
+
+        locationModal: document.getElementById('locationModal'),
+        addLocationForm: document.getElementById('addLocationForm'),
+        newLocationInput: document.getElementById('newLocationInput'),
+        locationList: document.getElementById('locationList')
+      };
+
+      function loadState(){
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if(raw){
+            return normalizeState(JSON.parse(raw));
+          }
+        }catch(e){}
+
+        return migrateLegacyState();
+      }
+
+      function migrateLegacyState(){
+        const next = structuredCloneSafe(DEFAULT_STATE);
+
+        const legacyUserTools = findLegacyParsedArray(LEGACY_STATE_KEYS.userTools);
+        const legacyNotes = findLegacyParsedObject(LEGACY_STATE_KEYS.notes);
+        const legacyCategories = findLegacyParsedObject(LEGACY_STATE_KEYS.categories);
+
+        if(Array.isArray(legacyUserTools)){
+          next.userTools = legacyUserTools.map((tool, idx) => ({
+            id: tool.id || makeId('u'),
+            tool: str(tool.tool || `User Tool ${idx + 1}`),
+            size: str(tool.size || 'N/A'),
+            use: str(tool.use || 'User added')
+          }));
+        }
+
+        const allTools = [...DEFAULT_TOOLS, ...next.userTools];
+        for(const tool of allTools){
+          next.toolMeta[tool.id] = DEFAULT_META();
+
+          if(legacyNotes && Object.prototype.hasOwnProperty.call(legacyNotes, tool.tool)){
+            next.toolMeta[tool.id].note = str(legacyNotes[tool.tool]);
+          }
+          if(legacyCategories && Object.prototype.hasOwnProperty.call(legacyCategories, tool.tool)){
+            next.toolMeta[tool.id].categoryOverride = str(legacyCategories[tool.tool]);
+          }
+        }
+
+        const normalized = normalizeState(next);
+        persist(false, normalized);
+        return normalized;
+      }
+
+      function normalizeState(input){
+        const s = structuredCloneSafe(DEFAULT_STATE);
+        const src = input && typeof input === 'object' ? input : {};
+
+        s.userTools = Array.isArray(src.userTools)
+          ? src.userTools.map(t => ({
+              id: str(t.id || makeId('u')),
+              tool: str(t.tool || 'Untitled Tool'),
+              size: str(t.size || 'N/A'),
+              use: str(t.use || 'User added')
+            }))
+          : [];
+
+        s.toolMeta = (src.toolMeta && typeof src.toolMeta === 'object') ? src.toolMeta : {};
+        s.customCategories = uniqueStrings(Array.isArray(src.customCategories) ? src.customCategories : []);
+        s.locations = uniqueStrings(Array.isArray(src.locations) ? src.locations : []);
+        s.browseView = ['category', 'location', 'alpha'].includes(src.browseView) ? src.browseView : 'category';
+        s.printView = ['category', 'location', 'alpha'].includes(src.printView) ? src.printView : 'category';
+        s.search = str(src.search || '');
+        s.collapsed = (src.collapsed && typeof src.collapsed === 'object') ? src.collapsed : {};
+
+        for(const tool of [...DEFAULT_TOOLS, ...s.userTools]){
+          s.toolMeta[tool.id] = {
+            ...DEFAULT_META(),
+            ...(s.toolMeta[tool.id] || {})
+          };
+          s.toolMeta[tool.id].note = str(s.toolMeta[tool.id].note);
+          s.toolMeta[tool.id].categoryOverride = str(s.toolMeta[tool.id].categoryOverride);
+          s.toolMeta[tool.id].location = str(s.toolMeta[tool.id].location);
+          s.toolMeta[tool.id].link = str(s.toolMeta[tool.id].link);
+          s.toolMeta[tool.id].starred = !!s.toolMeta[tool.id].starred;
+        }
+
+        return s;
+      }
+
+      function persist(renderAfter = true, incomingState){
+        if(incomingState) state = incomingState;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        if(renderAfter) render();
+      }
+
+      function schedulePrintRefresh(){
+        clearTimeout(noteSaveTimer);
+        noteSaveTimer = setTimeout(renderPrintRoot, 220);
+      }
+
+      function structuredCloneSafe(obj){
+        return JSON.parse(JSON.stringify(obj));
+      }
+
+      function findLegacyParsedArray(keys){
+        for(const key of keys){
+          try{
+            const raw = localStorage.getItem(key);
+            if(!raw) continue;
+            const parsed = JSON.parse(raw);
+            if(Array.isArray(parsed)) return parsed;
+          }catch(e){}
+        }
+        return null;
+      }
+
+      function findLegacyParsedObject(keys){
+        for(const key of keys){
+          try{
+            const raw = localStorage.getItem(key);
+            if(!raw) continue;
+            const parsed = JSON.parse(raw);
+            if(parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed;
+          }catch(e){}
+        }
+        return null;
+      }
+
+      function makeId(prefix = 'u'){
+        return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+      }
+
+      function str(v){
+        return (v ?? '').toString().trim();
+      }
+
+      function escapeHtml(v){
+        return str(v)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#39;');
+      }
+
+      function uniqueStrings(arr){
+        const map = new Map();
+        for(const item of arr){
+          const clean = str(item);
+          if(!clean) continue;
+          const key = clean.toLowerCase();
+          if(!map.has(key)) map.set(key, clean);
+        }
+        return [...map.values()].sort(collator.compare);
+      }
+
+      function getAllTools(){
+        return [...DEFAULT_TOOLS, ...state.userTools];
+      }
+
+      function getToolById(id){
+        return getAllTools().find(t => t.id === id) || null;
+      }
+
+      function isUserTool(id){
+        return state.userTools.some(t => t.id === id);
+      }
+
+      function getMeta(id){
+        if(!state.toolMeta[id]){
+          state.toolMeta[id] = DEFAULT_META();
+        }
+        return state.toolMeta[id];
+      }
+
+      function setMeta(id, patch){
+        state.toolMeta[id] = { ...DEFAULT_META(), ...getMeta(id), ...patch };
+      }
+
+      function normalizeUrl(url){
+        let value = str(url);
+        if(!value) return '';
+        if(!/^https?:\/\//i.test(value) && /^[a-z0-9.-]+\.[a-z]{2,}/i.test(value)){
+          value = 'https://' + value;
+        }
+        try{
+          const u = new URL(value);
+          return u.toString();
+        }catch(e){
+          return '';
+        }
+      }
+
+      function prettyUrl(url){
+        try{
+          const u = new URL(url);
+          const path = u.pathname && u.pathname !== '/' ? u.pathname : '';
+          const shortPath = path.length > 30 ? path.slice(0, 30) + '…' : path;
+          return u.host + shortPath;
+        }catch(e){
+          return url;
+        }
+      }
+
+      function getDesignation(tool){
+        const text = `${tool.tool} ${tool.size}`.toLowerCase();
+        const hasMetric = /metric|\b\d+(\.\d+)?\s?mm\b/.test(text);
+        const hasSae =
+          /\bsae\b/.test(text) ||
+          /\binch\b/.test(text) ||
+          /"/.test(text) ||
+          /\b\d+\/\d+\b/.test(tool.size.toLowerCase());
+
+        if(hasMetric && hasSae){
+          return { key: 'both', label: 'SAE + Metric' };
+        }
+        if(hasMetric){
+          return { key: 'metric', label: 'Metric' };
+        }
+        if(hasSae){
+          return { key: 'sae', label: 'SAE' };
+        }
+        return { key: 'standard', label: 'Standard' };
+      }
+
+      function autoCategorize(tool){
+        const name = tool.tool.toLowerCase();
+        const size = tool.size.toLowerCase();
+        const use = tool.use.toLowerCase();
+        const text = `${name} ${size} ${use}`;
+
+        if(name.includes('socket')) return 'Sockets';
+
+        if(name.includes('wrench') || name.includes('allen') || name.includes('hex')){
+          if(name.includes('sewer')) return 'Plumbing & Sewer';
+          return 'Wrenches';
+        }
+
+        if(name.includes('vise-grips') || name.includes('pliers')){
+          if(name.includes('channel-lock') && (use.includes('water hose') || use.includes('sewer'))){
+            return 'Plumbing & Sewer';
+          }
+          return 'Pliers & Grips';
+        }
+
+        if(
+          text.includes('multimeter') ||
+          text.includes('voltage tester') ||
+          text.includes('test light') ||
+          text.includes('crimping') ||
+          text.includes('wire strippers') ||
+          text.includes('electrical tape') ||
+          text.includes('fuses') ||
+          text.includes('heat-shrink') ||
+          text.includes('heat gun')
+        ) return 'Electrical & Diagnostic';
+
+        if(
+          text.includes('zip ties') ||
+          text.includes('duct tape') ||
+          text.includes('gorilla tape') ||
+          text.includes('caulking') ||
+          text.includes('sealant') ||
+          text.includes('butyl tape') ||
+          text.includes('torque-seal')
+        ) return 'Fasteners & Adhesives';
+
+        if(text.includes('knife') || text.includes('pry bar')) return 'Cutting & Prying';
+
+        if(
+          text.includes('breaker bar') ||
+          text.includes('torque wrench') ||
+          text.includes('tire pressure') ||
+          text.includes('air compressor') ||
+          text.includes('lug nut') ||
+          text.includes('silicone spray') ||
+          text.includes('dry lube')
+        ) return 'Vehicle Maintenance';
+
+        if(text.includes('gloves') || text.includes('headlamp') || text.includes('rubber mallet')){
+          return 'Safety & Comfort';
+        }
+
+        if(text.includes('sewer')) return 'Plumbing & Sewer';
+
+        if(
+          text.includes('screwdrivers') ||
+          text.includes('torx') ||
+          text.includes('furniture') ||
+          text.includes('interior')
+        ) return 'Interior & Furniture';
+
+        if(text.includes('cleaning')) return 'Cleaning & Repair';
+        if(text.includes('hvac')) return 'HVAC';
+
+        return 'Miscellaneous';
+      }
+
+      function getCategory(tool){
+        const override = str(getMeta(tool.id).categoryOverride);
+        if(override) return override;
+        const auto = autoCategorize(tool);
+        if(auto === 'Miscellaneous' && isUserTool(tool.id)) return 'User Added';
+        return auto;
+      }
+
+      function getKnownCategories(){
+        const merged = [...SYSTEM_CATEGORIES, ...state.customCategories];
+        return uniqueStrings(merged);
+      }
+
+      function getKnownLocations(){
+        const fromMeta = getAllTools()
+          .map(t => str(getMeta(t.id).location))
+          .filter(Boolean);
+        return uniqueStrings([...state.locations, ...fromMeta]);
+      }
+
+      function addCustomCategory(name){
+        const clean = str(name);
+        if(!clean) return false;
+        const exists = getKnownCategories().some(c => c.toLowerCase() === clean.toLowerCase());
+        if(exists) return false;
+        state.customCategories = uniqueStrings([...state.customCategories, clean]);
+        return true;
+      }
+
+      function renameCustomCategory(oldName, newName){
+        const oldClean = str(oldName);
+        const newClean = str(newName);
+        if(!oldClean || !newClean) return false;
+        if(oldClean.toLowerCase() !== newClean.toLowerCase()){
+          const exists = getKnownCategories().some(c => c.toLowerCase() === newClean.toLowerCase());
+          if(exists) return false;
+        }
+        state.customCategories = state.customCategories
+          .map(c => c.toLowerCase() === oldClean.toLowerCase() ? newClean : c);
+        for(const id of Object.keys(state.toolMeta)){
+          if(str(state.toolMeta[id].categoryOverride).toLowerCase() === oldClean.toLowerCase()){
+            state.toolMeta[id].categoryOverride = newClean;
+          }
+        }
+        state.customCategories = uniqueStrings(state.customCategories);
+        return true;
+      }
+
+      function deleteCustomCategory(name){
+        const clean = str(name);
+        state.customCategories = state.customCategories.filter(c => c.toLowerCase() !== clean.toLowerCase());
+        for(const id of Object.keys(state.toolMeta)){
+          if(str(state.toolMeta[id].categoryOverride).toLowerCase() === clean.toLowerCase()){
+            state.toolMeta[id].categoryOverride = '';
+          }
+        }
+      }
+
+      function addLocation(name){
+        const clean = str(name);
+        if(!clean) return false;
+        const exists = getKnownLocations().some(loc => loc.toLowerCase() === clean.toLowerCase());
+        if(exists) return false;
+        state.locations = uniqueStrings([...state.locations, clean]);
+        return true;
+      }
+
+      function renameLocation(oldName, newName){
+        const oldClean = str(oldName);
+        const newClean = str(newName);
+        if(!oldClean || !newClean) return false;
+        if(oldClean.toLowerCase() !== newClean.toLowerCase()){
+          const exists = getKnownLocations().some(loc => loc.toLowerCase() === newClean.toLowerCase());
+          if(exists) return false;
+        }
+        state.locations = state.locations.map(loc => loc.toLowerCase() === oldClean.toLowerCase() ? newClean : loc);
+        for(const tool of getAllTools()){
+          const meta = getMeta(tool.id);
+          if(str(meta.location).toLowerCase() === oldClean.toLowerCase()){
+            meta.location = newClean;
+          }
+        }
+        state.locations = uniqueStrings(state.locations);
+        return true;
+      }
+
+      function deleteLocation(name){
+        const clean = str(name);
+        state.locations = state.locations.filter(loc => loc.toLowerCase() !== clean.toLowerCase());
+        for(const tool of getAllTools()){
+          const meta = getMeta(tool.id);
+          if(str(meta.location).toLowerCase() === clean.toLowerCase()){
+            meta.location = '';
+          }
+        }
+      }
+
+      function getSearchBlob(tool){
+        const meta = getMeta(tool.id);
+        const designation = getDesignation(tool).label;
+        return [
+          tool.tool,
+          tool.size,
+          tool.use,
+          meta.note,
+          getCategory(tool),
+          meta.location,
+          meta.link,
+          designation,
+          isUserTool(tool.id) ? 'custom user added' : 'built in'
+        ].join(' ').toLowerCase();
+      }
+
+      function getVisibleTools(){
+        const q = str(state.search).toLowerCase();
+        const all = getAllTools();
+        if(!q) return all;
+        return all.filter(tool => getSearchBlob(tool).includes(q));
+      }
+
+      function sortTools(tools, mode = 'category'){
+        const designationRank = { both: 0, metric: 1, sae: 2, standard: 3 };
+        return [...tools].sort((a, b) => {
+          if(mode === 'alpha'){
+            return collator.compare(a.tool, b.tool);
+          }
+          const da = designationRank[getDesignation(a).key] ?? 99;
+          const db = designationRank[getDesignation(b).key] ?? 99;
+          if(da !== db) return da - db;
+          return collator.compare(a.tool, b.tool);
+        });
+      }
+
+      function groupTools(tools, view){
+        const groups = new Map();
+
+        for(const tool of tools){
+          let key = '';
+          if(view === 'category'){
+            key = getCategory(tool);
+          } else if(view === 'location'){
+            key = str(getMeta(tool.id).location) || 'Unassigned Location';
+          } else {
+            const first = str(tool.tool).charAt(0).toUpperCase();
+            key = /[A-Z]/.test(first) ? first : '#';
+          }
+
+          if(!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(tool);
+        }
+
+        const names = [...groups.keys()].sort((a, b) => {
+          if(view === 'category'){
+            const known = getKnownCategories();
+            const ai = known.findIndex(c => c.toLowerCase() === a.toLowerCase());
+            const bi = known.findIndex(c => c.toLowerCase() === b.toLowerCase());
+            if(ai !== -1 && bi !== -1 && ai !== bi) return ai - bi;
+            if(a === 'User Added') return 1;
+            if(b === 'User Added') return -1;
+            if(a === 'Miscellaneous') return 1;
+            if(b === 'Miscellaneous') return -1;
+            return collator.compare(a, b);
+          }
+          if(view === 'location'){
+            if(a === 'Unassigned Location') return 1;
+            if(b === 'Unassigned Location') return -1;
+            return collator.compare(a, b);
+          }
+          if(a === '#') return 1;
+          if(b === '#') return -1;
+          return collator.compare(a, b);
+        });
+
+        return names.map(name => ({
+          key: `${view}:${name}`,
+          title: name,
+          tools: sortTools(groups.get(name), view)
+        }));
+      }
+
+      function render(){
+        syncControls();
+        renderLocationDatalist();
+        renderStats();
+        renderScreen();
+        renderPrintRoot();
+      }
+
+      function syncControls(){
+        els.searchInput.value = state.search;
+        els.browseViewSelect.value = state.browseView;
+        els.printViewSelect.value = state.printView;
+        els.clearSearchBtn.classList.toggle('show', !!str(state.search));
+      }
+
+      function renderStats(){
+        const visible = getVisibleTools();
+        const total = getAllTools().length;
+        const starred = getAllTools().filter(t => getMeta(t.id).starred).length;
+        const locationsAssigned = getAllTools().filter(t => str(getMeta(t.id).location)).length;
+        const stats = [
+          `<div class="stat"><strong>${visible.length}</strong> showing${visible.length !== total ? ` of <strong>${total}</strong>` : ''}</div>`,
+          `<div class="stat"><strong>${starred}</strong> starred / pinned</div>`,
+          `<div class="stat"><strong>${getKnownCategories().length}</strong> categories</div>`,
+          `<div class="stat"><strong>${getKnownLocations().length}</strong> locations</div>`,
+          `<div class="stat"><strong>${locationsAssigned}</strong> tools assigned to a location</div>`,
+          `<div class="stat">Browse: <strong>${labelForView(state.browseView)}</strong></div>`,
+          `<div class="stat">Print: <strong>${labelForView(state.printView)}</strong></div>`
+        ];
+        els.statsRow.innerHTML = stats.join('');
+      }
+
+      function renderLocationDatalist(){
+        const locations = getKnownLocations();
+        els.globalLocationList.innerHTML = locations
+          .map(loc => `<option value="${escapeHtml(loc)}"></option>`)
+          .join('');
+      }
+
+      function renderScreen(){
+        const visible = getVisibleTools();
+        if(!visible.length){
+          els.app.innerHTML = `
+            <div class="empty-state">
+              <h2 style="margin:0 0 8px;">No matching tools</h2>
+              <div>Try a broader search or clear the current filter.</div>
+            </div>
+          `;
+          return;
+        }
+
+        const starred = sortTools(visible.filter(t => getMeta(t.id).starred), 'alpha');
+        const remaining = visible.filter(t => !getMeta(t.id).starred);
+        const sections = groupTools(remaining, state.browseView);
+
+        let html = '';
+
+        if(starred.length){
+          html += renderSection('★ Starred Tools', starred, 'starred:top');
+        }
+
+        if(sections.length){
+          html += sections.map(section => renderSection(section.title, section.tools, section.key)).join('');
+        }
+
+        els.app.innerHTML = html;
+      }
+
+      function renderSection(title, tools, key){
+        const collapsed = !!state.collapsed[key];
+        return `
+          <section class="group">
+            <button class="group-header ${collapsed ? 'collapsed' : ''}" data-action="toggle-section" data-key="${escapeHtml(key)}">
+              <div class="group-title-wrap">
+                <div class="group-title">${escapeHtml(title)}</div>
+                <div class="group-count">${tools.length}</div>
+              </div>
+              <div class="caret">▾</div>
+            </button>
+            <div class="group-body ${collapsed ? 'collapsed' : ''}">
+              ${tools.map(renderToolCard).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      function renderToolCard(tool){
+        const meta = getMeta(tool.id);
+        const designation = getDesignation(tool);
+        const category = getCategory(tool);
+        const location = str(meta.location);
+        const isCustom = isUserTool(tool.id);
+        const link = normalizeUrl(meta.link);
+        const locationBadge = location || 'No location';
+
+        return `
+          <article class="tool-card ${designation.key} ${meta.starred ? 'starred' : ''}">
+            <div class="tool-head">
+              <div class="tool-title-wrap">
+                <h3 class="tool-title">${escapeHtml(tool.tool)}</h3>
+                <div class="badge-row">
+                  ${designation.key === 'metric' ? `<span class="badge metric">Metric</span>` : ''}
+                  ${designation.key === 'sae' ? `<span class="badge sae">SAE</span>` : ''}
+                  ${designation.key === 'both' ? `<span class="badge both">SAE + Metric</span>` : ''}
+                  ${isCustom ? `<span class="badge custom">Custom Tool</span>` : ''}
+                  ${meta.starred ? `<span class="badge star">Pinned</span>` : ''}
+                  <span class="badge category">${escapeHtml(category)}</span>
+                  <span class="badge location">${escapeHtml(locationBadge)}</span>
+                </div>
+              </div>
+
+              <button class="star-btn ${meta.starred ? 'active' : ''}" data-action="toggle-star" data-id="${tool.id}" title="${meta.starred ? 'Unstar tool' : 'Star tool'}">
+                ${meta.starred ? '★' : '☆'}
+              </button>
+            </div>
+
+            <div class="tool-meta">
+              <div class="meta-line">
+                <div class="label">Size</div>
+                <div class="value">${escapeHtml(tool.size || 'N/A')}</div>
+              </div>
+              <div class="meta-line">
+                <div class="label">Use</div>
+                <div class="value">${escapeHtml(tool.use || '—')}</div>
+              </div>
+              ${link ? `
+                <div class="meta-line">
+                  <div class="label">Link</div>
+                  <div class="value">
+                    <a class="tool-link" href="${escapeHtml(link)}" target="_blank" rel="noopener">Open link ↗</a>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="location-row">
+              <label>Location</label>
+              <div class="location-input-wrap">
+                <input
+                  type="text"
+                  class="quick-location-input"
+                  data-role="quick-location"
+                  data-id="${tool.id}"
+                  list="globalLocationList"
+                  value="${escapeHtml(location)}"
+                  placeholder="Assign or change location"
+                />
+                <button class="btn ghost small" data-action="clear-location" data-id="${tool.id}" type="button">Clear</button>
+              </div>
+            </div>
+
+            <div class="note-row">
+              <label>Notes</label>
+              <textarea class="note-input" data-role="note" data-id="${tool.id}" placeholder="Add notes...">${escapeHtml(meta.note)}</textarea>
+            </div>
+
+            <div class="card-actions">
+              <button class="btn secondary small" data-action="edit-tool" data-id="${tool.id}" type="button">Edit</button>
+              ${isCustom ? `<button class="btn secondary small" data-action="delete-tool" data-id="${tool.id}" type="button">Delete</button>` : ''}
+            </div>
+          </article>
+        `;
+      }
+
+      function renderPrintRoot(){
+        const visible = getVisibleTools();
+        const starred = sortTools(visible.filter(t => getMeta(t.id).starred), 'alpha');
+        const remaining = visible.filter(t => !getMeta(t.id).starred);
+        const sections = groupTools(remaining, state.printView);
+
+        let html = `
+          <div class="print-header">
+            <h1>Rufus Tool Manager</h1>
+            <div class="sub">An Applied AI Labs Project</div>
+            <div class="meta">
+              Printed: ${new Date().toLocaleString()} •
+              Total tools in print: ${visible.length} •
+              Grouped by: ${labelForView(state.printView)}
+              ${state.search ? ` • Search filter: "${escapeHtml(state.search)}"` : ''}
+            </div>
+          </div>
+        `;
+
+        if(!visible.length){
+          html += `<div>No tools match the current search.</div>`;
+          els.printRoot.innerHTML = html;
+          return;
+        }
+
+        if(starred.length){
+          html += renderPrintSection('★ Starred Tools', starred, state.printView);
+        }
+
+        for(const section of sections){
+          html += renderPrintSection(section.title, section.tools, state.printView);
+        }
+
+        els.printRoot.innerHTML = html;
+      }
+
+      function renderPrintSection(title, tools, view){
+        return `
+          <section class="print-group">
+            <div class="print-group-title">${escapeHtml(title)} (${tools.length})</div>
+            <div class="print-columns">
+              ${tools.map(tool => renderPrintItem(tool, view)).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      function renderPrintItem(tool, view){
+        const meta = getMeta(tool.id);
+        const category = getCategory(tool);
+        const designation = getDesignation(tool);
+        const isCustom = isUserTool(tool.id);
+        const location = str(meta.location) || 'No location';
+        const link = normalizeUrl(meta.link);
+        const note = str(meta.note);
+
+        let detailLine = '';
+        if(view === 'category'){
+          detailLine = `<strong>Location:</strong> ${escapeHtml(location)}`;
+        } else if(view === 'location'){
+          detailLine = `<strong>Category:</strong> ${escapeHtml(category)}`;
+        } else {
+          detailLine = `<strong>Category:</strong> ${escapeHtml(category)} • <strong>Location:</strong> ${escapeHtml(location)}`;
+        }
+
+        if(link){
+          detailLine += ` • <strong>Link:</strong> ${escapeHtml(prettyUrl(link))}`;
+        }
+
+        return `
+          <div class="print-item">
+            <div class="title">
+              ${getMeta(tool.id).starred ? '★ ' : ''}${escapeHtml(tool.tool)}
+              ${designation.key === 'metric' ? `<span class="print-chip">Metric</span>` : ''}
+              ${designation.key === 'sae' ? `<span class="print-chip">SAE</span>` : ''}
+              ${designation.key === 'both' ? `<span class="print-chip">SAE + Metric</span>` : ''}
+              ${isCustom ? `<span class="print-chip">Custom</span>` : ''}
+            </div>
+            <div class="line"><strong>Size:</strong> ${escapeHtml(tool.size || 'N/A')} • <strong>Use:</strong> ${escapeHtml(tool.use || '—')}</div>
+            <div class="line meta">${detailLine}</div>
+            ${note ? `<div class="note"><strong>Note:</strong> ${escapeHtml(note)}</div>` : ''}
+          </div>
+        `;
+      }
+
+      function labelForView(view){
+        if(view === 'category') return 'Category';
+        if(view === 'location') return 'Location';
+        return 'Alphabetical';
+      }
+
+      function openModal(id){
+        document.getElementById(id).classList.add('open');
+      }
+
+      function closeModal(id){
+        document.getElementById(id).classList.remove('open');
+      }
+
+      function openAddToolModal(){
+        els.toolModalTitle.textContent = 'Add Tool';
+        els.toolModeInput.value = 'add';
+        els.toolIdInput.value = '';
+        els.toolNameInput.value = '';
+        els.toolSizeInput.value = '';
+        els.toolUseInput.value = '';
+        els.toolLocationInput.value = '';
+        els.toolLinkInput.value = '';
+        els.toolNoteInput.value = '';
+        els.toolStarInput.checked = false;
+        els.deleteToolBtn.style.display = 'none';
+        els.toolNameInput.disabled = false;
+        els.toolSizeInput.disabled = false;
+        els.toolUseInput.disabled = false;
+        els.toolModalHelper.textContent = 'Add a new custom tool to your inventory. It will be saved locally.';
+        renderToolCategorySelect(null, '');
+        updateAutoCategoryHint();
+        openModal('toolModal');
+        setTimeout(() => els.toolNameInput.focus(), 30);
+      }
+
+      function openEditToolModal(id){
+        const tool = getToolById(id);
+        if(!tool) return;
+
+        const meta = getMeta(id);
+        const custom = isUserTool(id);
+
+        els.toolModalTitle.textContent = custom ? 'Edit Custom Tool' : 'Edit Tool';
+        els.toolModeInput.value = 'edit';
+        els.toolIdInput.value = id;
+        els.toolNameInput.value = tool.tool;
+        els.toolSizeInput.value = tool.size;
+        els.toolUseInput.value = tool.use;
+        els.toolLocationInput.value = meta.location || '';
+        els.toolLinkInput.value = meta.link || '';
+        els.toolNoteInput.value = meta.note || '';
+        els.toolStarInput.checked = !!meta.starred;
+        els.toolNameInput.disabled = !custom;
+        els.toolSizeInput.disabled = !custom;
+        els.toolUseInput.disabled = !custom;
+        els.deleteToolBtn.style.display = custom ? 'inline-flex' : 'none';
+        els.toolModalHelper.textContent = custom
+          ? 'You can edit all fields for custom tools.'
+          : 'Built-in tool name, size, and use are read-only. You can still edit category, notes, location, hyperlink, and star status.';
+        renderToolCategorySelect(tool, meta.categoryOverride || '');
+        updateAutoCategoryHint();
+        openModal('toolModal');
+      }
+
+      function renderToolCategorySelect(tool, selectedValue){
+        const currentTool = tool || {
+          tool: els.toolNameInput.value || '',
+          size: els.toolSizeInput.value || '',
+          use: els.toolUseInput.value || ''
+        };
+
+        const autoLabel = `Auto-detect (${autoCategorize(currentTool)})`;
+        const known = getKnownCategories();
+
+        let selected = str(selectedValue);
+        if(selected && !known.some(c => c.toLowerCase() === selected.toLowerCase())){
+          known.push(selected);
+        }
+
+        const options = [
+          `<option value="">${escapeHtml(autoLabel)}</option>`,
+          ...uniqueStrings(known).map(cat =>
+            `<option value="${escapeHtml(cat)}" ${selected.toLowerCase() === cat.toLowerCase() ? 'selected' : ''}>${escapeHtml(cat)}</option>`
+          )
+        ];
+        els.toolCategorySelect.innerHTML = options.join('');
+      }
+
+      function updateAutoCategoryHint(){
+        const tempTool = {
+          tool: els.toolNameInput.value || '',
+          size: els.toolSizeInput.value || '',
+          use: els.toolUseInput.value || ''
+        };
+        const auto = autoCategorize(tempTool);
+        els.autoCategoryHint.textContent = `Suggested automatic category: ${auto}`;
+        renderToolCategorySelect(null, els.toolCategorySelect.value);
+      }
+
+      function saveToolFromModal(event){
+        event.preventDefault();
+
+        const mode = els.toolModeInput.value;
+        const id = str(els.toolIdInput.value);
+        const name = str(els.toolNameInput.value);
+        const size = str(els.toolSizeInput.value) || 'N/A';
+        const use = str(els.toolUseInput.value) || 'User added';
+        const categoryOverride = str(els.toolCategorySelect.value);
+        const location = str(els.toolLocationInput.value);
+        const note = str(els.toolNoteInput.value);
+        const starred = !!els.toolStarInput.checked;
+        const normalizedLink = normalizeUrl(els.toolLinkInput.value);
+
+        if(mode === 'add' && !name){
+          alert('Tool name is required.');
+          return;
+        }
+
+        if(els.toolLinkInput.value.trim() && !normalizedLink){
+          alert('Please enter a valid hyperlink, such as https://example.com');
+          return;
+        }
+
+        let toolId = id;
+
+        if(mode === 'add'){
+          toolId = makeId('u');
+          state.userTools.push({
+            id: toolId,
+            tool: name,
+            size,
+            use
+          });
+        } else {
+          const tool = getToolById(id);
+          if(!tool) return;
+          if(isUserTool(id)){
+            const idx = state.userTools.findIndex(t => t.id === id);
+            if(idx !== -1){
+              state.userTools[idx] = { ...state.userTools[idx], tool: name, size, use };
+            }
+          }
+        }
+
+        if(location){
+          addLocation(location);
+        }
+
+        setMeta(toolId, {
+          ...getMeta(toolId),
+          categoryOverride,
+          location,
+          link: normalizedLink,
+          note,
+          starred
+        });
+
+        persist(true);
+        closeModal('toolModal');
+      }
+
+      function deleteCurrentToolFromModal(){
+        const id = str(els.toolIdInput.value);
+        if(!id || !isUserTool(id)) return;
+        const tool = getToolById(id);
+        if(!tool) return;
+        if(!confirm(`Delete custom tool "${tool.tool}"?`)) return;
+
+        state.userTools = state.userTools.filter(t => t.id !== id);
+        delete state.toolMeta[id];
+        persist(true);
+        closeModal('toolModal');
+      }
+
+      function toggleStar(id){
+        const meta = getMeta(id);
+        meta.starred = !meta.starred;
+        persist(true);
+      }
+
+      function clearLocation(id){
+        setMeta(id, { ...getMeta(id), location: '' });
+        persist(true);
+      }
+
+      function saveQuickLocation(id, value){
+        const clean = str(value);
+        if(clean) addLocation(clean);
+        setMeta(id, { ...getMeta(id), location: clean });
+        persist(true);
+      }
+
+      function deleteTool(id){
+        if(!isUserTool(id)) return;
+        const tool = getToolById(id);
+        if(!tool) return;
+        if(!confirm(`Delete custom tool "${tool.tool}"?`)) return;
+
+        state.userTools = state.userTools.filter(t => t.id !== id);
+        delete state.toolMeta[id];
+        persist(true);
+      }
+
+      function toggleSection(key){
+        state.collapsed[key] = !state.collapsed[key];
+        persist(true);
+      }
+
+      function updateNote(id, value){
+        setMeta(id, { ...getMeta(id), note: value });
+        persist(false);
+        schedulePrintRefresh();
+      }
+
+      function exportText(){
+        const visible = getVisibleTools();
+        const starred = sortTools(visible.filter(t => getMeta(t.id).starred), 'alpha');
+        const remaining = visible.filter(t => !getMeta(t.id).starred);
+        const sections = groupTools(remaining, state.printView);
+
+        let out = '';
+        out += 'Rufus Tool Manager\n';
+        out += 'An Applied AI Labs Project\n';
+        out += `Generated: ${new Date().toLocaleString()}\n`;
+        out += `Grouped by: ${labelForView(state.printView)}\n`;
+        if(state.search) out += `Search filter: ${state.search}\n`;
+        out += '\n';
+
+        if(starred.length){
+          out += '=== ★ STARRED TOOLS ===\n\n';
+          for(const tool of starred){
+            out += toolToText(tool, state.printView);
+          }
+        }
+
+        for(const section of sections){
+          out += `=== ${section.title.toUpperCase()} (${section.tools.length}) ===\n\n`;
+          for(const tool of section.tools){
+            out += toolToText(tool, state.printView);
+          }
+        }
+
+        const blob = new Blob([out], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rufus-tool-manager-${state.printView}-${new Date().toISOString().slice(0,10)}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function toolToText(tool, view){
+        const meta = getMeta(tool.id);
+        const isCustom = isUserTool(tool.id);
+        const designation = getDesignation(tool).label;
+        const category = getCategory(tool);
+        const location = str(meta.location) || 'No location';
+        const link = normalizeUrl(meta.link) || 'None';
+        const note = str(meta.note) || '(No notes entered)';
+        let extra = '';
+
+        if(view === 'category'){
+          extra = `Location: ${location}`;
+        } else if(view === 'location'){
+          extra = `Category: ${category}`;
+        } else {
+          extra = `Category: ${category}\nLocation: ${location}`;
+        }
+
+        return (
+`----------------------------------------
+Tool: ${tool.tool}${isCustom ? ' (Custom)' : ''}
+Designation: ${designation}
+Size: ${tool.size || 'N/A'}
+Use: ${tool.use || '—'}
+${extra}
+Hyperlink: ${link}
+Starred: ${meta.starred ? 'Yes' : 'No'}
+Notes: ${note}
+
+`);
+      }
+
+      function renderCategoryManager(){
+        const allTools = getAllTools();
+
+        els.systemCategoryList.innerHTML = SYSTEM_CATEGORIES.map(cat => {
+          const count = allTools.filter(t => getCategory(t).toLowerCase() === cat.toLowerCase()).length;
+          return `
+            <div class="manage-row readonly">
+              <div><strong>${escapeHtml(cat)}</strong></div>
+              <div class="usage">${count} tool${count === 1 ? '' : 's'}</div>
+            </div>
+          `;
+        }).join('');
+
+        const customCats = [...state.customCategories].sort(collator.compare);
+        if(!customCats.length){
+          els.customCategoryList.innerHTML = `<div class="helper">No custom categories yet.</div>`;
+          return;
+        }
+
+        els.customCategoryList.innerHTML = customCats.map(cat => {
+          const count = allTools.filter(t => getCategory(t).toLowerCase() === cat.toLowerCase()).length;
+          return `
+            <div class="manage-row" data-name="${escapeHtml(cat)}">
+              <input type="text" value="${escapeHtml(cat)}" data-role="category-name" />
+              <button class="btn secondary small" data-action="save-custom-category" data-name="${escapeHtml(cat)}">Save</button>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <div class="usage">${count} tool${count === 1 ? '' : 's'}</div>
+                <button class="btn secondary small" data-action="delete-custom-category" data-name="${escapeHtml(cat)}">Delete</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderLocationManager(){
+        const allLocations = getKnownLocations();
+        if(!allLocations.length){
+          els.locationList.innerHTML = `<div class="helper">No saved locations yet.</div>`;
+          return;
+        }
+
+        els.locationList.innerHTML = allLocations.map(loc => {
+          const count = getAllTools().filter(t => str(getMeta(t.id).location).toLowerCase() === loc.toLowerCase()).length;
+          return `
+            <div class="manage-row" data-name="${escapeHtml(loc)}">
+              <input type="text" value="${escapeHtml(loc)}" data-role="location-name" />
+              <button class="btn secondary small" data-action="save-location" data-name="${escapeHtml(loc)}">Save</button>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <div class="usage">${count} tool${count === 1 ? '' : 's'}</div>
+                <button class="btn secondary small" data-action="delete-location" data-name="${escapeHtml(loc)}">Delete</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function openCategoryManager(){
+        renderCategoryManager();
+        openModal('categoryModal');
+      }
+
+      function openLocationManager(){
+        renderLocationManager();
+        openModal('locationModal');
+      }
+
+      // --- Event Wiring ---
+      els.searchInput.addEventListener('input', e => {
+        state.search = e.target.value;
+        persist(true);
+      });
+
+      els.clearSearchBtn.addEventListener('click', () => {
+        state.search = '';
+        persist(true);
+      });
+
+      els.browseViewSelect.addEventListener('change', e => {
+        state.browseView = e.target.value;
+        persist(true);
+      });
+
+      els.printViewSelect.addEventListener('change', e => {
+        state.printView = e.target.value;
+        persist(true);
+      });
+
+      els.addToolBtn.addEventListener('click', openAddToolModal);
+      els.manageCategoriesBtn.addEventListener('click', openCategoryManager);
+      els.manageLocationsBtn.addEventListener('click', openLocationManager);
+      els.exportBtn.addEventListener('click', exportText);
+      els.printBtn.addEventListener('click', () => {
+        renderPrintRoot();
+        window.print();
+      });
+
+      els.toolForm.addEventListener('submit', saveToolFromModal);
+      els.deleteToolBtn.addEventListener('click', deleteCurrentToolFromModal);
+
+      [els.toolNameInput, els.toolSizeInput, els.toolUseInput].forEach(input => {
+        input.addEventListener('input', updateAutoCategoryHint);
+      });
+
+      els.app.addEventListener('click', e => {
+        const target = e.target.closest('[data-action]');
+        if(!target) return;
+
+        const action = target.dataset.action;
+        const id = target.dataset.id;
+        const key = target.dataset.key;
+
+        if(action === 'toggle-star') toggleStar(id);
+        if(action === 'edit-tool') openEditToolModal(id);
+        if(action === 'delete-tool') deleteTool(id);
+        if(action === 'clear-location') clearLocation(id);
+        if(action === 'toggle-section') toggleSection(key);
+      });
+
+      els.app.addEventListener('input', e => {
+        if(e.target.matches('[data-role="note"]')){
+          updateNote(e.target.dataset.id, e.target.value);
+        }
+      });
+
+      els.app.addEventListener('change', e => {
+        if(e.target.matches('[data-role="quick-location"]')){
+          saveQuickLocation(e.target.dataset.id, e.target.value);
+        }
+      });
+
+      els.addCategoryForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const name = els.newCategoryInput.value;
+        if(!addCustomCategory(name)){
+          alert('Could not add category. It may be blank or already exist.');
+          return;
+        }
+        els.newCategoryInput.value = '';
+        persist(true);
+        renderCategoryManager();
+      });
+
+      els.customCategoryList.addEventListener('click', e => {
+        const btn = e.target.closest('[data-action]');
+        if(!btn) return;
+        const oldName = btn.dataset.name;
+        const row = btn.closest('.manage-row');
+        const input = row?.querySelector('[data-role="category-name"]');
+        const newName = input ? input.value : oldName;
+
+        if(btn.dataset.action === 'save-custom-category'){
+          if(!renameCustomCategory(oldName, newName)){
+            alert('Could not rename category. It may already exist or be invalid.');
+            return;
+          }
+          persist(true);
+          renderCategoryManager();
+        }
+
+        if(btn.dataset.action === 'delete-custom-category'){
+          if(!confirm(`Delete custom category "${oldName}"? Manual tool assignments to this category will be cleared.`)) return;
+          deleteCustomCategory(oldName);
+          persist(true);
+          renderCategoryManager();
+        }
+      });
+
+      els.addLocationForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const name = els.newLocationInput.value;
+        if(!addLocation(name)){
+          alert('Could not add location. It may be blank or already exist.');
+          return;
+        }
+        els.newLocationInput.value = '';
+        persist(true);
+        renderLocationManager();
+      });
+
+      els.locationList.addEventListener('click', e => {
+        const btn = e.target.closest('[data-action]');
+        if(!btn) return;
+        const oldName = btn.dataset.name;
+        const row = btn.closest('.manage-row');
+        const input = row?.querySelector('[data-role="location-name"]');
+        const newName = input ? input.value : oldName;
+
+        if(btn.dataset.action === 'save-location'){
+          if(!renameLocation(oldName, newName)){
+            alert('Could not rename location. It may already exist or be invalid.');
+            return;
+          }
+          persist(true);
+          renderLocationManager();
+        }
+
+        if(btn.dataset.action === 'delete-location'){
+          if(!confirm(`Delete location "${oldName}"? It will be removed from all assigned tools.`)) return;
+          deleteLocation(oldName);
+          persist(true);
+          renderLocationManager();
+        }
+      });
+
+      document.addEventListener('click', e => {
+        const closeTarget = e.target.closest('[data-close-modal]');
+        if(closeTarget){
+          closeModal(closeTarget.dataset.closeModal);
+        }
+
+        if(e.target.classList.contains('modal')){
+          e.target.classList.remove('open');
+        }
+      });
+
+      document.addEventListener('keydown', e => {
+        if(e.key === 'Escape'){
+          document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
+        }
+      });
+
+      window.addEventListener('beforeprint', renderPrintRoot);
+
+      render();
+    })();
+  </script>
+</body>
+</html>

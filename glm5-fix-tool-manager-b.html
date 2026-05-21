@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rufus Tool Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f0ebe3;
+            --bg-deep: #e8e0d4;
+            --surface: #faf7f2;
+            --surface-raised: #ffffff;
+            --charcoal: #2c2418;
+            --charcoal-light: #4a3f30;
+            --copper: #b8621b;
+            --copper-light: #d4862f;
+            --copper-glow: rgba(184, 98, 27, 0.15);
+            --amber: #e8a823;
+            --amber-glow: rgba(232, 168, 35, 0.12);
+            --red: #c0392b;
+            --red-soft: #e74c3c;
+            --green: #27ae60;
+            --green-soft: rgba(39, 174, 96, 0.1);
+            --text: #2c2418;
+            --text-secondary: #6b5e4f;
+            --text-muted: #9c8e7c;
+            --border: #ddd3c4;
+            --border-light: #ece5da;
+            --shadow-sm: 0 1px 3px rgba(44, 36, 24, 0.06);
+            --shadow-md: 0 4px 12px rgba(44, 36, 24, 0.08);
+            --shadow-lg: 0 8px 30px rgba(44, 36, 24, 0.12);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 4rem;
+            background-image:
+                radial-gradient(circle, rgba(44,36,24,0.03) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* ── Header ── */
+        .header {
+            background: var(--charcoal);
+            background-image:
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 40px),
+                repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 40px);
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--copper);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h1 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: #fff;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .header h1 span.icon {
+            font-size: 1.3rem;
+            filter: none;
+        }
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .tool-count {
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--copper-light);
+            background: rgba(184,98,27,0.12);
+            padding: 0.25rem 0.65rem;
+            border-radius: 20px;
+            margin-right: 0.25rem;
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            letter-spacing: 0.01em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .btn-primary {
+            background: var(--copper);
+            color: #fff;
+        }
+        .btn-primary:hover { background: var(--copper-light); transform: translateY(-1px); }
+        .btn-ghost {
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn-ghost:hover { background: rgba(255,255,255,0.14); color: #fff; }
+        .btn-amber {
+            background: var(--amber);
+            color: var(--charcoal);
+        }
+        .btn-amber:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn-danger {
+            background: transparent;
+            color: var(--red);
+            font-weight: 500;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+        }
+        .btn-danger:hover { background: rgba(192,57,43,0.08); }
+        .btn-edit {
+            background: transparent;
+            color: var(--copper);
+            font-weight: 500;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+        }
+        .btn-edit:hover { background: var(--copper-glow); }
+        .btn-sm {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.75rem;
+        }
+
+        /* ── Container & Toolbar ── */
+        .container {
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+        }
+        .toolbar {
+            background: var(--surface-raised);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+        }
+        .search-wrap {
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+        }
+        .search-wrap::before {
+            content: '\2315';
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+        .search-wrap input {
+            width: 100%;
+            padding: 0.5rem 0.75rem 0.5rem 2rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            background: var(--surface);
+            color: var(--text);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .search-wrap input:focus {
+            outline: none;
+            border-color: var(--copper);
+            box-shadow: 0 0 0 3px var(--copper-glow);
+        }
+        .filter-select {
+            padding: 0.5rem 2rem 0.5rem 0.65rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            color: var(--text);
+            background: var(--surface);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239c8e7c'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.65rem center;
+            min-width: 130px;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--copper);
+            box-shadow: 0 0 0 3px var(--copper-glow);
+        }
+
+        /* ── Stats bar ── */
+        .stats-bar {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.25rem;
+            padding: 0 0.25rem;
+        }
+        .stat {
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .stat strong {
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        /* ── Tool Grid ── */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 0.875rem;
+        }
+        .tool-card {
+            background: var(--surface-raised);
+            padding: 1.1rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-light);
+            border-left: 4px solid var(--border);
+            position: relative;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s;
+            animation: cardIn 0.3s ease both;
+        }
+        .tool-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tool-card.is-starred {
+            border-left-color: var(--amber);
+            background: linear-gradient(135deg, #fffdf5 0%, var(--surface-raised) 100%);
+        }
+        .tool-card .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        .card-corner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.1rem;
+            flex-shrink: 0;
+        }
+        .tool-card .tool-name {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--charcoal);
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+        }
+        .star-btn {
+            cursor: pointer;
+            color: var(--border);
+            font-size: 1.2rem;
+            transition: color 0.15s, transform 0.15s;
+            flex-shrink: 0;
+            line-height: 1;
+            user-select: none;
+        }
+        .star-btn:hover { transform: scale(1.15); }
+        .star-btn.active {
+            color: var(--amber);
+            text-shadow: 0 0 8px var(--amber-glow);
+        }
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .badge {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.65rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            background: var(--charcoal);
+            color: rgba(255,255,255,0.9);
+        }
+        .badge-cat-fastening { background: #5a4a35; }
+        .badge-cat-electrical { background: #2e6090; }
+        .badge-cat-plumbing { background: #2e7d5b; }
+        .badge-cat-safety { background: #a63d2f; }
+        .badge-cat-misc { background: #6b5e4f; }
+        .loc-tag {
+            font-family: var(--font-display);
+            font-size: 0.68rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        .loc-tag::before {
+            content: '\25CB';
+            margin-right: 0.2rem;
+            font-size: 0.5rem;
+            vertical-align: middle;
+        }
+        .size-tag {
+            font-family: var(--font-body);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            background: var(--bg-deep);
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+        }
+        .tool-use {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-top: 0.45rem;
+        }
+        .tool-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--copper);
+            text-decoration: none;
+            margin-top: 0.35rem;
+            transition: color 0.15s;
+        }
+        .tool-link:hover { color: var(--copper-light); text-decoration: underline; }
+        .card-actions {
+            margin-top: 0.75rem;
+            padding-top: 0.6rem;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            gap: 0.25rem;
+            justify-content: flex-end;
+        }
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+        .empty-state p {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-secondary);
+        }
+        .empty-state span { font-size: 0.85rem; }
+
+        /* ── Dialogs ── */
+        dialog {
+            padding: 0;
+            border-radius: var(--radius-lg);
+            border: none;
+            max-width: 480px;
+            width: calc(100% - 2rem);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: modalIn 0.2s ease;
+        }
+        dialog::backdrop {
+            background: rgba(44, 36, 24, 0.45);
+            backdrop-filter: blur(4px);
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.96) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-header {
+            background: var(--charcoal);
+            color: #fff;
+            padding: 1.1rem 1.5rem;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: -0.01em;
+        }
+        .modal-body {
+            padding: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.55rem 0.7rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            color: var(--text);
+            background: var(--surface);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--copper);
+            box-shadow: 0 0 0 3px var(--copper-glow);
+        }
+        .form-group textarea { resize: vertical; min-height: 60px; }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        .modal-footer {
+            padding: 0.75rem 1.5rem 1.25rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+        .modal-footer .btn-cancel {
+            font-family: var(--font-display);
+            font-weight: 500;
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        .modal-footer .btn-cancel:hover { background: var(--bg-deep); }
+
+        /* ── Print Modal ── */
+        .print-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.75rem;
+            margin: 0.5rem 0;
+        }
+        .print-option {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1rem 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .print-option:hover { border-color: var(--copper-light); }
+        .print-option.selected {
+            border-color: var(--copper);
+            background: var(--copper-glow);
+        }
+        .print-option .opt-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.35rem;
+        }
+        .print-option .opt-label {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text);
+        }
+        .print-option .opt-desc {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.15rem;
+        }
+
+        /* ── Print Styles ── */
+        @media print {
+            body { background: white !important; background-image: none !important; padding: 0; }
+            .no-print, .header, .toolbar, .stats-bar, dialog { display: none !important; }
+            .container { padding: 0; max-width: 100%; }
+            .tools-grid { display: none !important; }
+            #printArea {
+                display: block !important;
+                font-family: 'DM Sans', system-ui, sans-serif;
+                color: #1a1a1a;
+            }
+            #printArea .print-header {
+                text-align: center;
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+                border-bottom: 3px double #333;
+            }
+            #printArea .print-header h1 {
+                font-family: 'Outfit', sans-serif;
+                font-size: 1.6rem;
+                font-weight: 800;
+                margin: 0;
+                letter-spacing: -0.02em;
+            }
+            #printArea .print-header .print-sub {
+                font-size: 0.8rem;
+                color: #666;
+                margin-top: 0.25rem;
+            }
+            #printArea .print-group {
+                page-break-inside: avoid;
+                margin-bottom: 1.25rem;
+            }
+            #printArea .print-group h2 {
+                font-family: 'Outfit', sans-serif;
+                font-size: 1rem;
+                font-weight: 700;
+                margin: 0 0 0.5rem;
+                padding: 0.35rem 0.6rem;
+                background: #f0ebe3 !important;
+                border-left: 4px solid #b8621b;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            #printArea .print-group .group-count {
+                font-size: 0.7rem;
+                color: #888;
+                font-weight: 500;
+            }
+            #printArea table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 9pt;
+            }
+            #printArea thead th {
+                font-family: 'Outfit', sans-serif;
+                font-weight: 600;
+                font-size: 8pt;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #555;
+                text-align: left;
+                padding: 0.35rem 0.5rem;
+                border-bottom: 2px solid #333;
+            }
+            #printArea tbody td {
+                padding: 0.4rem 0.5rem;
+                border-bottom: 1px solid #ddd;
+                vertical-align: top;
+            }
+            #printArea tbody tr:last-child td { border-bottom: none; }
+            #printArea .star-mark { color: #b8860b; }
+            #printArea .print-footer {
+                margin-top: 1.5rem;
+                padding-top: 0.75rem;
+                border-top: 1px solid #ccc;
+                font-size: 0.7rem;
+                color: #999;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header no-print">
+    <h1><span class="icon">&#9881;</span> Rufus Tool Manager</h1>
+    <div class="header-actions">
+        <span class="tool-count" id="toolCount"></span>
+        <button onclick="App.openSettings()" class="btn btn-ghost">Settings</button>
+        <button onclick="App.openPrintModal()" class="btn btn-amber">&#9998; Print</button>
+    </div>
+</header>
+
+<div class="container no-print">
+    <div class="toolbar">
+        <div class="search-wrap">
+            <input type="text" id="searchInput" placeholder="Search tools..." oninput="App.render()">
+        </div>
+        <select id="catFilter" class="filter-select" onchange="App.render()"></select>
+        <select id="locFilter" class="filter-select" onchange="App.render()"></select>
+        <select id="sortControl" class="filter-select" onchange="App.render()">
+            <option value="star-name">Starred, then A-Z</option>
+            <option value="name">Name A-Z</option>
+            <option value="name-desc">Name Z-A</option>
+            <option value="cat">Category</option>
+            <option value="loc">Location</option>
+            <option value="newest">Newest first</option>
+        </select>
+        <button onclick="App.openModal()" class="btn btn-primary">+ Add Tool</button>
+    </div>
+    <div class="stats-bar" id="statsBar"></div>
+    <div class="tools-grid" id="grid"></div>
+</div>
+
+<!-- Add/Edit Modal -->
+<dialog id="modal">
+    <div class="modal-header" id="modalTitle">Add Tool</div>
+    <form onsubmit="App.saveTool(event)">
+        <div class="modal-body">
+            <input type="hidden" id="editIndex">
+            <div class="form-group">
+                <label>Tool Name</label>
+                <input type="text" id="toolName" placeholder="e.g. Socket Set" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Size</label>
+                    <input type="text" id="toolSize" placeholder='e.g. 1/4"–3/4"'>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="toolCat"></select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Location</label>
+                    <select id="toolLoc"></select>
+                </div>
+                <div class="form-group">
+                    <label>Link</label>
+                    <input type="url" id="toolLink" placeholder="Product page URL">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Primary Use</label>
+                <textarea id="toolUse" placeholder="What is this tool used for?"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" onclick="this.closest('dialog').close()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Tool</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- Settings Modal -->
+<dialog id="settingsModal">
+    <div class="modal-header">Manage Lists</div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Categories (comma separated)</label>
+            <textarea id="catsList" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Locations (comma separated)</label>
+            <textarea id="locsList" rows="3"></textarea>
+            <button type="button" class="btn btn-danger" style="margin-top:0.5rem;font-size:0.75rem;padding:0.35rem 0.7rem;" onclick="App.clearLocations()">Clear All Locations from Tools</button>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-cancel" onclick="document.getElementById('settingsModal').close()">Cancel</button>
+        <button onclick="App.saveSettings()" class="btn btn-primary">Save</button>
+    </div>
+</dialog>
+
+<!-- Print Modal -->
+<dialog id="printModal">
+    <div class="modal-header">Print Inventory</div>
+    <div class="modal-body">
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.75rem;">Choose how to group your printed inventory list:</p>
+        <div class="print-options">
+            <div class="print-option selected" data-mode="cat" onclick="App.selectPrintMode(this)">
+                <div class="opt-icon">&#9783;</div>
+                <div class="opt-label">By Category</div>
+                <div class="opt-desc">Fastening, Electrical...</div>
+            </div>
+            <div class="print-option" data-mode="loc" onclick="App.selectPrintMode(this)">
+                <div class="opt-icon">&#9962;</div>
+                <div class="opt-label">By Location</div>
+                <div class="opt-desc">Garage, Bay 1...</div>
+            </div>
+            <div class="print-option" data-mode="alpha" onclick="App.selectPrintMode(this)">
+                <div class="opt-icon">&#  A-Z</div>
+                <div class="opt-label">Alphabetical</div>
+                <div class="opt-desc">All tools A to Z</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn-cancel" onclick="document.getElementById('printModal').close()">Cancel</button>
+        <button onclick="App.executePrint()" class="btn btn-primary">&#9998; Print Now</button>
+    </div>
+</dialog>
+
+<!-- Print Target -->
+<div id="printArea" style="display:none;"></div>
+
+<script>
+const INITIAL_TOOLS = [
+  { "tool": "SAE Socket Set (deep + shallow)", "size": "1/4\"–3/4\"", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Chassis bolts, battery tray, generator mounts, sway bar links", "starred": false },
+  { "tool": "Metric Socket Set", "size": "8mm–17mm", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "House hardware, awning, steps, solar brackets", "starred": false },
+  { "tool": "Breaker Bar", "size": "18–24 inch, 1/2\" drive", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Lug nuts, suspension bolts, stubborn fasteners", "starred": false },
+  { "tool": "Torque Wrench", "size": "20–150 ft-lb, 1/2\" drive", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Lug nuts, hitch bolts, sway bar hardware", "starred": false },
+  { "tool": "SAE Combination Wrenches", "size": "1/4\"–3/4\"", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Chassis components in tight spaces", "starred": false },
+  { "tool": "Metric Combination Wrenches", "size": "8mm–17mm", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Water pump, interior hardware, appliances", "starred": false },
+  { "tool": "Adjustable Wrench", "size": "10–12 inch", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "LP fittings, odd-size nuts", "starred": false },
+  { "tool": "Vise-Grips", "size": "Standard + needle-nose", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Broken bolts, clamps, emergency fixes", "starred": false },
+  { "tool": "Screwdrivers", "size": "Phillips #1/#2, flat #3/#5", "cat": "Fastening", "loc": "Inside Cabinet", "link": "", "use": "Interior panels, electrical covers", "starred": false },
+  { "tool": "Torx Bit Set", "size": "T15–T50", "cat": "Fastening", "loc": "Inside Cabinet", "link": "", "use": "Ford trim, step motors, latches", "starred": false },
+  { "tool": "Allen/Hex Keys", "size": "SAE + metric", "cat": "Fastening", "loc": "Inside Cabinet", "link": "", "use": "Furniture, brackets, electronics", "starred": false },
+  { "tool": "Multimeter", "size": "Auto-ranging", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "12V diagnostics, battery checks, fuses", "starred": false },
+  { "tool": "Non-contact Voltage Tester", "size": "Standard", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "AC pedestal safety check", "starred": false },
+  { "tool": "12V Test Light", "size": "Standard", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "Quick fuse/line diagnostics", "starred": false },
+  { "tool": "Crimping Tool + Heat-Shrink Connectors", "size": "12–16 AWG", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "RV wiring repairs, solar wiring", "starred": false },
+  { "tool": "Wire Strippers", "size": "10–18 AWG", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "Electrical work", "starred": false },
+  { "tool": "Electrical Tape", "size": "Standard", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "Harness repairs, temporary fixes", "starred": false },
+  { "tool": "ATC/ATO Fuses", "size": "5A–40A", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "RV fuse panel replacements", "starred": false },
+  { "tool": "Heat Gun or Butane Torch", "size": "Standard", "cat": "Electrical", "loc": "Inside Cabinet", "link": "", "use": "Heat-shrink connectors", "starred": false },
+  { "tool": "Zip Ties", "size": "4–12 inch", "cat": "Misc", "loc": "Front Storage", "link": "", "use": "Cable management, emergency repairs", "starred": false },
+  { "tool": "Duct Tape", "size": "Standard", "cat": "Misc", "loc": "Front Storage", "link": "", "use": "Temporary seals, hose fixes", "starred": false },
+  { "tool": "Gorilla Tape", "size": "Standard", "cat": "Misc", "loc": "Front Storage", "link": "", "use": "Heavy-duty emergency repairs", "starred": false },
+  { "tool": "Utility Knife", "size": "Standard", "cat": "Misc", "loc": "Front Storage", "link": "", "use": "Cutting tape, hoses, packaging", "starred": false },
+  { "tool": "Pliers Set", "size": "Slip-joint, needle-nose, channel-lock", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Plumbing, electrical, clamps", "starred": false },
+  { "tool": "Channel-Lock Pliers", "size": "12 inch", "cat": "Plumbing", "loc": "Bay 1", "link": "", "use": "Water hose fittings, sewer fittings", "starred": false },
+  { "tool": "Rubber Mallet", "size": "Standard", "cat": "Misc", "loc": "Garage", "link": "", "use": "Leveling blocks, nudging stuck parts", "starred": false },
+  { "tool": "Tire Pressure Gauge", "size": "80–120 PSI", "cat": "Safety", "loc": "Garage", "link": "", "use": "E-450 tire checks", "starred": false },
+  { "tool": "Portable Air Compressor", "size": "120 PSI capable", "cat": "Safety", "loc": "Garage", "link": "", "use": "Top off E-450 tires (80–95 PSI)", "starred": false },
+  { "tool": "Lug Nut Socket", "size": "1-1/16 inch", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Ford E-450 wheel lug nuts", "starred": false },
+  { "tool": "Work Gloves", "size": "Leather + nitrile", "cat": "Safety", "loc": "Front Storage", "link": "", "use": "Sewer, electrical, mechanical work", "starred": false },
+  { "tool": "Headlamp", "size": "Standard", "cat": "Safety", "loc": "Front Storage", "link": "", "use": "Night repairs, under-coach work", "starred": false },
+  { "tool": "Small Pry Bar", "size": "8–12 inch", "cat": "Misc", "loc": "Bay 1", "link": "", "use": "Removing trim, stuck panels", "starred": false },
+  { "tool": "Caulking Gun", "size": "Standard", "cat": "Plumbing", "loc": "Garage", "link": "", "use": "Roof sealant, exterior repairs", "starred": false },
+  { "tool": "Self-Leveling Lap Sealant", "size": "Dicor or Alpha", "cat": "Plumbing", "loc": "Garage", "link": "", "use": "Roof maintenance", "starred": false },
+  { "tool": "Butyl Tape", "size": "Standard", "cat": "Plumbing", "loc": "Garage", "link": "", "use": "Window/fixture resealing", "starred": false },
+  { "tool": "Sewer Wrench", "size": "Standard", "cat": "Plumbing", "loc": "Bay 1", "link": "", "use": "Stubborn bayonet fittings", "starred": false },
+  { "tool": "Silicone Spray", "size": "Standard", "cat": "Misc", "loc": "Garage", "link": "", "use": "Steps, hinges, slides", "starred": false },
+  { "tool": "Dry Lube (Graphite/PTFE)", "size": "Standard", "cat": "Misc", "loc": "Garage", "link": "", "use": "Locks, latches", "starred": false },
+  { "tool": "Torque-Seal Paint", "size": "Standard", "cat": "Fastening", "loc": "Bay 1", "link": "", "use": "Marking critical bolts (sway bars, hitch)", "starred": false }
+];
+
+const STORAGE_KEY = 'rufus_data';
+const CAT_COLORS = {
+    'Fastening': 'badge-cat-fastening',
+    'Electrical': 'badge-cat-electrical',
+    'Plumbing': 'badge-cat-plumbing',
+    'Safety': 'badge-cat-safety',
+    'Misc': 'badge-cat-misc'
+};
+
+const App = {
+    printMode: 'cat',
+
+    state: {
+        tools: JSON.parse(localStorage.getItem(STORAGE_KEY)) || [...INITIAL_TOOLS],
+        settings: JSON.parse(localStorage.getItem('rufus_settings')) || {
+            cats: ['Fastening', 'Electrical', 'Plumbing', 'Safety', 'Misc'],
+            locs: ['Garage', 'Bay 1', 'Front Storage', 'Inside Cabinet']
+        }
+    },
+
+    init() {
+        this.save();
+    },
+
+    save() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state.tools));
+        localStorage.setItem('rufus_settings', JSON.stringify(this.state.settings));
+        this.render();
+    },
+
+    render() {
+        const grid = document.getElementById('grid');
+        const search = document.getElementById('searchInput').value.toLowerCase();
+
+        const catFilter = document.getElementById('catFilter');
+        const locFilter = document.getElementById('locFilter');
+        const catVal = catFilter.value;
+        const locVal = locFilter.value;
+        catFilter.innerHTML = '<option value="">All Categories</option>' + this.state.settings.cats.map(c => `<option value="${c}">${c}</option>`).join('');
+        locFilter.innerHTML = '<option value="">All Locations</option>' + this.state.settings.locs.map(l => `<option value="${l}">${l}</option>`).join('');
+        catFilter.value = catVal;
+        locFilter.value = locVal;
+        const sortBy = document.getElementById('sortControl').value;
+
+        const sorted = [...this.state.tools].sort((a, b) => {
+            if (sortBy === 'star-name') {
+                if (a.starred !== b.starred) return a.starred ? -1 : 1;
+                return a.tool.localeCompare(b.tool);
+            }
+            if (sortBy === 'name') return a.tool.localeCompare(b.tool);
+            if (sortBy === 'name-desc') return b.tool.localeCompare(a.tool);
+            if (sortBy === 'cat') return a.cat.localeCompare(b.cat) || a.tool.localeCompare(b.tool);
+            if (sortBy === 'loc') return a.loc.localeCompare(b.loc) || a.tool.localeCompare(b.tool);
+            return 0; // 'newest' — keep insertion order
+        });
+
+        const filtered = sorted.filter(t => {
+            if (search && !t.tool.toLowerCase().includes(search) && !t.use.toLowerCase().includes(search)) return false;
+            if (catVal && t.cat !== catVal) return false;
+            if (locVal && t.loc !== locVal) return false;
+            return true;
+        });
+
+        // Stats
+        const starCount = this.state.tools.filter(t => t.starred).length;
+        document.getElementById('toolCount').textContent = `${this.state.tools.length} tools`;
+        document.getElementById('statsBar').innerHTML =
+            `<span class="stat">Showing <strong>${filtered.length}</strong> of ${this.state.tools.length}</span>` +
+            (starCount ? `<span class="stat"><strong>${starCount}</strong> starred</span>` : '');
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '<div class="empty-state"><p>No tools found</p><span>Try adjusting your search or filters</span></div>';
+            return;
+        }
+
+        grid.innerHTML = filtered.map((t, i) => {
+            const idx = this.state.tools.indexOf(t);
+            const badgeClass = CAT_COLORS[t.cat] || '';
+            return `
+            <div class="tool-card ${t.starred ? 'is-starred' : ''}" style="animation-delay:${Math.min(i * 30, 300)}ms">
+                <div class="card-top">
+                    <div class="tool-name">${this.esc(t.tool)}</div>
+                    <div class="card-corner">
+                        <span class="star-btn ${t.starred ? 'active' : ''}" onclick="App.toggleStar(${idx})" title="${t.starred ? 'Unstar' : 'Star'}">&#9733;</span>
+                        <span class="loc-tag">${this.esc(t.loc)}</span>
+                    </div>
+                </div>
+                <div class="card-meta">
+                    <span class="badge ${badgeClass}">${this.esc(t.cat)}</span>
+                    ${t.size ? `<span class="size-tag">${this.esc(t.size)}</span>` : ''}
+                </div>
+                <div class="tool-use">${this.esc(t.use)}</div>
+                ${t.link ? `<a href="${this.esc(t.link)}" target="_blank" rel="noopener" class="tool-link">&#8599; Product Page</a>` : ''}
+                <div class="card-actions">
+                    <button class="btn-edit" onclick="App.openModal(${idx})">Edit</button>
+                    <button class="btn-danger" onclick="App.delete(${idx})">Delete</button>
+                </div>
+            </div>`;
+        }).join('');
+    },
+
+    esc(s) {
+        const d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    },
+
+    openModal(idx = -1) {
+        const modal = document.getElementById('modal');
+        const catSelect = document.getElementById('toolCat');
+        const locSelect = document.getElementById('toolLoc');
+
+        catSelect.innerHTML = this.state.settings.cats.map(c => `<option value="${c}">${c}</option>`).join('');
+        locSelect.innerHTML = this.state.settings.locs.map(l => `<option value="${l}">${l}</option>`).join('');
+
+        if (idx > -1) {
+            const t = this.state.tools[idx];
+            document.getElementById('modalTitle').textContent = 'Edit Tool';
+            document.getElementById('editIndex').value = idx;
+            document.getElementById('toolName').value = t.tool;
+            document.getElementById('toolSize').value = t.size;
+            document.getElementById('toolCat').value = t.cat;
+            document.getElementById('toolLoc').value = t.loc;
+            document.getElementById('toolLink').value = t.link || '';
+            document.getElementById('toolUse').value = t.use;
+        } else {
+            document.getElementById('modalTitle').textContent = 'Add Tool';
+            document.getElementById('editIndex').value = -1;
+            modal.querySelector('form').reset();
+        }
+        modal.showModal();
+    },
+
+    saveTool(e) {
+        e.preventDefault();
+        const idx = parseInt(document.getElementById('editIndex').value);
+        const data = {
+            tool: document.getElementById('toolName').value.trim(),
+            size: document.getElementById('toolSize').value.trim(),
+            cat: document.getElementById('toolCat').value,
+            loc: document.getElementById('toolLoc').value,
+            link: document.getElementById('toolLink').value.trim(),
+            use: document.getElementById('toolUse').value.trim(),
+            starred: idx > -1 ? this.state.tools[idx].starred : false
+        };
+
+        if (idx > -1) this.state.tools[idx] = data;
+        else this.state.tools.push(data);
+
+        this.save();
+        document.getElementById('modal').close();
+    },
+
+    toggleStar(idx) {
+        this.state.tools[idx].starred = !this.state.tools[idx].starred;
+        this.save();
+    },
+
+    delete(idx) {
+        if (confirm('Delete this tool?')) {
+            this.state.tools.splice(idx, 1);
+            this.save();
+        }
+    },
+
+    openSettings() {
+        document.getElementById('catsList').value = this.state.settings.cats.join(', ');
+        document.getElementById('locsList').value = this.state.settings.locs.join(', ');
+        document.getElementById('settingsModal').showModal();
+    },
+
+    saveSettings() {
+        this.state.settings.cats = document.getElementById('catsList').value.split(',').map(s => s.trim()).filter(Boolean);
+        this.state.settings.locs = document.getElementById('locsList').value.split(',').map(s => s.trim()).filter(Boolean);
+        this.save();
+        document.getElementById('settingsModal').close();
+    },
+
+    clearLocations() {
+        if (!confirm('Remove location info from all tools?')) return;
+        this.state.tools.forEach(t => t.loc = '');
+        this.save();
+    },
+
+    // ── Print Engine ──
+    openPrintModal() {
+        document.getElementById('printModal').showModal();
+    },
+
+    selectPrintMode(el) {
+        el.parentElement.querySelectorAll('.print-option').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+        this.printMode = el.dataset.mode;
+    },
+
+    executePrint() {
+        document.getElementById('printModal').close();
+        const mode = this.printMode;
+        const tools = this.state.tools;
+        let grouped = {};
+        let groupLabel = '';
+
+        if (mode === 'cat') {
+            groupLabel = 'Category';
+            this.state.settings.cats.forEach(c => { if (tools.some(t => t.cat === c)) grouped[c] = tools.filter(t => t.cat === c); });
+        } else if (mode === 'loc') {
+            groupLabel = 'Location';
+            this.state.settings.locs.forEach(l => { if (tools.some(t => t.loc === l)) grouped[l] = tools.filter(t => t.loc === l); });
+        } else {
+            grouped['All Tools'] = [...tools].sort((a, b) => a.tool.localeCompare(b.tool));
+            groupLabel = '';
+        }
+
+        const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        let html = `
+            <div class="print-header">
+                <h1>Rufus Tool Inventory</h1>
+                <div class="print-sub">${tools.length} tools &middot; ${date}${groupLabel ? ' &middot; Grouped by ' + groupLabel : ''}</div>
+            </div>`;
+
+        for (let g in grouped) {
+            const items = grouped[g];
+            const starCount = items.filter(t => t.starred).length;
+            html += `<div class="print-group">
+                <h2>${this.esc(g)} <span class="group-count">(${items.length}${starCount ? `, ${starCount} starred` : ''})</span></h2>
+                <table>
+                    <thead><tr><th style="width:30%">Tool</th><th style="width:18%">Size</th><th style="width:52%">${mode === 'cat' ? 'Location' : 'Use'}</th></tr></thead>
+                    <tbody>`;
+            items.sort((a, b) => {
+                if (mode !== 'alpha' && a.starred !== b.starred) return a.starred ? -1 : 1;
+                return a.tool.localeCompare(b.tool);
+            }).forEach(t => {
+                html += `<tr>
+                    <td>${t.starred ? '<span class="star-mark">&#9733;</span> ' : ''}${this.esc(t.tool)}</td>
+                    <td>${this.esc(t.size)}</td>
+                    <td>${this.esc(mode === 'cat' ? t.loc : t.use)}</td>
+                </tr>`;
+            });
+            html += `</tbody></table></div>`;
+        }
+
+        html += `<div class="print-footer">Rufus Tool Manager &middot; Printed ${date}</div>`;
+
+        document.getElementById('printArea').innerHTML = html;
+        setTimeout(() => window.print(), 100);
+    }
+};
+
+App.init();
+</script>
+</body>
+</html>
