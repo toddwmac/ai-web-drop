@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todd MacDonald | AI Strategy & Transformation Advisor</title>
+    <style>
+        :root {
+            --bg-body: #f5f5f5;
+            --bg-document: #ffffff;
+            --bg-header: linear-gradient(to bottom, #fafafa, #ffffff);
+            --bg-highlight: #f8f9fa;
+            --bg-footer: #1a365d;
+            --text-primary: #2c2c2c;
+            --text-secondary: #3a3a3a;
+            --text-muted: #666;
+            --text-footer: #ffffff;
+            --border-color: #e5e5e5;
+            --border-section: #d0d0d0;
+            --accent: #1a365d;
+            --bullet-color: #1a365d;
+            --shadow: rgba(0,0,0,0.08);
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #1a1a2e;
+            --bg-document: #16213e;
+            --bg-header: linear-gradient(to bottom, #1a1a2e, #16213e);
+            --bg-highlight: #1f2b4d;
+            --bg-footer: #0f1419;
+            --text-primary: #e0e0e0;
+            --text-secondary: #c0c0c0;
+            --text-muted: #999;
+            --text-footer: #e0e0e0;
+            --border-color: #2a3a5c;
+            --border-section: #2a3a5c;
+            --accent: #6eb5ff;
+            --bullet-color: #6eb5ff;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', Times, serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--bg-body);
+            margin: 0;
+            padding: 0;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .nav-sidebar {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-550px);
+            top: 0;
+            width: 220px;
+            height: 100vh;
+            background: var(--bg-document);
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            z-index: 100;
+            overflow-y: auto;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-logo {
+            font-family: 'Garamond', 'Georgia', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent);
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .nav-links a {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 10px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+            background: var(--bg-highlight);
+        }
+
+        .nav-links a.active {
+            color: var(--accent);
+            background: var(--bg-highlight);
+            font-weight: 600;
+        }
+
+        .theme-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-document);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 10px 18px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--bg-highlight);
+            transform: scale(1.05);
+        }
+
+        .main-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding: 40px 20px 40px 260px;
+        }
+
+        .document {
+            max-width: 850px;
+            background: var(--bg-document);
+            box-shadow: 0 4px 20px var(--shadow);
+            border-top: 6px solid var(--accent);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            padding: 50px 60px;
+            border-bottom: 2px solid var(--border-color);
+            background: var(--bg-header);
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .header h1 {
+            font-family: 'Garamond', 'Georgia', serif;
+            font-size: 42px;
+            font-weight: 400;
+            color: var(--accent);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header .title {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header .organization {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .content {
+            padding: 50px 60px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-section);
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .section-text {
+            font-size: 15px;
+            color: var(--text-secondary);
+            text-align: justify;
+            transition: color 0.3s ease;
+        }
+
+        .section-text p {
+            margin-bottom: 14px;
+        }
+
+        .bullet-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .bullet-list li {
+            font-size: 15px;
+            color: var(--text-secondary);
+            padding: 6px 0 6px 18px;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .bullet-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--bullet-color);
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .column-section {
+            margin-bottom: 30px;
+        }
+
+        .item-label {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .item-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            transition: color 0.3s ease;
+        }
+
+        .engagement-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+
+        .engagement-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .engagement-title {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .engagement-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            transition: color 0.3s ease;
+        }
+
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 20px;
+            margin-top: 15px;
+        }
+
+        .expertise-item {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding-left: 18px;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .expertise-item:before {
+            content: "–";
+            position: absolute;
+            left: 0;
+            color: var(--bullet-color);
+            transition: color 0.3s ease;
+        }
+
+        .highlight-box {
+            background: var(--bg-highlight);
+            border-left: 3px solid var(--accent);
+            padding: 18px 20px;
+            margin-top: 20px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .highlight-box .item-label {
+            margin-bottom: 12px;
+        }
+
+        .highlight-box .bullet-list li {
+            font-size: 14px;
+        }
+
+        .footer {
+            padding: 30px 60px;
+            background: var(--bg-footer);
+            color: var(--text-footer);
+            text-align: center;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .footer h3 {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .footer p {
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .footer a {
+            color: var(--text-footer);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-sidebar {
+                transform: translateX(-50%);
+                left: 50%;
+                margin-left: -425px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-sidebar {
+                position: relative;
+                transform: none;
+                left: 0;
+                margin-left: 0;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 15px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .nav-logo {
+                font-size: 14px;
+                padding-bottom: 0;
+                border-bottom: none;
+                border-right: 1px solid var(--border-color);
+                padding-right: 10px;
+            }
+
+            .nav-links {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .nav-links a {
+                font-size: 10px;
+                padding: 6px 8px;
+            }
+
+            .theme-toggle-btn {
+                top: 10px;
+                right: 10px;
+                padding: 8px 14px;
+                font-size: 16px;
+            }
+
+            .main-wrapper {
+                padding: 20px 10px;
+            }
+
+            .header, .content, .footer {
+                padding: 30px 25px;
+            }
+
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .expertise-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                margin: 0;
+                padding: 0;
+            }
+
+            .nav-sidebar {
+                display: none;
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+                padding: 0;
+            }
+
+            .document {
+                box-shadow: none;
+                border-top: none;
+            }
+
+            .footer {
+                background: white;
+                color: #2c2c2c;
+                border-top: 2px solid #1a365d;
+            }
+
+            .footer a {
+                color: #1a365d;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-sidebar">
+        <div class="nav-logo">Todd MacDonald</div>
+        <ul class="nav-links">
+            <li><a href="#summary">Summary</a></li>
+            <li><a href="#value">Value</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#expertise">Expertise</a></li>
+            <li><a href="#engagements">Engagement Types</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+
+    <div class="main-wrapper">
+        <div class="document">
+        <header class="header">
+            <h1>Todd MacDonald</h1>
+            <p class="title">AI Strategy & Transformation Advisor</p>
+            <p class="organization">Center for Applied AI</p>
+        </header>
+
+        <div class="content">
+            <section class="section" id="summary">
+                <h2 class="section-title">Executive Summary</h2>
+                <div class="section-text">
+                    <p>Todd MacDonald is a senior AI strategy advisor and organizational transformation architect with more than three decades of experience helping enterprises, academic institutions, and government bodies navigate complex technology transitions. He specializes in applied artificial intelligence: translating frontier research into practical, revenue-generating, and mission-critical deployments.</p>
+                    <p>Using a unique combination of leadership psychology and applied technology, Todd serves as a trusted thought partner to C-suite executives, provosts, deans, and board members who need more than a vendor pitch — they need a seasoned guide who has stood in their shoes and delivered results.</p>
+                </div>
+            </section>
+
+            <section class="section" id="value">
+                <h2 class="section-title">Core Value Proposition</h2>
+                <div class="section-text">
+                    <p>Todd bridges the gap between AI's theoretical promise and organizational reality. His engagements deliver:</p>
+                    <ul class="bullet-list">
+                        <li>Strategic clarity on where AI creates durable value versus where it introduces unacceptable risk</li>
+                        <li>Practical roadmaps that align AI initiatives with institutional strategy, governance, and culture</li>
+                        <li>Independent, vendor-neutral counsel — no commercial technology or platform bias</li>
+                        <li>Accelerated readiness by building internal AI literacy, champions, and governance structures</li>
+                        <li>Credibility with both technical teams and senior leadership, enabling faster alignment and execution</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="section" id="experience">
+                <h2 class="section-title">Representative Experience</h2>
+                <ul class="bullet-list">
+                    <li>Microsoft Enterprise Strategy Consultant (international and domestic)</li>
+                    <li>Microsoft Enterprise Architect (domestic)</li>
+                    <li>Organizational Transformation Architect, Office of the Governor (domestic)</li>
+                    <li>AI researcher, advisor, solutions architect (international and domestic)</li>
+                </ul>
+                <div class="highlight-box">
+                    <p class="item-label">AI Focus Areas</p>
+                    <ul class="bullet-list">
+                        <li>Human Centered AI</li>
+                        <li>AI Mindset Development</li>
+                        <li>AI Interpretability and system dynamics</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="section" id="expertise">
+                <h2 class="section-title">Domains of Expertise</h2>
+                <div class="expertise-grid">
+                    <div class="expertise-item">AI Strategy & Roadmapping</div>
+                    <div class="expertise-item">Organizational Readiness & Change Management</div>
+                    <div class="expertise-item">AI Governance, Risk & Ethics</div>
+                    <div class="expertise-item">Executive & Board AI Awareness and Education</div>
+                    <div class="expertise-item">Higher Education AI Transformation</div>
+                    <div class="expertise-item">Intrapreneuring</div>
+                    <div class="expertise-item">Workforce Reskilling & AI Literacy Programs</div>
+                    <div class="expertise-item">Vendor Evaluation & Technology Due Diligence</div>
+                    <div class="expertise-item">AI Policy & Regulatory Navigation</div>
+                    <div class="expertise-item">Innovation Lab Design & Management</div>
+                </div>
+            </section>
+
+            <section class="section" id="engagements">
+                <h2 class="section-title">Engagement Types</h2>
+
+                <div class="engagement-item">
+                    <p class="engagement-title">Strategic Advisory Retainer</p>
+                    <p class="engagement-desc">Ongoing, confidential access for executives navigating AI decisions in real time. Monthly sessions, ad hoc counsel, and participation in key leadership discussions.</p>
+                </div>
+
+                <div class="engagement-item">
+                    <p class="engagement-title">AI Readiness Assessment</p>
+                    <p class="engagement-desc">A structured diagnostic evaluating an organization's AI maturity across strategy, data, talent, governance, and culture — delivered as an actionable executive report with prioritized recommendations.</p>
+                </div>
+
+                <div class="engagement-item">
+                    <p class="engagement-title">Board & Executive Education</p>
+                    <p class="engagement-desc">Custom workshops and briefings designed to bring senior leaders from AI-curious to AI-confident. Topics range from foundational literacy to governance, risk, and competitive positioning.</p>
+                </div>
+
+                <div class="engagement-item">
+                    <p class="engagement-title">AI Strategy Sprint</p>
+                    <p class="engagement-desc">An intensive 60–90 day engagement to develop or stress-test an AI strategy, build internal alignment, and produce a board-ready implementation roadmap.</p>
+                </div>
+
+                <div class="engagement-item">
+                    <p class="engagement-title">Academic Program & Curriculum Advisory</p>
+                    <p class="engagement-desc">Consulting for colleges and universities seeking to integrate AI across disciplines, build applied AI programs, or reposition institutional identity around AI leadership.</p>
+                </div>
+            </section>
+
+            <div class="two-column" id="education">
+                <div class="column-section">
+                    <h2 class="section-title">Education</h2>
+                    <div class="item-label">MA, Organizational Systems & Leadership Psychology</div>
+                    <p class="item-text">Saybrook Graduate School</p>
+
+                    <div class="item-label" style="margin-top: 15px;">BA, Information Systems</div>
+                    <p class="item-text">Xavier University</p>
+                </div>
+
+                <div class="column-section">
+                    <h2 class="section-title">Board Service</h2>
+                    <p class="item-text">United States University</p>
+                    <p class="item-text">Saybrook University</p>
+                    <p class="item-text">Aspen University</p>
+                </div>
+            </div>
+
+            <section class="section" style="margin-top: 40px;">
+                <h2 class="section-title">Suggested Next Steps</h2>
+                <div class="section-text">
+                    <p>If you are evaluating AI strategy support, Todd recommends beginning with a no-obligation 45-minute discovery conversation. In that session, he will:</p>
+                    <ul class="bullet-list">
+                        <li>Listen to your organization's most pressing AI challenges and opportunities</li>
+                        <li>Share relevant experience and analogous engagements</li>
+                        <li>Propose a right-sized scope of work — from a single workshop to a multi-phase advisory relationship</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer" id="contact">
+            <h3>Contact</h3>
+            <p><strong>Todd MacDonald</strong></p>
+            <p><a href="mailto:ToddWMac@CenterForAppliedAi.com">ToddWMac@CenterForAppliedAi.com</a></p>
+            <p><a href="https://centerforappliedai.com" target="_blank">centerforappliedai.com</a></p>
+        </footer>
+    </div>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or default to light mode
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        themeToggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+        themeToggle.addEventListener('click', () => {
+            const theme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+        });
+
+        // Smooth scroll for navigation links and active state
+        const sections = document.querySelectorAll('.section, .two-column');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const target = document.getElementById(targetId);
+                if (target) {
+                    // Update active state
+                    navLinks.forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Update active nav link on scroll
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const scrollPosition = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    current = sectionId;
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
