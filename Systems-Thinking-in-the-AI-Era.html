@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The Systems Lens: Mapping Cybernetics to Artificial Intelligence — a working paper from Applied AI Labs integrating classic systems thinking with contemporary AI practice.">
+    <title>The Systems Lens — Mapping Cybernetics to AI | Applied AI Labs</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --paper:    #f6f3ea;
+            --paper-2:  #ece7da;
+            --paper-3:  #e3ddcc;
+            --white:    #ffffff;
+            --ink:      #181715;
+            --ink-2:    #3a382f;
+            --muted:    #6c6859;
+            --rule:     #ddd5c2;
+            --rule-2:   #c9c0a9;
+            --accent:   #0e5a52;   /* deep teal */
+            --accent-2: #093f3a;
+            --accent-soft: #e2efea;
+            --ochre:    #a9661f;
+
+            --sidebar-w: 288px;
+            --measure:   42rem;
+            --sans:  'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+            --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+            --mono:  'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--serif);
+            background-color: var(--paper);
+            color: var(--ink-2);
+            line-height: 1.72;
+            font-size: 1.0625rem;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            display: flex;
+        }
+
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+        .mono { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; }
+
+        /* ---------- Reading progress ---------- */
+        .progress {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 3px; z-index: 400; background: transparent;
+        }
+        .progress-bar {
+            height: 100%; width: 100%; transform: scaleX(0); transform-origin: 0 50%;
+            background: var(--accent);
+        }
+
+        /* ---------- Sidebar ---------- */
+        .sidebar {
+            position: fixed; left: 0; top: 0;
+            width: var(--sidebar-w); height: 100vh;
+            background: var(--paper);
+            border-right: 1px solid var(--rule);
+            display: flex; flex-direction: column;
+            padding: 2rem 1.5rem 1.5rem;
+            z-index: 300;
+            overflow-y: auto;
+        }
+
+        .brand { display: flex; align-items: center; gap: 0.65rem; padding: 0 0.5rem; }
+        .brand-mark { color: var(--accent); flex: none; }
+        .brand-name { font-family: var(--sans); font-weight: 600; font-size: 0.98rem; color: var(--ink); letter-spacing: -0.01em; }
+        .brand-sub  { color: var(--muted); margin-top: 2px; }
+
+        .sidebar nav { margin-top: 2.75rem; flex: 1; }
+        .nav-title { color: var(--muted); padding: 0 0.5rem 0.85rem; }
+
+        #nav-links { list-style: none; }
+        #nav-links li { margin-bottom: 1px; }
+        #nav-links a {
+            display: flex; gap: 0.7rem; align-items: baseline;
+            padding: 0.42rem 0.6rem;
+            border-left: 2px solid transparent;
+            color: var(--ink-2);
+            font-family: var(--sans);
+            font-size: 0.9rem;
+            font-weight: 400;
+            line-height: 1.35;
+            transition: background .15s, color .15s, border-color .15s;
+        }
+        #nav-links a:hover { background: var(--paper-2); text-decoration: none; }
+        #nav-links a .n { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); min-width: 1.5rem; }
+        #nav-links a.active {
+            background: var(--accent-soft);
+            color: var(--accent-2);
+            border-left-color: var(--accent);
+            font-weight: 500;
+        }
+        #nav-links a.active .n { color: var(--accent); }
+
+        .sidebar-foot {
+            border-top: 1px solid var(--rule);
+            padding: 1rem 0.6rem 0.4rem;
+            margin-top: 1.5rem;
+            color: var(--muted);
+        }
+        .sidebar-foot p { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; }
+        .sidebar-foot a { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+
+        /* ---------- Mobile top bar ---------- */
+        .topbar {
+            display: none;
+            position: fixed; top: 0; left: 0; right: 0; height: 56px;
+            background: var(--paper); border-bottom: 1px solid var(--rule);
+            align-items: center; gap: 0.85rem; padding: 0 1rem; z-index: 350;
+        }
+        .menu-btn {
+            width: 34px; height: 34px; border: 1px solid var(--rule-2); background: var(--white);
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px;
+            cursor: pointer; flex: none;
+        }
+        .menu-btn span { display: block; width: 16px; height: 1.6px; background: var(--ink); }
+        .topbar-title { font-family: var(--sans); font-weight: 600; font-size: 0.95rem; color: var(--ink); }
+
+        .overlay {
+            display: none; position: fixed; inset: 0; background: rgba(24,23,21,0.4);
+            z-index: 250;
+        }
+        body.nav-open .overlay { display: block; }
+
+        /* ---------- Main ---------- */
+        .main {
+            margin-left: var(--sidebar-w);
+            width: calc(100% - var(--sidebar-w));
+            min-width: 0;
+        }
+        .container {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 4.5rem 3rem 2rem;
+        }
+
+        /* ---------- Hero ---------- */
+        .hero { margin-bottom: 4rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--rule); max-width: var(--measure); }
+        .hero-eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; color: var(--muted); margin-bottom: 1.6rem; }
+        .hero-eyebrow .tag { background: var(--accent); color: var(--white); padding: 0.2rem 0.55rem; border-radius: 2px; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.12em; text-transform: uppercase; }
+        .hero-eyebrow .dot { color: var(--rule-2); }
+        .hero h1 {
+            font-family: var(--sans);
+            font-weight: 600;
+            font-size: clamp(2.4rem, 5.2vw, 3.5rem);
+            line-height: 1.05;
+            letter-spacing: -0.025em;
+            color: var(--ink);
+            margin-bottom: 0.6rem;
+        }
+        .hero-sub {
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+            color: var(--accent-2);
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+        .hero-lede { font-size: 1.08rem; color: var(--muted); max-width: 40rem; }
+
+        /* ---------- Sections ---------- */
+        .section { padding-top: 2.75rem; border-top: 1px solid var(--rule); margin-bottom: 3rem; scroll-margin-top: 1.5rem; }
+        .section-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.75rem; flex-wrap: wrap; }
+        .sec-num { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.1em; color: var(--accent); padding-top: 0.15rem; white-space: nowrap; }
+        .section h2 {
+            font-family: var(--sans);
+            font-weight: 600;
+            font-size: clamp(1.5rem, 2.8vw, 2rem);
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+        }
+        .section h3 {
+            font-family: var(--sans);
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--ink);
+            margin: 1.9rem 0 0.75rem;
+            letter-spacing: -0.005em;
+        }
+        .section p { margin-bottom: 1.15rem; max-width: var(--measure); }
+        .section h3 ~ p { max-width: var(--measure); }
+
+        .dropcap::first-letter {
+            font-family: var(--serif);
+            float: left;
+            font-size: 3.5rem;
+            line-height: 0.78;
+            font-weight: 600;
+            color: var(--accent);
+            padding: 0.3rem 0.55rem 0 0;
+        }
+
+        /* ---------- Lists ---------- */
+        ul.content-list { list-style: none; margin: 0.5rem 0 1.4rem; max-width: var(--measure); }
+        ul.content-list li {
+            position: relative;
+            padding-left: 1.6rem;
+            margin-bottom: 0.7rem;
+        }
+        ul.content-list li::before {
+            content: ""; position: absolute; left: 0; top: 0.78em;
+            width: 0.7rem; height: 2px; background: var(--accent);
+        }
+        ul.content-list li strong { color: var(--ink); font-family: var(--sans); font-weight: 600; }
+
+        /* ---------- Mapping matrix table ---------- */
+        .matrix-head { display: flex; align-items: baseline; gap: 0.8rem; margin: 0.4rem 0 0; }
+        .matrix-head .mono { color: var(--accent); }
+        .matrix-head span:last-child { font-family: var(--sans); font-weight: 500; color: var(--ink); font-size: 0.95rem; }
+        .matrix-wrap {
+            overflow-x: auto; margin: 1.1rem 0 0.6rem;
+            border: 1px solid var(--rule); background: var(--white);
+            border-top: 3px solid var(--accent);
+        }
+        table.matrix { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 780px; }
+        .matrix th, .matrix td { padding: 0.85rem 1rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule); }
+        .matrix thead th {
+            background: var(--paper-2);
+            font-family: var(--sans); font-weight: 600; font-size: 0.82rem;
+            color: var(--ink); letter-spacing: 0.01em;
+            position: sticky; top: 0;
+        }
+        .matrix tbody td:first-child { font-weight: 600; color: var(--accent-2); white-space: nowrap; }
+        .matrix tbody tr:last-child td { border-bottom: none; }
+        .matrix tbody tr:hover { background: #faf8f1; }
+        .table-note { font-size: 0.85rem; color: var(--muted); font-style: italic; max-width: var(--measure); }
+
+        /* ---------- Archetype cards ---------- */
+        .card-grid {
+            display: grid; gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            margin: 1.25rem 0 0.5rem;
+        }
+        .card {
+            background: var(--white);
+            border: 1px solid var(--rule);
+            border-top: 2px solid var(--accent);
+            padding: 1.25rem 1.25rem 1.1rem;
+        }
+        .card-num { color: var(--accent); display: block; margin-bottom: 0.5rem; }
+        .card h3 { margin: 0 0 0.5rem; }
+        .card p { font-size: 0.92rem; line-height: 1.6; color: var(--ink-2); margin: 0; max-width: none; }
+
+        /* ---------- References ---------- */
+        .ref-list { max-width: var(--measure); counter-reset: ref; }
+        .ref-list p {
+            position: relative; padding-left: 2.1rem; margin-bottom: 0.7rem;
+            text-indent: -2.1rem; font-size: 0.94rem; color: var(--ink-2);
+        }
+        .ref-list p::before {
+            counter-increment: ref; content: counter(ref);
+            font-family: var(--mono); font-size: 0.72rem; color: var(--accent);
+            display: inline-block; width: 2.1rem; text-indent: 0;
+        }
+
+        /* ---------- Footer ---------- */
+        .footer {
+            margin-top: 2rem; padding: 2.5rem 0 3rem;
+            border-top: 1px solid var(--rule);
+            max-width: 1040px; margin-left: auto; margin-right: auto;
+            margin-left: 0; margin-right: 0;
+        }
+        .footer-grid {
+            display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap;
+        }
+        .footer .brand-name { font-family: var(--sans); font-size: 1.1rem; }
+        .footer-tag { color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem; max-width: 24rem; }
+        .footer-meta { text-align: right; color: var(--muted); font-size: 0.88rem; }
+        .footer-meta p { margin-bottom: 0.3rem; }
+        .footer-meta a { font-family: var(--mono); font-size: 0.82rem; }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 960px) {
+            body { display: block; }
+            .sidebar {
+                transform: translateX(-100%); transition: transform .28s ease;
+                box-shadow: 0 0 40px rgba(0,0,0,0.12);
+            }
+            body.nav-open .sidebar { transform: translateX(0); }
+            .topbar { display: flex; }
+            .main { margin-left: 0; width: 100%; }
+            .container { padding: 4.75rem 1.5rem 2rem; }
+            .footer-meta { text-align: left; }
+        }
+
+        @media print {
+            .sidebar, .topbar, .progress, .overlay { display: none !important; }
+            .main { margin: 0; }
+            .container { padding: 0; max-width: none; }
+            .section { border-top: 1px solid #999; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress"><div class="progress-bar" id="progress"></div></div>
+
+    <!-- Mobile top bar -->
+    <div class="topbar">
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle contents"><span></span><span></span><span></span></button>
+        <span class="topbar-title">The Systems Lens</span>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <svg class="brand-mark" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                <circle cx="5" cy="6" r="2"/>
+                <circle cx="19" cy="6" r="2"/>
+                <circle cx="12" cy="18" r="2"/>
+                <line x1="6.6" y1="7.4" x2="10.7" y2="16.5"/>
+                <line x1="17.4" y1="7.4" x2="13.3" y2="16.5"/>
+                <line x1="7" y1="6" x2="17" y2="6"/>
+            </svg>
+            <div>
+                <div class="brand-name">Applied AI Labs</div>
+                <div class="brand-sub mono">Working Papers</div>
+            </div>
+        </div>
+
+        <nav>
+            <p class="nav-title mono">Contents</p>
+            <ul id="nav-links">
+                <li><a href="#abstract"><span class="n">—</span><span>Abstract</span></a></li>
+                <li><a href="#intro"><span class="n">01</span><span>Introduction</span></a></li>
+                <li><a href="#foundations"><span class="n">02</span><span>Foundations</span></a></li>
+                <li><a href="#sociotechnical"><span class="n">03</span><span>AI as System</span></a></li>
+                <li><a href="#matrix"><span class="n">04</span><span>Mapping Matrix</span></a></li>
+                <li><a href="#bridges"><span class="n">05</span><span>Feedback Bridges</span></a></li>
+                <li><a href="#archetypes"><span class="n">06</span><span>AI Archetypes</span></a></li>
+                <li><a href="#literature"><span class="n">07</span><span>Literature Review</span></a></li>
+                <li><a href="#implications"><span class="n">08</span><span>Implications</span></a></li>
+                <li><a href="#conclusion"><span class="n">09</span><span>Conclusion</span></a></li>
+                <li><a href="#references"><span class="n">—</span><span>References</span></a></li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-foot">
+            <p>© 2025 Applied AI Labs</p>
+            <a href="https://www.appliedailabs.com" target="_blank" rel="noopener">www.appliedailabs.com →</a>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+        <div class="container">
+
+            <header class="hero">
+                <div class="hero-eyebrow">
+                    <span class="tag">Working Paper</span>
+                    <span class="mono">2025</span>
+                    <span class="dot">·</span>
+                    <span class="mono">Applied AI Labs</span>
+                </div>
+                <h1>The Systems Lens</h1>
+                <p class="hero-sub">Mapping Cybernetics to Artificial Intelligence</p>
+                <p class="hero-lede">A working paper integrating classic systems thinking—feedback loops, archetypes, boundaries, and leverage points—with contemporary AI design, deployment, and governance.</p>
+            </header>
+
+            <section id="abstract" class="section" style="border-top:none; padding-top:0;">
+                <div class="section-head">
+                    <span class="sec-num">Abstract</span>
+                </div>
+                <p class="dropcap">Artificial intelligence (AI) has moved from a niche technical discipline to a pervasive sociotechnical force that reshapes decision-making, labor, governance, and everyday life. Yet much AI discourse remains focused on algorithms, data, and performance metrics, treating models as isolated artifacts rather than components embedded in complex systems. Classic systems thinking—rooted in general systems theory, cybernetics, system dynamics, and organizational learning—offers a complementary lens that foregrounds structure, feedback, and emergence.</p>
+                <p>This paper integrates classic systems thinking with contemporary AI practice by mapping core systems concepts—such as feedback loops, archetypes, boundaries, information flows, and leverage points—onto AI design, deployment, and governance. A mapping matrix links these concepts to concrete technical and sociotechnical structures, highlighting typical risks when systems thinking is ignored and identifying leverage points for intervention. Building on this foundation, the paper develops an academic introduction and literature review, then explores how systems archetypes and feedback structures illuminate recurring patterns in AI ecosystems. The goal is to provide both a conceptual bridge and a practical scaffold for AI leaders, designers, and policymakers seeking to adopt a systems lens in their work.</p>
+            </section>
+
+            <section id="intro" class="section">
+                <div class="section-head">
+                    <span class="sec-num">§ 01</span>
+                    <h2>Introduction</h2>
+                </div>
+                <p>Artificial intelligence (AI) has rapidly evolved from a specialized technical field into a pervasive sociotechnical force, reshaping decision-making, labor, governance, and everyday life. Yet much of the discourse around AI remains narrowly focused on algorithms, data, and performance metrics, treating models as isolated artifacts rather than components embedded in complex systems. Classic systems thinking—rooted in general systems theory, cybernetics, and organizational learning—offers a complementary lens that foregrounds structure, feedback, and emergence. By integrating systems thinking with contemporary AI practice, we can better understand not only how AI systems behave, but why they produce particular patterns of impact over time.</p>
+                <p>Systems thinking emphasizes that system behavior arises from the interaction of elements through feedback loops, delays, and non-linear relationships, rather than from the properties of individual components alone. Foundational work by scholars such as Ludwig von Bertalanffy, Norbert Wiener, Jay Forrester, Donella Meadows, and Peter Senge has articulated key concepts including reinforcing and balancing feedback, system archetypes, leverage points, and the importance of mental models in shaping system dynamics. These ideas have been applied extensively in domains such as ecology, economics, organizational development, and public policy, but their systematic integration into AI design and governance remains underdeveloped.</p>
+                <p>At the same time, AI systems themselves are inherently systemic. Machine learning models depend on data pipelines, computational infrastructure, and optimization processes that form technical systems with their own feedback structures. When deployed, these models enter organizational workflows, regulatory environments, and social contexts, creating sociotechnical systems whose behavior emerges from the interaction of human and machine agents, institutional incentives, and cultural norms. Phenomena such as algorithmic bias, model drift, platform dominance, and the erosion of privacy and trust are best understood not as isolated technical defects, but as manifestations of underlying system structures.</p>
+                <p>This paper argues that classic systems thinking provides a powerful conceptual framework for analyzing and shaping AI systems across technical, organizational, and societal levels. By mapping core systems concepts—such as feedback loops, archetypes, and leverage points—onto AI design, deployment, and governance, we can identify recurring structural patterns, anticipate emergent risks, and locate high-impact interventions.</p>
+            </section>
+
+            <section id="foundations" class="section">
+                <div class="section-head">
+                    <span class="sec-num">§ 02</span>
+                    <h2>Foundations of systems thinking</h2>
+                </div>
+
+                <h3>2.1 Holism and interdependence</h3>
+                <p>Systems thinking views any phenomenon as part of a larger web of interacting elements, where behavior emerges from relationships rather than isolated parts. Key ideas include:</p>
+                <ul class="content-list">
+                    <li><strong>Interconnectedness:</strong> Elements influence one another through causal chains and feedback loops.</li>
+                    <li><strong>Emergence:</strong> System-level patterns (e.g., culture, market dynamics) arise from local interactions.</li>
+                    <li><strong>Nonlinearity:</strong> Small changes can produce disproportionate effects due to reinforcing structures and thresholds.</li>
+                </ul>
+
+                <h3>2.2 Feedback loops</h3>
+                <p>Feedback loops are central to systems thinking:</p>
+                <ul class="content-list">
+                    <li><strong>Reinforcing (positive) feedback:</strong> Amplifies change; “the more you have, the more you get.”</li>
+                    <li><strong>Balancing (negative) feedback:</strong> Seeks stability or homeostasis; “the more you deviate, the more correction you get.”</li>
+                    <li><strong>Delays:</strong> Time lags between action and consequence often obscure causal structure and create oscillations.</li>
+                </ul>
+
+                <h3>2.3 Archetypes and structural patterns</h3>
+                <p>Classic archetypes (Meadows, Senge, and others) describe recurring system structures:</p>
+                <ul class="content-list">
+                    <li><strong>Limits to growth:</strong> A reinforcing loop drives growth until a hidden balancing loop imposes constraints.</li>
+                    <li><strong>Shifting the burden:</strong> Symptomatic fixes relieve pressure but weaken fundamental solutions.</li>
+                    <li><strong>Success to the successful:</strong> Reinforcing loops allocate more resources to already successful actors.</li>
+                    <li><strong>Tragedy of the commons:</strong> Individual incentives overuse shared resources.</li>
+                    <li><strong>Escalation:</strong> Two actors reinforce each other’s competitive responses.</li>
+                </ul>
+            </section>
+
+            <section id="sociotechnical" class="section">
+                <div class="section-head">
+                    <span class="sec-num">§ 03</span>
+                    <h2>AI as a sociotechnical system</h2>
+                </div>
+
+                <h3>3.1 Beyond “model as artifact”</h3>
+                <p>AI systems are not just algorithms; they are embedded in:</p>
+                <ul class="content-list">
+                    <li><strong>Data pipelines:</strong> Collection, labeling, updating, and feedback from deployment.</li>
+                    <li><strong>Organizational workflows:</strong> Decision processes, incentives, KPIs, and governance.</li>
+                    <li><strong>Human interpretation:</strong> How people trust, override, or game AI outputs.</li>
+                    <li><strong>Infrastructure and platforms:</strong> Cloud, APIs, interfaces, and integration patterns.</li>
+                    <li><strong>Regulation and norms:</strong> Policies, compliance regimes, and public expectations.</li>
+                </ul>
+
+                <h3>3.2 Levels of system structure in AI</h3>
+                <p>AI systems can be framed across at least four levels:</p>
+                <ul class="content-list">
+                    <li><strong>Model architecture:</strong> Layers, weights, activation dynamics, loss functions.</li>
+                    <li><strong>Training pipeline:</strong> Data flows, feedback loops, optimization and evaluation.</li>
+                    <li><strong>Deployment environment:</strong> Human–AI interaction, real-world perturbations, usage patterns.</li>
+                    <li><strong>Governance layer:</strong> Standards, audits, risk management, institutional oversight.</li>
+                </ul>
+            </section>
+
+            <section id="matrix" class="section">
+                <div class="section-head">
+                    <span class="sec-num">§ 04</span>
+                    <h2>Mapping matrix: systems thinking → AI</h2>
+                </div>
+                <div class="matrix-head">
+                    <span class="mono">Table 1</span>
+                    <span>Core systems concepts mapped to AI technical and sociotechnical structures.</span>
+                </div>
+                <div class="matrix-wrap">
+                    <table class="matrix">
+                        <thead>
+                            <tr>
+                                <th>Systems Concept</th>
+                                <th>Core Idea</th>
+                                <th>AI / ML Technical Mapping</th>
+                                <th>Sociotechnical Mapping</th>
+                                <th>Leverage Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Reinforcing feedback</td>
+                                <td>Change amplifies itself.</td>
+                                <td>Training loops; self-play; RL.</td>
+                                <td>Adoption loops; platform dominance.</td>
+                                <td>Cap growth; diversify data.</td>
+                            </tr>
+                            <tr>
+                                <td>Balancing feedback</td>
+                                <td>System seeks stability.</td>
+                                <td>Loss minimization; regularization.</td>
+                                <td>Governance, audits, HITL review.</td>
+                                <td>Design corrective mechanisms.</td>
+                            </tr>
+                            <tr>
+                                <td>Delays</td>
+                                <td>Time lags obscure structure.</td>
+                                <td>Lag in retraining; delayed rare events.</td>
+                                <td>Slow regulatory cycles vs. fast deployment.</td>
+                                <td>Make delays explicit; simulate.</td>
+                            </tr>
+                            <tr>
+                                <td>Nonlinearity</td>
+                                <td>Thresholds / tipping points.</td>
+                                <td>Adversarial examples; phase transitions.</td>
+                                <td>Reputation tipping points; shocks.</td>
+                                <td>Stress-test; build buffers.</td>
+                            </tr>
+                            <tr>
+                                <td>Emergence</td>
+                                <td>Patterns from local interaction.</td>
+                                <td>Complex behavior from simple rules.</td>
+                                <td>Unintended uses; shadow systems.</td>
+                                <td>Observe real use; co-design.</td>
+                            </tr>
+                            <tr>
+                                <td>System boundaries</td>
+                                <td>Defines scope of analysis.</td>
+                                <td>Input / output interfaces.</td>
+                                <td>RACI for AI decisions; accountability.</td>
+                                <td>Explicit boundary diagrams.</td>
+                            </tr>
+                            <tr>
+                                <td>Information flows</td>
+                                <td>Who sees what, when.</td>
+                                <td>Logging, monitoring, explainability.</td>
+                                <td>Dashboards, reporting lines.</td>
+                                <td>Make key metrics visible.</td>
+                            </tr>
+                            <tr>
+                                <td>Goals &amp; paradigms</td>
+                                <td>Mental models shaping behavior.</td>
+                                <td>Accuracy vs. fairness vs. robustness.</td>
+                                <td>Leadership narratives; philosophy.</td>
+                                <td>Challenge underlying paradigms.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-note">This matrix is intended as both an analytical tool and a design aid.</p>
+            </section>
+
+            <section id="bridges" class="section">
+                <div class="section-head">
+                    <span class="sec-num">§ 05</span>
+                    <h2>Feedback loops as direct bridges</h2>
+                </div>
+
+                <h3>5.1 Feedback in learning dynamics</h3>
+                <p>At the technical level, learning itself is a feedback process: gradient descent as balancing feedback where error signals propagate backward to reduce loss. Reinforcement learning uses rewards and penalties to shape policies. Online learning creates live feedback loops that can stabilize or destabilize performance.</p>
+
+                <h3>5.2 Feedback in sociotechnical deployment</h3>
+                <p>At the sociotechnical level, feedback loops often drive unintended consequences. Recommendation systems create reinforcing loops that can polarize attention. Predictive policing can reinforce structural bias through loops where historical data feeds models that influence resource allocation. AI tools in labor change workflows, creating feedback that reconfigures power.</p>
+
+                <h3>5.3 Balancing loops and governance</h3>
+                <p>Audit and monitoring act as corrective loops. Human-in-the-loop oversight introduces balancing feedback against automated outputs. Regulatory constraints dampen harmful reinforcing loops like unchecked data exploitation.</p>
+            </section>
+
+            <section id="archetypes" class="section">
+                <div class="section-head">
+                    <span class="sec-num">§ 06</span>
+                    <h2>Systems archetypes applied to AI</h2>
+                </div>
+                <div class="card-grid">
+                    <article class="card">
+                        <span class="card-num mono">6.1</span>
+                        <h3>Limits to growth</h3>
+                        <p>Reinforcing loop of more data and adoption meets hidden balancing loops like compute cost, regulatory limits, or public trust.</p>
+                    </article>
+                    <article class="card">
+                        <span class="card-num mono">6.2</span>
+                        <h3>Shifting the burden</h3>
+                        <p>Deploying AI as a “quick fix” for process inefficiencies masks structural issues like poor data practices, weakening organizational learning.</p>
+                    </article>
+                    <article class="card">
+                        <span class="card-num mono">6.3</span>
+                        <h3>Success to the successful</h3>
+                        <p>Leading platforms attract more capital and data, leading to a concentration of power.</p>
+                    </article>
+                    <article class="card">
+                        <span class="card-num mono">6.4</span>
+                        <h3>Tragedy of the commons</h3>
+                        <p>Individual actors optimize for engagement, leading to the degradation of shared resources like user privacy and public trust.</p>
+                    </article>
+                    <article class="card">
+                        <span class="card-num mono">6.5</span>
+                        <h3>Escalation</h3>
+                        <p>Aggressive AI investments between nations or firms create a race where safety is crowded out by speed.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="literature" class="section">
+                <div class="section-head">
+                    <span class="sec-num">§ 07</span>
+                    <h2>Literature review</h2>
+                </div>
+                <p>Classic systems thinking emerged from general systems theory (Bertalanffy), cybernetics (Wiener), and system dynamics (Forrester). Donella Meadows synthesized these into an accessible framework of leverage points, while Peter Senge extended them to organizational learning.</p>
+                <p>AI has developed in parallel as a feedback-driven field, particularly in reinforcement learning. Recent technical literature on model drift and multi-agent systems underscores emergent behavior. Sociotechnical perspectives (Zuboff, Pasquale) argue that AI is embedded in social power structures, resonating with systems thinking, though the connection is often implicit. There is a nascent interest in applying causal loop diagrams to AI governance.</p>
+            </section>
+
+            <section id="implications" class="section">
+                <div class="section-head">
+                    <span class="sec-num">§ 08</span>
+                    <h2>Complementarities and implications</h2>
+                </div>
+                <p>Technical behavior is inseparable from context; emergent harm is often a system-level failure rather than a bug. Systems thinking helps identify leverage points like incentive redesign and feedback visibility.</p>
+                <p>Governance can be informed by: explicit boundary setting, feedback visibility (dashboards), archetype awareness during risk assessments, and multi-level alignment of incentives.</p>
+            </section>
+
+            <section id="conclusion" class="section">
+                <div class="section-head">
+                    <span class="sec-num">§ 09</span>
+                    <h2>Conclusion</h2>
+                </div>
+                <p>AI systems are deeply embedded in complex sociotechnical environments. Classic systems thinking offers a rich toolkit to illuminate structural drivers of AI outcomes. The ability to see and shape the systems in which AI is embedded will be a critical capability for responsible practice.</p>
+            </section>
+
+            <section id="references" class="section">
+                <div class="section-head">
+                    <span class="sec-num">References</span>
+                </div>
+                <div class="ref-list">
+                    <p>Bertalanffy, L. von. (1968). <em>General System Theory: Foundations, Development, Applications</em>.</p>
+                    <p>Forrester, J. W. (1961). <em>Industrial Dynamics</em>.</p>
+                    <p>Meadows, D. H. (2008). <em>Thinking in Systems: A Primer</em>.</p>
+                    <p>Senge, P. M. (1990). <em>The Fifth Discipline</em>.</p>
+                    <p>Wiener, N. (1948). <em>Cybernetics</em>.</p>
+                    <p>Russell, S., &amp; Norvig, P. (2010). <em>Artificial Intelligence: A Modern Approach</em>.</p>
+                    <p>Zuboff, S. (2019). <em>The Age of Surveillance Capitalism</em>.</p>
+                    <p>Pasquale, F. (2015). <em>The Black Box Society</em>.</p>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <div class="footer-grid">
+                    <div>
+                        <div class="brand-name">Applied AI Labs</div>
+                        <p class="footer-tag">Practical frameworks for leaders navigating the AI era.</p>
+                    </div>
+                    <div class="footer-meta">
+                        <p>© 2025 Applied AI Labs. All rights reserved.</p>
+                        <p><a href="https://www.appliedailabs.com" target="_blank" rel="noopener">www.appliedailabs.com</a></p>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    </main>
+
+    <script>
+        // ---- Reading progress bar ----
+        const bar = document.getElementById('progress');
+        function updateProgress() {
+            const el = document.documentElement;
+            const max = el.scrollHeight - el.clientHeight;
+            const ratio = max > 0 ? el.scrollTop / max : 0;
+            bar.style.transform = 'scaleX(' + ratio + ')';
+        }
+        window.addEventListener('scroll', updateProgress, { passive: true });
+        window.addEventListener('resize', updateProgress);
+        updateProgress();
+
+        // ---- Scroll-spy (active nav) via IntersectionObserver ----
+        const navLinks = document.querySelectorAll('#nav-links a');
+        const navMap = {};
+        navLinks.forEach(a => { navMap[a.getAttribute('href').slice(1)] = a; });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(a => a.classList.remove('active'));
+                    const active = navMap[entry.target.id];
+                    if (active) active.classList.add('active');
+                }
+            });
+        }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+
+        document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+
+        // ---- Smooth scroll with offset + close mobile menu ----
+        navLinks.forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    const y = target.getBoundingClientRect().top + window.pageYOffset - 20;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                    document.body.classList.remove('nav-open');
+                }
+            });
+        });
+
+        // ---- Mobile menu toggle ----
+        const menuBtn = document.getElementById('menuBtn');
+        const overlay = document.getElementById('overlay');
+        function toggleNav() { document.body.classList.toggle('nav-open'); }
+        menuBtn.addEventListener('click', toggleNav);
+        overlay.addEventListener('click', () => document.body.classList.remove('nav-open'));
+    </script>
+</body>
+</html>
