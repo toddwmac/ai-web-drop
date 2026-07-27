@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompt Library Intake App</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #64748b;
+      --border: #dbe1ea;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --danger: #dc2626;
+      --danger-dark: #b91c1c;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    header {
+      background: linear-gradient(135deg, #172033, #2563eb);
+      color: #fff;
+      padding: 40px 24px;
+    }
+
+    .header-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      max-width: 850px;
+      margin: 0;
+      color: #dbeafe;
+      font-size: 17px;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: -24px auto 60px;
+      padding: 0 24px;
+    }
+
+    .toolbar {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      position: sticky;
+      top: 12px;
+      z-index: 10;
+    }
+
+    .toolbar-left,
+    .toolbar-right {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .save-status {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #e2e8f0;
+      color: #172033;
+      transition: 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button.primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    button.primary:hover {
+      background: var(--primary-dark);
+    }
+
+    button.danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    button.danger:hover {
+      background: var(--danger-dark);
+    }
+
+    button.secondary {
+      background: #eef2ff;
+      color: #1e40af;
+    }
+
+    button.success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .progress-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .progress-label {
+      font-weight: 800;
+    }
+
+    .progress-note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--success));
+      transition: width 0.2s ease;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    details.section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    details.section summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 20px 22px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      border-bottom: 1px solid transparent;
+    }
+
+    details.section[open] summary {
+      border-bottom-color: var(--border);
+    }
+
+    details.section summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .section-title {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .section-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .chevron {
+      font-size: 18px;
+      color: var(--muted);
+    }
+
+    details[open] .chevron {
+      transform: rotate(90deg);
+    }
+
+    .section-body {
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    label {
+      font-weight: 800;
+    }
+
+    .field-help {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0;
+    }
+
+    textarea,
+    input[type="text"] {
+      width: 100%;
+      min-height: 92px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      font: inherit;
+      background: #fff;
+      color: var(--text);
+    }
+
+    input[type="text"] {
+      min-height: auto;
+    }
+
+    textarea:focus,
+    input:focus {
+      outline: 3px solid rgba(37, 99, 235, 0.15);
+      border-color: var(--primary);
+    }
+
+    .mini-btn {
+      padding: 7px 10px;
+      font-size: 12px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    .mini-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .footer-note {
+      margin: 24px 0 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    dialog {
+      width: min(720px, calc(100vw - 32px));
+      border: none;
+      border-radius: 18px;
+      padding: 0;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.3);
+    }
+
+    dialog::backdrop {
+      background: rgba(15, 23, 42, 0.55);
+    }
+
+    .modal {
+      padding: 24px;
+    }
+
+    .modal h3 {
+      margin-top: 0;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .modal p,
+    .modal li {
+      color: #334155;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: #172033;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: 0.2s ease;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .company-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 14px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    @media (max-width: 760px) {
+      .toolbar {
+        position: static;
+      }
+
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      details.section summary {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Prompt Library Intake App</h1>
+      <p class="subtitle">
+        Capture the business context, workflows, brand voice, output standards, data sources, and quality expectations needed to build a company-specific AI prompt library.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <button class="primary" onclick="fillAllDefaults()">Use Starter Defaults</button>
+        <button class="secondary" onclick="expandAll()">Expand All</button>
+        <button class="secondary" onclick="collapseAll()">Collapse All</button>
+        <span class="save-status" id="saveStatus">Autosaved locally</span>
+      </div>
+      <div class="toolbar-right">
+        <button onclick="copyMarkdown()">Copy Markdown</button>
+        <button onclick="downloadMarkdown()">Export Markdown</button>
+        <button onclick="downloadJSON()">Export JSON</button>
+        <button class="danger" onclick="confirmClear()">Clear</button>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-row">
+        <div class="progress-label">Completion Snapshot</div>
+        <div class="progress-note" id="progressText">0 of 0 fields contain content</div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <p class="progress-note">
+        No fields are required. Users can stop anytime and return later. Responses are stored in this browser only.
+      </p>
+    </div>
+
+    <section class="company-card">
+      <div class="two-col">
+        <div class="field">
+          <div class="field-header">
+            <label for="companyName">Company Name</label>
+            <button class="mini-btn" onclick="showHelp('Company Name', 'Optional. This helps label exports and makes the final prompt library easier to identify.')">Help</button>
+          </div>
+          <input id="companyName" data-id="companyName" type="text" placeholder="Example: Acme Operations Group" />
+        </div>
+
+        <div class="field">
+          <div class="field-header">
+            <label for="intakeOwner">Intake Owner</label>
+            <button class="mini-btn" onclick="showHelp('Intake Owner', 'Optional. Add the person or team responsible for maintaining this prompt library intake.')">Help</button>
+          </div>
+          <input id="intakeOwner" data-id="intakeOwner" type="text" placeholder="Example: RevOps, Enablement, AI Program Lead" />
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-header">
+          <label for="notes">General Notes</label>
+          <button class="mini-btn" onclick="insertDefault('notes')">Use Default</button>
+        </div>
+        <textarea id="notes" data-id="notes" placeholder="Add any background, constraints, or implementation notes."></textarea>
+      </div>
+    </section>
+
+    <div class="grid" id="sections"></div>
+
+    <p class="footer-note">
+      Built for prompt-library discovery. Data stays in local storage unless exported or copied.
+    </p>
+  </main>
+
+  <dialog id="helpDialog">
+    <div class="modal">
+      <h3 id="helpTitle">Help</h3>
+      <div id="helpContent"></div>
+      <div class="modal-actions">
+        <button class="primary" onclick="closeHelp()">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="clearDialog">
+    <div class="modal">
+      <h3>Clear all saved responses?</h3>
+      <p>
+        This will remove all intake responses from local storage for this browser. Export first if you want to keep a copy.
+      </p>
+      <div class="modal-actions">
+        <button onclick="closeClear()">Cancel</button>
+        <button class="danger" onclick="clearAll()">Yes, Clear Everything</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast">Saved</div>
+
+  <script>
+    const STORAGE_KEY = "promptLibraryIntake.v1";
+
+    const defaults = {
+      companyName: "",
+      intakeOwner: "",
+      notes: "We want a practical, reusable prompt library that helps teams produce consistent, accurate, brand-aligned work while reducing manual drafting and review time.",
+
+      business_functions: "Sales, customer support, operations, marketing, product, finance, and leadership teams may use the library. Initial priority should be given to customer-facing and high-volume internal workflows.",
+      primary_workflows: "Drafting customer emails, summarizing calls or tickets, creating proposals, analyzing feedback, preparing internal updates, generating SOPs, and turning raw notes into polished deliverables.",
+      team_roles: "Account executives, account managers, SDRs, support reps, operations coordinators, marketing managers, product managers, team leads, and executives.",
+      industry_language: "Use plain language by default. Preserve company-specific terminology, product names, customer tiers, regions, service levels, compliance terms, and internal workflow labels when provided.",
+
+      brand_tone: "Friendly, clear, confident, professional, and helpful. Sound human and practical, not overly formal or robotic.",
+      voice_rules: "Use short sentences. Avoid unnecessary jargon. Be specific. Do not overpromise. Do not sound pushy. Match the audience: concise for executives, warm and helpful for customers, direct for internal teams.",
+      good_writing: "Thanks for the context. Based on what you shared, the best next step is to confirm the customer tier, product version, and timeline before drafting a final response.",
+      bad_writing: "We are thrilled to leverage our world-class synergies to revolutionize your end-to-end outcomes at scale.",
+      persona_guidelines: "Customers: helpful, concise, and reassuring. Partners: collaborative, clear, and action-oriented. Internal teams: direct, specific, and outcome-focused. Executives: brief, strategic, and decision-ready.",
+
+      preferred_formats: "Use the format that best fits the workflow: bullet points for summaries, tables for comparisons, step-by-step instructions for SOPs, email drafts for customer communication, and executive summaries for leadership updates.",
+      length_constraints: "Customer replies should usually stay under 120 words unless detail is required. Executive summaries should fit on one screen. SOPs can be longer but should be scannable.",
+      output_templates: "Common templates needed: customer email, internal Slack/Teams update, call summary, support ticket summary, proposal outline, SOP, decision brief, and QA checklist.",
+
+      accuracy_creativity: "Prioritize accuracy over creativity for customer, compliance, technical, pricing, and operational content. Creativity is acceptable for brainstorming, campaign ideas, and first drafts clearly labeled as drafts.",
+      speed_thoroughness: "For simple drafts, prioritize speed and clarity. For decisions, compliance-sensitive work, or external deliverables, prioritize thoroughness and include assumptions or missing information.",
+      risk_tolerance: "Low risk tolerance for product claims, pricing, legal/compliance matters, customer commitments, and financial information. Moderate risk tolerance for internal brainstorming.",
+      never_happen: "Never invent product specs, policies, pricing, legal terms, performance claims, customer data, or commitments. Never expose confidential information. Never blame the customer. Never apologize excessively.",
+
+      knowledge_locations: "Knowledge may live in the CRM, support system, internal docs, Notion, SharePoint, Google Drive, SOPs, product sheets, enablement decks, call transcripts, and approved FAQs.",
+      should_reference: "Reference approved product documentation, SOPs, CRM/customer context, support history, policy documents, and current enablement materials when available.",
+      should_not_reference: "Do not reference outdated docs, unapproved pricing sheets, private employee notes, confidential customer records unrelated to the task, or external sources unless explicitly allowed.",
+      always_required: "Before finalizing sensitive outputs, confirm required context such as customer tier, product version, region, contract status, implementation stage, issue severity, and intended audience.",
+
+      ai_comfort: "The team has mixed AI experience. Some users prefer simple copy-paste prompts, while advanced users may want structured controls and reusable variables.",
+      prompt_preference: "Provide both simple prompts and structured templates. Simple versions should work with minimal editing. Advanced versions can include context blocks, variables, and quality checks.",
+      training_needs: "Include examples, usage notes, and clear instructions. Add reminders to verify facts, include missing context, and adapt tone for audience.",
+
+      top_workflows: "Initial top workflows: customer reply drafting, call/ticket summarization, internal status updates, proposal or scope drafting, and SOP creation.",
+      pain_points: "Current pain points include inconsistent tone, repeated drafting work, missed context, unclear handoffs, slow summaries, and variable quality across team members.",
+      error_points: "Errors often happen when users rely on incomplete context, make assumptions, use outdated information, or skip review before sending external content.",
+      speed_matters: "Speed matters most for support replies, post-call follow-ups, internal updates, meeting summaries, and first-draft creation.",
+
+      prompt_locations: "Prompts may be used in ChatGPT, Microsoft Copilot, CRM notes, email, Slack/Teams, internal tools, and documentation systems.",
+      copy_paste: "Prompts should be copy-paste friendly and easy to edit. Use clear placeholders such as [CUSTOMER], [PRODUCT], [REGION], and [GOAL].",
+      prompt_length: "Provide short versions for daily use and longer versions for complex workflows. Keep most operational prompts concise unless the task requires more control.",
+      role_specific: "Create role-specific variants where useful, especially for sales, support, operations, marketing, and leadership.",
+
+      perfect_output: "A perfect output is accurate, complete enough for the task, written in the right voice, formatted correctly, transparent about assumptions, and ready to use with minimal editing.",
+      unacceptable_output: "An unacceptable output invents facts, uses the wrong tone, ignores required context, includes confidential or prohibited information, creates unsupported claims, or fails to follow the requested format.",
+      evaluation_method: "Evaluate prompt outputs using a simple rubric: accuracy, completeness, brand voice, format compliance, usefulness, and risk/safety. Collect team feedback and improve prompts over time.",
+
+      ai_goals: "Use AI to reduce repetitive drafting, improve consistency, speed up knowledge work, and help teams make better decisions using approved context.",
+      automate_workflows: "Future automation opportunities include routing summaries into CRM fields, generating follow-up tasks, drafting standard responses, creating reports, and triggering QA checks.",
+      decision_support: "AI should eventually support prioritization, customer health analysis, issue triage, content recommendations, and leadership decision briefs.",
+      future_capabilities: "Future capabilities may include RAG over approved docs, CRM integration, prompt performance tracking, role-based prompt libraries, and workflow automation."
+    };
+
+    const sections = [
+      {
+        title: "1. Business Context",
+        description: "Capture the company functions, workflows, roles, and domain language.",
+        help: `
+          <p>This section defines the operating environment for the prompt library.</p>
+          <ul>
+            <li><strong>Functions</strong> become library categories.</li>
+            <li><strong>Workflows</strong> become reusable prompt modules.</li>
+            <li><strong>Roles</strong> help create role-specific versions.</li>
+            <li><strong>Industry language</strong> keeps the AI aligned with your domain.</li>
+          </ul>
+        `,
+        fields: [
+          ["business_functions", "Core Business Functions", "Examples: sales, support, operations, marketing, product, HR, finance."],
+          ["primary_workflows", "Primary Workflows", "Examples: drafting proposals, responding to customers, analyzing data, writing SOPs."],
+          ["team_roles", "Team Roles", "Examples: SDRs, account managers, support reps, ops coordinators, executives."],
+          ["industry_language", "Industry Language / Jargon / Compliance Terms", "Include product names, internal terms, customer tiers, compliance constraints, and domain-specific terminology."]
+        ]
+      },
+      {
+        title: "2. Brand Voice",
+        description: "Define how AI-generated content should sound.",
+        help: `
+          <p>These responses become reusable voice blocks inside prompts.</p>
+          <p>Add examples of good and bad writing if available. Examples are often more useful than abstract tone words.</p>
+        `,
+        fields: [
+          ["brand_tone", "Tone", "Examples: formal, friendly, authoritative, conversational, concise, warm."],
+          ["voice_rules", "Voice Rules", "Examples: no jargon, short sentences, confident but not pushy."],
+          ["good_writing", "Example of Good Writing", "Paste or draft a sample that sounds like the company."],
+          ["bad_writing", "Example of Bad Writing", "Paste or draft a sample that the AI should avoid."],
+          ["persona_guidelines", "Persona Guidelines", "How should the company speak to customers, partners, internal teams, and executives?"]
+        ]
+      },
+      {
+        title: "3. Output Formats",
+        description: "Standardize the shape and structure of AI outputs.",
+        help: `
+          <p>Different teams need different output formats.</p>
+          <p>This section helps create standardized templates such as emails, tables, JSON, SOPs, summaries, and briefs.</p>
+        `,
+        fields: [
+          ["preferred_formats", "Preferred Formats", "Examples: bullets, tables, JSON, step-by-step instructions, executive summaries, email drafts."],
+          ["length_constraints", "Length Constraints", "Examples: customer replies under 120 words, exec summaries under 6 bullets."],
+          ["output_templates", "Common Output Templates", "Examples: email draft, SOP, support summary, proposal, status update, QA checklist."]
+        ]
+      },
+      {
+        title: "4. Quality Bar",
+        description: "Define accuracy, risk tolerance, and non-negotiable rules.",
+        help: `
+          <p>This becomes the guardrail layer inside every prompt.</p>
+          <p>Be especially clear about what AI must never invent, disclose, promise, or imply.</p>
+        `,
+        fields: [
+          ["accuracy_creativity", "Accuracy vs. Creativity", "Where should the AI be factual? Where can it brainstorm?"],
+          ["speed_thoroughness", "Speed vs. Thoroughness", "When should the AI be quick? When should it slow down and be careful?"],
+          ["risk_tolerance", "Risk Tolerance", "Describe low-risk and high-risk content areas."],
+          ["never_happen", "What Must Never Happen", "Examples: never make up product specs, never mention pricing, never expose confidential info."]
+        ]
+      },
+      {
+        title: "5. Data Sources",
+        description: "Identify where knowledge lives and what context AI should use.",
+        help: `
+          <p>This section informs RAG instructions, context blocks, and prompt requirements.</p>
+          <p>It is important to separate approved knowledge sources from sources the AI should not use.</p>
+        `,
+        fields: [
+          ["knowledge_locations", "Where Knowledge Lives", "Examples: Notion, SharePoint, CRM, SOPs, product sheets, support tools."],
+          ["should_reference", "What AI Should Reference", "Approved sources, systems, or documents."],
+          ["should_not_reference", "What AI Should Not Reference", "Outdated, confidential, unapproved, or irrelevant sources."],
+          ["always_required", "Information Always Required", "Examples: customer tier, product version, region, contract status, severity."]
+        ]
+      },
+      {
+        title: "6. Team Skill Level",
+        description: "Match prompt complexity to how the team actually works.",
+        help: `
+          <p>The best prompt library is one the team will actually use.</p>
+          <p>Use this section to decide whether prompts should be simple, guided, advanced, or role-specific.</p>
+        `,
+        fields: [
+          ["ai_comfort", "AI Comfort Level", "Describe how experienced the team is with AI tools."],
+          ["prompt_preference", "Prompt Preference", "Simple copy-paste prompts, structured templates, advanced controls, or a mix."],
+          ["training_needs", "Training Needs", "Examples, onboarding notes, reminders, review steps, or usage instructions."]
+        ]
+      },
+      {
+        title: "7. Use-Case Priorities",
+        description: "Decide which workflows to improve first.",
+        help: `
+          <p>This section helps sequence the prompt library roadmap.</p>
+          <p>Start with high-volume, high-friction, or high-risk workflows where consistency matters.</p>
+        `,
+        fields: [
+          ["top_workflows", "Top 3–5 Workflows to Improve First", "List the first workflows to build prompt modules for."],
+          ["pain_points", "Pain Points", "Where does work slow down or become inconsistent today?"],
+          ["error_points", "Where Errors Happen Today", "Where do people make mistakes, miss context, or create risk?"],
+          ["speed_matters", "Where Speed Matters Most", "Identify time-sensitive workflows."]
+        ]
+      },
+      {
+        title: "8. Integration Environment",
+        description: "Package prompts for the tools and channels where they will be used.",
+        help: `
+          <p>Prompts should fit the user’s actual tools.</p>
+          <p>A CRM prompt may need to be shorter and more structured than a long-form strategy prompt.</p>
+        `,
+        fields: [
+          ["prompt_locations", "Where Prompts Will Be Used", "Examples: Copilot, ChatGPT, CRM, email, Slack, internal tools."],
+          ["copy_paste", "Copy-Paste Requirements", "Should prompts be easy to paste into tools? Include placeholder conventions."],
+          ["prompt_length", "Prompt Length Requirements", "Short, long, modular, role-specific, or tool-specific."],
+          ["role_specific", "Role-Specific Needs", "Which roles need their own prompt variants?"]
+        ]
+      },
+      {
+        title: "9. Acceptance Criteria",
+        description: "Define what good, bad, and done look like.",
+        help: `
+          <p>This is the definition of done for every prompt.</p>
+          <p>Use these standards to test, evaluate, and improve each prompt before rollout.</p>
+        `,
+        fields: [
+          ["perfect_output", "What a Perfect Output Looks Like", "Describe the ideal AI response."],
+          ["unacceptable_output", "What an Unacceptable Output Looks Like", "Describe failure modes and disallowed outputs."],
+          ["evaluation_method", "How Results Will Be Evaluated", "Rubric, reviewer, scorecard, team feedback, approval workflow, etc."]
+        ]
+      },
+      {
+        title: "10. Strategic Goals",
+        description: "Optional long-term direction for AI and automation.",
+        help: `
+          <p>This optional section helps the prompt library evolve into a broader AI operating system.</p>
+          <p>Use it to document future automation, decision support, and integration goals.</p>
+        `,
+        fields: [
+          ["ai_goals", "Where You Want AI to Take the Team", "Strategic goals for AI adoption."],
+          ["automate_workflows", "Workflows You Want Automated", "Future automation opportunities."],
+          ["decision_support", "Decisions You Want AI to Support", "Examples: prioritization, triage, recommendations, reporting."],
+          ["future_capabilities", "Future Capabilities Expected", "Examples: RAG, CRM integration, prompt analytics, role-based libraries."]
+        ]
+      }
+    ];
+
+    const sectionsEl = document.getElementById("sections");
+    const saveStatusEl = document.getElementById("saveStatus");
+    const toastEl = document.getElementById("toast");
+    const progressTextEl = document.getElementById("progressText");
+    const progressFillEl = document.getElementById("progressFill");
+
+    function renderSections() {
+      sectionsEl.innerHTML = sections.map((section, index) => {
+        const fields = section.fields.map(([id, label, help]) => `
+          <div class="field">
+            <div class="field-header">
+              <label for="${id}">${label}</label>
+              <div>
+                <button class="mini-btn" onclick="showHelp('${escapeAttr(label)}', '${escapeAttr(help)}')">Help</button>
+                <button class="mini-btn" onclick="insertDefault('${id}')">Use Default</button>
+              </div>
+            </div>
+            <p class="field-help">${help}</p>
+            <textarea id="${id}" data-id="${id}" placeholder="Type your response here. You can leave this blank and return later."></textarea>
+          </div>
+        `).join("");
+
+        return `
+          <details class="section" ${index === 0 ? "open" : ""}>
+            <summary>
+              <div class="section-title">
+                <h2>${section.title}</h2>
+                <p>${section.description}</p>
+              </div>
+              <div class="section-actions">
+                <button class="mini-btn" onclick="event.preventDefault(); fillSectionDefaults(${index})">Use Section Defaults</button>
+                <button class="mini-btn" onclick="event.preventDefault(); showHelp('${escapeAttr(section.title)}', \`${escapeBackticks(section.help)}\`)">Section Help</button>
+                <span class="chevron">›</span>
+              </div>
+            </summary>
+            <div class="section-body">
+              ${fields}
+            </div>
+          </details>
+        `;
+      }).join("");
+    }
+
+    function escapeAttr(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("'", "&#39;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    }
+
+    function escapeBackticks(str) {
+      return String(str).replaceAll("`", "\\`");
+    }
+
+    function getAllFieldIds() {
+      const sectionIds = sections.flatMap(section => section.fields.map(field => field[0]));
+      return ["companyName", "intakeOwner", "notes", ...sectionIds];
+    }
+
+    function getData() {
+      const data = {};
+      getAllFieldIds().forEach(id => {
+        const el = document.querySelector(`[data-id="${id}"]`);
+        data[id] = el ? el.value : "";
+      });
+
+      data._metadata = {
+        app: "Prompt Library Intake App",
+        version: "1.0",
+        exportedAt: new Date().toISOString()
+      };
+
+      return data;
+    }
+
+    function saveData() {
+      const data = getData();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      saveStatusEl.textContent = "Autosaved locally at " + new Date().toLocaleTimeString();
+      updateProgress();
+    }
+
+    function loadData() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+
+      try {
+        const data = JSON.parse(raw);
+        getAllFieldIds().forEach(id => {
+          const el = document.querySelector(`[data-id="${id}"]`);
+          if (el && data[id] !== undefined) {
+            el.value = data[id];
+          }
+        });
+      } catch (err) {
+        console.error("Unable to load saved data", err);
+      }
+
+      updateProgress();
+    }
+
+    function attachAutosave() {
+      document.querySelectorAll("[data-id]").forEach(el => {
+        el.addEventListener("input", debounce(() => {
+          saveData();
+          showToast("Autosaved locally");
+        }, 250));
+      });
+    }
+
+    function debounce(fn, delay) {
+      let timeout;
+      return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn.apply(this, args), delay);
+      };
+    }
+
+    function insertDefault(id) {
+      const el = document.querySelector(`[data-id="${id}"]`);
+      if (!el) return;
+
+      if (defaults[id] !== undefined) {
+        el.value = defaults[id];
+        saveData();
+        showToast("Default inserted");
+      }
+    }
+
+    function fillSectionDefaults(index) {
+      const section = sections[index];
+      section.fields.forEach(([id]) => {
+        const el = document.querySelector(`[data-id="${id}"]`);
+        if (el && defaults[id] !== undefined) {
+          el.value = defaults[id];
+        }
+      });
+      saveData();
+      showToast("Section defaults inserted");
+    }
+
+    function fillAllDefaults() {
+      getAllFieldIds().forEach(id => {
+        const el = document.querySelector(`[data-id="${id}"]`);
+        if (el && defaults[id] !== undefined && !el.value.trim()) {
+          el.value = defaults[id];
+        }
+      });
+      saveData();
+      showToast("Starter defaults filled into empty fields");
+    }
+
+    function updateProgress() {
+      const ids = getAllFieldIds();
+      const completed = ids.filter(id => {
+        const el = document.querySelector(`[data-id="${id}"]`);
+        return el && el.value.trim().length > 0;
+      }).length;
+
+      const percent = ids.length ? Math.round((completed / ids.length) * 100) : 0;
+      progressTextEl.textContent = `${completed} of ${ids.length} fields contain content`;
+      progressFillEl.style.width = `${percent}%`;
+    }
+
+    function showHelp(title, html) {
+      document.getElementById("helpTitle").textContent = title;
+      document.getElementById("helpContent").innerHTML = html;
+      document.getElementById("helpDialog").showModal();
+    }
+
+    function closeHelp() {
+      document.getElementById("helpDialog").close();
+    }
+
+    function confirmClear() {
+      document.getElementById("clearDialog").showModal();
+    }
+
+    function closeClear() {
+      document.getElementById("clearDialog").close();
+    }
+
+    function clearAll() {
+      localStorage.removeItem(STORAGE_KEY);
+      document.querySelectorAll("[data-id]").forEach(el => {
+        el.value = "";
+      });
+      closeClear();
+      updateProgress();
+      saveStatusEl.textContent = "Cleared. Nothing saved.";
+      showToast("All responses cleared");
+    }
+
+    function expandAll() {
+      document.querySelectorAll("details.section").forEach(d => d.open = true);
+    }
+
+    function collapseAll() {
+      document.querySelectorAll("details.section").forEach(d => d.open = false);
+    }
+
+    function buildMarkdown() {
+      const data = getData();
+      const company = data.companyName || "Unnamed Company";
+      const owner = data.intakeOwner || "Not specified";
+
+      let md = `# Prompt Library Intake\n\n`;
+      md += `**Company:** ${company}\n\n`;
+      md += `**Intake Owner:** ${owner}\n\n`;
+      md += `**Exported:** ${new Date().toLocaleString()}\n\n`;
+
+      if (data.notes) {
+        md += `## General Notes\n\n${data.notes}\n\n`;
+      }
+
+      sections.forEach(section => {
+        md += `## ${section.title}\n\n`;
+        md += `${section.description}\n\n`;
+
+        section.fields.forEach(([id, label]) => {
+          md += `### ${label}\n\n`;
+          md += `${data[id] && data[id].trim() ? data[id].trim() : "_No response provided._"}\n\n`;
+        });
+      });
+
+      md += `---\n\n`;
+      md += `Generated by Prompt Library Intake App.\n`;
+
+      return md;
+    }
+
+    function downloadMarkdown() {
+      const company = document.getElementById("companyName").value.trim() || "prompt-library-intake";
+      const filename = slugify(company) + ".md";
+      downloadFile(filename, buildMarkdown(), "text/markdown");
+      showToast("Markdown exported");
+    }
+
+    function downloadJSON() {
+      const company = document.getElementById("companyName").value.trim() || "prompt-library-intake";
+      const filename = slugify(company) + ".json";
+      const data = JSON.stringify(getData(), null, 2);
+      downloadFile(filename, data, "application/json");
+      showToast("JSON exported");
+    }
+
+    async function copyMarkdown() {
+      try {
+        await navigator.clipboard.writeText(buildMarkdown());
+        showToast("Markdown copied to clipboard");
+      } catch (err) {
+        showToast("Copy failed. Export instead.");
+      }
+    }
+
+    function downloadFile(filename, content, type) {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function slugify(str) {
+      return String(str)
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        || "prompt-library-intake";
+    }
+
+    function showToast(message) {
+      toastEl.textContent = message;
+      toastEl.classList.add("show");
+      setTimeout(() => {
+        toastEl.classList.remove("show");
+      }, 1800);
+    }
+
+    renderSections();
+    loadData();
+    attachAutosave();
+    updateProgress();
+  </script>
+</body>
+</html>
