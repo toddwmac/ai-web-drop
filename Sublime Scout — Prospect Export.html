@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<!-- saved from url=(0124)file:///C:/Users/toddw/AppData/Local/Temp/MicrosoftEdgeDownloads/02ecffaa-6a64-4d21-a5a9-4fa95163215d/sublime-prospects.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sublime Scout — Prospect Export</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.5; }
+  .header { background: linear-gradient(135deg, #102135, #1a3552); color: white; padding: 24px 32px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .header h1 { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+  .header .meta { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+  .container { max-width: 1300px; margin: 0 auto; padding: 20px; }
+  .toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+  .search-box { flex: 1; min-width: 240px; position: relative; }
+  .search-box input { width: 100%; padding: 10px 12px 10px 36px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; background: white; }
+  .search-box input:focus { border-color: #90c53e; }
+  .search-box svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #94a3b8; }
+  select { padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; background: white; cursor: pointer; outline: none; }
+  .stat-pill { display: inline-flex; align-items: center; gap: 6px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; }
+  .stat-pill .num { color: #90c53e; font-size: 16px; }
+  table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  th { background: #f1f5f9; padding: 12px 14px; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: #64748b; cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { background: #e2e8f0; }
+  th .sort-arrow { display: inline-block; margin-left: 4px; font-size: 10px; color: #94a3b8; }
+  th.sorted .sort-arrow { color: #90c53e; }
+  td { padding: 12px 14px; border-top: 1px solid #f1f5f9; font-size: 13px; vertical-align: top; }
+  tr { cursor: pointer; transition: background 0.15s; }
+  tr:hover { background: #f8fafc; }
+  .score-ring { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; font-weight: 700; font-size: 13px; }
+  .band-low { background: #f1f5f9; color: #64748b; }
+  .band-medium { background: #fef3c7; color: #92400e; }
+  .band-high { background: #dbeafe; color: #1e40af; }
+  .band-very_high { background: #dcfce7; color: #166534; }
+  .band-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .persona-tag { display: inline-block; padding: 2px 6px; border-radius: 4px; background: #f1f5f9; font-size: 11px; font-weight: 600; color: #475569; }
+  .status-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: #e2e8f0; color: #475569; }
+  .company-name { font-weight: 600; color: #1e293b; }
+  .company-desc { color: #64748b; font-size: 12px; margin-top: 2px; }
+  .contact-chip { display: inline-block; background: #f1f5f9; border-radius: 4px; padding: 2px 8px; font-size: 11px; margin: 1px; }
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: flex-start; padding: 40px 20px; overflow-y: auto; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: white; border-radius: 16px; max-width: 800px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); overflow: hidden; }
+  .modal-header { background: linear-gradient(135deg, #102135, #1a3552); color: white; padding: 20px 28px; display: flex; justify-content: space-between; align-items: center; }
+  .modal-header h2 { font-size: 18px; font-weight: 700; }
+  .modal-close { background: none; border: none; color: white; font-size: 24px; cursor: pointer; opacity: 0.7; }
+  .modal-close:hover { opacity: 1; }
+  .modal-body { padding: 28px; max-height: 75vh; overflow-y: auto; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .detail-item label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.03em; margin-bottom: 2px; }
+  .detail-item .value { font-size: 14px; color: #1e293b; }
+  .section-title { font-size: 15px; font-weight: 700; margin: 20px 0 10px; padding-bottom: 8px; border-bottom: 2px solid #f1f5f9; display: flex; align-items: center; gap: 8px; }
+  .contact-card { background: #f8fafc; border-radius: 10px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .contact-info { flex: 1; }
+  .contact-info .name { font-weight: 600; font-size: 14px; }
+  .contact-info .title { font-size: 12px; color: #64748b; }
+  .contact-info .email { font-size: 12px; color: #2563eb; margin-top: 4px; }
+  .contact-info .phone, .contact-info .linkedin { font-size: 12px; color: #64748b; margin-top: 2px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-primary { background: #102135; color: white; }
+  .btn-primary:hover { background: #1a3552; }
+  .btn-green { background: #90c53e; color: #102135; }
+  .btn-green:hover { background: #7fb52e; }
+  .btn-outline { background: white; border: 1px solid #e2e8f0; color: #475569; }
+  .btn-outline:hover { background: #f8fafc; }
+  .btn-sm { padding: 5px 10px; font-size: 11px; }
+  .signal-item { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid #f8fafc; font-size: 12px; }
+  .signal-item .signal-label { color: #1e293b; }
+  .signal-item .signal-ev { color: #64748b; font-size: 11px; }
+  .signal-item .signal-src { font-size: 10px; color: #94a3b8; text-transform: uppercase; }
+  .prompt-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; font-size: 13px; white-space: pre-wrap; max-height: 300px; overflow-y: auto; font-family: 'Consolas', monospace; line-height: 1.6; color: #334155; }
+  .copy-feedback { display: inline-block; font-size: 11px; color: #90c53e; font-weight: 600; margin-left: 8px; }
+  .empty-state { text-align: center; padding: 40px; color: #94a3b8; }
+  .badge-row { display: flex; gap: 6px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🔬 Sublime Scout — Prospect Export</h1>
+  <div class="meta">Generated 7/27/2026, 6:41:57 PM · 8 prospects · Self-contained interactive report</div>
+</div>
+<div class="container">
+  <div class="toolbar">
+    <div class="search-box">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path></svg>
+      <input type="text" id="search" placeholder="Search company, city, state, description..." oninput="renderTable()">
+    </div>
+    <select id="bandFilter" onchange="renderTable()">
+      <option value="all">All Bands</option>
+      <option value="very_high">Very High</option>
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select>
+    <select id="statusFilter" onchange="renderTable()">
+      <option value="all">All Statuses</option>
+      <option value="new">New</option>
+      <option value="researching">Researching</option>
+      <option value="contacted">Contacted</option>
+      <option value="qualified">Qualified</option>
+      <option value="won">Won</option>
+      <option value="archived">Archived</option>
+    </select>
+    <div class="stat-pill"><span class="num" id="visibleCount">8</span><span>showing</span></div>
+    <div class="stat-pill"><span class="num">8</span><span>total</span></div>
+  </div>
+  <table id="table">
+    <thead>
+      <tr>
+        <th onclick="sortBy(&#39;score&#39;)">Score <span class="sort-arrow">↕</span></th>
+        <th onclick="sortBy(&#39;company_name&#39;)">Company <span class="sort-arrow">↕</span></th>
+        <th onclick="sortBy(&#39;band&#39;)">Band <span class="sort-arrow">↕</span></th>
+        <th onclick="sortBy(&#39;persona&#39;)">Persona <span class="sort-arrow">↕</span></th>
+        <th onclick="sortBy(&#39;state&#39;)">Location <span class="sort-arrow">↕</span></th>
+        <th onclick="sortBy(&#39;employee_count&#39;)">Employees <span class="sort-arrow">↕</span></th>
+        <th onclick="sortBy(&#39;status&#39;)">Status <span class="sort-arrow">↕</span></th>
+        <th>Top Contact</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"><tr onclick="openProspect(0)"><td><span class="score-ring band-high">80</span></td><td><div class="company-name">Synchron</div><div class="company-desc">A neurotechnology company developing the Stentrode, a brain-computer interface (...</div><div class="company-desc">🔧 Extremely high-precision micro-laser cutting of nitinol tube</div></td><td><span class="band-badge band-high">High</span></td><td><span class="persona-tag">Persona A</span></td><td>Campbell, CA</td><td>85</td><td><span class="status-badge">Researching</span></td><td><div class="company-name">Thomas Oxley</div><div class="company-desc">CEO &amp; Founder</div></td></tr><tr onclick="openProspect(1)"><td><span class="score-ring band-medium">65</span></td><td><div class="company-name">Supira Medical</div><div class="company-desc">A Shifamed portfolio company developing a next-generation percutaneous ventricul...</div><div class="company-desc">🔧 High-performance catheter shafts, laser-cut nitinol pump com</div></td><td><span class="band-badge band-medium">Medium</span></td><td><span class="persona-tag">Persona A</span></td><td>Campbell, CA</td><td>45</td><td><span class="status-badge">New</span></td><td><div class="company-name">Nitin Singh</div><div class="company-desc">Vice President of Research and Development</div></td></tr><tr onclick="openProspect(2)"><td><span class="score-ring band-medium">65</span></td><td><div class="company-name">Adona Medical</div><div class="company-desc">Shifamed portfolio company developing an adjustable interatrial shunt and remote...</div><div class="company-desc">🔧 Laser-cut nitinol shunts with adaptable geometries and speci</div></td><td><span class="band-badge band-medium">Medium</span></td><td><span class="persona-tag">Persona C</span></td><td>Los Gatos, CA</td><td>50</td><td><span class="status-badge">New</span></td><td><div class="company-name">Brian Fahey</div><div class="company-desc">Co-Founder &amp; CEO</div></td></tr><tr onclick="openProspect(3)"><td><span class="score-ring band-medium">60</span></td><td><div class="company-name">Synchron</div><div class="company-desc">Brain-computer interface company developing the Stentrode, a nitinol-based elect...</div><div class="company-desc">🔧 Ultra-precise laser cutting of nitinol 'stentrodes' and high</div></td><td><span class="band-badge band-medium">Medium</span></td><td><span class="persona-tag">Persona A</span></td><td>Campbell, CA</td><td>110</td><td><span class="status-badge">New</span></td><td><div class="company-name">Thomas Oxley</div><div class="company-desc">CEO and Founder</div></td></tr><tr onclick="openProspect(4)"><td><span class="score-ring band-medium">60</span></td><td><div class="company-name">Synchron</div><div class="company-desc">Neurotechnology company developing the Stentrode, a minimally invasive brain-com...</div><div class="company-desc">🔧 Precision micro-laser cutting for the nitinol Stentrode arra</div></td><td><span class="band-badge band-medium">Medium</span></td><td><span class="persona-tag">Persona B</span></td><td>New York, NY</td><td>280</td><td><span class="status-badge">New</span></td><td><div class="company-name">Nicholas Opie</div><div class="company-desc">Co-Founder &amp; CTO</div></td></tr><tr onclick="openProspect(5)"><td><span class="score-ring band-medium">55</span></td><td><div class="company-name">Artio Medical</div><div class="company-desc">Medical device company developing endovascular embolization products for periphe...</div><div class="company-desc">🔧 Nitinol occlusion frames, laser-cut gold-coated markers, and</div></td><td><span class="band-badge band-medium">Medium</span></td><td><span class="persona-tag">Persona B</span></td><td>Olathe, KS</td><td>45</td><td><span class="status-badge">New</span></td><td><div class="company-name">F. Nicholas Franano</div><div class="company-desc">President &amp; CEO</div></td></tr><tr onclick="openProspect(6)"><td><span class="score-ring band-medium">55</span></td><td><div class="company-name">Adona Medical</div><div class="company-desc">A Shifamed portfolio company creating an adjustable interatrial shunt with integ...</div><div class="company-desc">🔧 Laser-cut nitinol shunt frames and specialized delivery cath</div></td><td><span class="band-badge band-medium">Medium</span></td><td><span class="persona-tag">Persona A</span></td><td>Campbell, CA</td><td>30</td><td><span class="status-badge">New</span></td><td><div class="company-name">Brian Fahey</div><div class="company-desc">Chief Executive Officer</div></td></tr><tr onclick="openProspect(7)"><td><span class="score-ring band-medium">45</span></td><td><div class="company-name">Supira Medical</div><div class="company-desc">A Shifamed portfolio company developing a next-generation percutaneous ventricul...</div><div class="company-desc">🔧 Precision laser-cut pump housings and high-flexibility deliv</div></td><td><span class="band-badge band-medium">Medium</span></td><td><span class="persona-tag">Persona C</span></td><td>Campbell, CA</td><td>45</td><td><span class="status-badge">New</span></td><td><div class="company-name">Nitin Salunke</div><div class="company-desc">President and CEO</div></td></tr></tbody>
+  </table>
+  <div id="emptyState" class="empty-state" style="display:none;">No prospects match your filters.</div>
+</div>
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">Synchron</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"><div class="badge-row" style="margin-bottom:16px;"><span class="score-ring band-high">80</span><span class="band-badge band-high">High</span><span class="status-badge">Researching</span><span class="persona-tag">Persona A — Series A Catheter Startup</span></div><div class="detail-grid"><div class="detail-item"><label>Domain</label><div class="value"><a href="https://synchron.com/" target="_blank" style="color:#2563eb">synchron.com</a></div></div><div class="detail-item"><label>Location</label><div class="value">Campbell, CA</div></div><div class="detail-item"><label>Employees</label><div class="value">85</div></div><div class="detail-item"><label>Primary Material</label><div class="value">Nitinol</div></div></div><div class="detail-item" style="margin-bottom:16px;"><label>Description</label><div class="value">A neurotechnology company developing the Stentrode, a brain-computer interface (BCI) delivered via the jugular vein using standard neuro-interventional techniques.</div></div><div class="detail-item" style="margin-bottom:16px;"><label>Tubular Need</label><div class="value">Extremely high-precision micro-laser cutting of nitinol tubes to create the Stentrode electrode array.</div></div><div class="detail-item" style="margin-bottom:16px;"><label>Persona Rationale</label><div class="value">High-growth Series C startup with active clinical trials for a novel catheter-delivered nitinol implant.</div></div><div class="detail-item" style="margin-bottom:16px;"><label>Outreach Angle</label><div class="value" style="font-style:italic;">"Position Sublime as a specialist in micro-laser fabrication for neurovascular implants where nitinol fatigue life and edge quality are critical."</div></div><div class="section-title">📋 Contacts</div><div class="contact-card"><div class="contact-info"><div class="name">Thomas Oxley</div><div class="title">CEO &amp; Founder</div><div class="linkedin">in https://www.linkedin.com/in/thomasoxley/</div><div class="phone">📝 Visionary leader; likely focused on strategic manufacturing partnerships.</div></div><button class="btn btn-outline btn-sm" id="copyContactBtn_0" onclick="copyContact({&quot;name&quot;:&quot;Thomas Oxley&quot;,&quot;note&quot;:&quot;Visionary leader; likely focused on strategic manufacturing partnerships.&quot;,&quot;linkedin&quot;:&quot;https://www.linkedin.com/in/thomasoxley/&quot;,&quot;title&quot;:&quot;CEO &amp; Founder&quot;,&quot;phone&quot;:&quot;&quot;,&quot;email&quot;:&quot;&quot;},0)">📋 Copy</button></div><div class="section-title">📊 Detected Signals</div><div class="signal-item"><div style="flex:1"><div class="signal-label">Active device trial (catheter/stent/guidewire/nitinol)</div><div class="signal-ev">COMMAND clinical trial (US IDE) currently enrolling to evaluate the Synchron Switch BCI.</div></div><div class="signal-src">ClinicalTrials.gov</div></div><div class="signal-item"><div style="flex:1"><div class="signal-label">Series A/B/C funding, med-device (last 24 mo)</div><div class="signal-ev">Raised $75M Series C in late 2022/2023 led by ARCH Venture Partners.</div></div><div class="signal-src">Crunchbase / PitchBook</div></div><div class="signal-item"><div style="flex:1"><div class="signal-label">Importing nitinol wire/tube (HTS 7506.20)</div><div class="signal-ev">Significant utilization of nitinol for the Stentrode device structure.</div></div><div class="signal-src">ImportGenius</div></div><div class="signal-item"><div style="flex:1"><div class="signal-label">Employee count 10–250</div><div class="signal-ev">Reported headcount growth reaching approximately 80-90 employees.</div></div><div class="signal-src">LinkedIn / Apollo</div></div><div class="section-title">🤖 LLM Research Prompt</div><p style="font-size:12px;color:#64748b;margin-bottom:8px;">Copy this prompt and paste it into ChatGPT, Gemini, or Claude for a focused deep dive before outreach.</p><div style="display:flex;gap:8px;margin-bottom:10px;"><button class="btn btn-primary btn-sm" id="copyPromptBtn" onclick="copyText(buildPrompt(currentProspect), &#39;copyPromptBtn&#39;)">📋 Copy Prompt</button><button class="btn btn-green btn-sm" onclick="window.open(&#39;https://chatgpt.com/&#39;,&#39;_blank&#39;)" style="text-decoration:none;">💬 Open ChatGPT</button><button class="btn btn-green btn-sm" onclick="window.open(&#39;https://gemini.google.com/&#39;,&#39;_blank&#39;)" style="text-decoration:none;">💎 Open Gemini</button><button class="btn btn-green btn-sm" onclick="window.open(&#39;https://claude.ai/&#39;,&#39;_blank&#39;)" style="text-decoration:none;">🧠 Open Claude</button></div><div class="prompt-box" id="promptBox">Act as a B2B sales intelligence analyst. I need a deep research dossier on Synchron to inform a sales outreach from Sublime Laser — a precision laser fabrication shop in Salt Lake City, UT that makes small-batch and prototype tubular components for medical devices (catheter shafts, hypotubes, stent tubing, nitinol laser-cut features).
+
+WHAT I ALREADY KNOW:
+- Company: Synchron
+- Domain: synchron.com
+- Location: Campbell, CA
+- Employees: 85
+- Description: A neurotechnology company developing the Stentrode, a brain-computer interface (BCI) delivered via the jugular vein using standard neuro-interventional techniques.
+- Primary material: Nitinol
+- Likely tubular need: Extremely high-precision micro-laser cutting of nitinol tubes to create the Stentrode electrode array.
+- Persona classification: A — Series A Catheter Startup (510(k) clearance in last 18 mo or active device trial, Series A / SBIR Phase II funded.)
+- Persona rationale: High-growth Series C startup with active clinical trials for a novel catheter-delivered nitinol implant.
+- Suggested outreach angle: Position Sublime as a specialist in micro-laser fabrication for neurovascular implants where nitinol fatigue life and edge quality are critical.
+- Priority score: 80/200 (high)
+
+KEY CONTACTS:
+- Thomas Oxley, CEO &amp; Founder (LinkedIn: https://www.linkedin.com/in/thomasoxley/)
+
+DETECTED SIGNALS:
+- Active device trial (catheter/stent/guidewire/nitinol) — COMMAND clinical trial (US IDE) currently enrolling to evaluate the Synchron Switch BCI.
+- Series A/B/C funding, med-device (last 24 mo) — Raised $75M Series C in late 2022/2023 led by ARCH Venture Partners.
+- Importing nitinol wire/tube (HTS 7506.20) — Significant utilization of nitinol for the Stentrode device structure.
+- Employee count 10–250 — Reported headcount growth reaching approximately 80-90 employees.
+
+WHAT I NEED YOU TO FIND:
+1. Company overview — What exactly do they make? What device categories and therapeutic areas? What stage of development or commercialization are they in?
+2. Recent news &amp; milestones (last 12 months) — Funding rounds, acquisitions, partnerships, product launches, FDA submissions or clearances, clinical trial updates, press coverage.
+3. Manufacturing &amp; supply chain — Do they have in-house laser cutting or tube fabrication capability? Do they outsource? Who are their known contract manufacturers or suppliers? What's their likely make-vs-buy posture for precision tubular components?
+4. Key decision makers — Who leads R&amp;D, engineering, manufacturing, and supply chain? Any recent leadership changes or hires relevant to fabrication sourcing?
+5. Technology &amp; materials — What materials do they work with (nitinol, stainless steel, titanium, cobalt-chrome)? What tube sizes, wall thicknesses, or laser-cut features might their devices require?
+6. Competitive landscape — Who else could supply their laser tube work? What would make Sublime Laser a better choice (precision, speed, prototyping expertise, location)?
+7. Buying signals — Are they hiring (especially engineering or manufacturing roles)? Expanding facilities? Raising capital? Any signs of a near-term need for prototype or low-volume fabrication?
+8. Outreach risks — Red flags: imminent acquisition, financial distress, pivot away from medical devices, existing exclusive supplier relationships.
+
+Format as a structured briefing with bullet points under each numbered heading. Be specific and cite sources where possible. Flag anything that would change the outreach approach or timing.</div></div>
+  </div>
+</div>
+<script>
+const DATA = [{"employee_count":85,"persona":"A","city":"Campbell","description":"A neurotechnology company developing the Stentrode, a brain-computer interface (BCI) delivered via the jugular vein using standard neuro-interventional techniques.","discovery_run_id":"6a57c3a0e876413f72732031","score":80,"signals":[{"evidence":"COMMAND clinical trial (US IDE) currently enrolling to evaluate the Synchron Switch BCI.","key":"active_trial"},{"evidence":"Raised $75M Series C in late 2022/2023 led by ARCH Venture Partners.","key":"funding_series_24m"},{"evidence":"Significant utilization of nitinol for the Stentrode device structure.","key":"import_nitinol"},{"evidence":"Reported headcount growth reaching approximately 80-90 employees.","key":"emp_10_250"}],"outreach_angle":"Position Sublime as a specialist in micro-laser fabrication for neurovascular implants where nitinol fatigue life and edge quality are critical.","tubular_need":"Extremely high-precision micro-laser cutting of nitinol tubes to create the Stentrode electrode array.","company_name":"Synchron","domain":"synchron.com","rep_notes":null,"persona_rationale":"High-growth Series C startup with active clinical trials for a novel catheter-delivered nitinol implant.","primary_material":"nitinol","state":"CA","band":"high","contacts":[{"name":"Thomas Oxley","note":"Visionary leader; likely focused on strategic manufacturing partnerships.","linkedin":"https://www.linkedin.com/in/thomasoxley/","title":"CEO & Founder","phone":"","email":""}],"status":"researching","id":"6a57c3a1a88f14c94445c3ea","created_date":"2026-07-15T17:30:09.126000","updated_date":"2026-07-15T17:32:57.415000","created_by_id":"6a3fd5746b7b96f3840eda99","created_by":"toddwmac@gmail.com","is_sample":false},{"employee_count":45,"persona":"A","city":"Campbell","description":"A Shifamed portfolio company developing a next-generation percutaneous ventricular assist device (pVAD) for high-risk PCI and cardiogenic shock.","discovery_run_id":"6a57c3a0e876413f72732031","score":65,"signals":[{"evidence":"Closed a $40M Series B extension in 2023 to support clinical development of its pVAD system.","key":"funding_series_24m"},{"evidence":"Initiated First-in-Human clinical studies for the Supira System in 2023-2024.","key":"active_trial"},{"evidence":"Headquartered in Campbell, California within the Shifamed incubator.","key":"us_hq"},{"evidence":"Estimated headcount is approximately 40-50 employees.","key":"emp_10_250"},{"evidence":"Operates under NAICS 339112 (Surgical and Medical Instrument Manufacturing).","key":"naics_match"}],"outreach_angle":"Highlight Sublime's capability in Salt Lake City for rapid prototyping of complex nitinol structures and multi-lumen catheter assemblies for pVAD applications.","tubular_need":"High-performance catheter shafts, laser-cut nitinol pump components, and torque cables for the pVAD system.","company_name":"Supira Medical","domain":"supiramedical.com","rep_notes":null,"persona_rationale":"Active device trials and recent significant Series B funding for a catheter-based mechanical circulatory support system.","primary_material":"nitinol","state":"CA","band":"medium","contacts":[{"name":"Nitin Singh","note":"Leading technical development of the catheter-based pump system.","linkedin":"https://www.linkedin.com/in/nitin-singh-61618a1/","title":"Vice President of Research and Development","phone":"","email":""}],"status":"new","id":"6a57c3a1a88f14c94445c3e8","created_date":"2026-07-15T17:30:09.126000","updated_date":"2026-07-15T17:30:09.126000","created_by_id":"6a3fd5746b7b96f3840eda99","created_by":"toddwmac@gmail.com","is_sample":false},{"employee_count":50,"persona":"C","city":"Los Gatos","description":"Shifamed portfolio company developing an adjustable interatrial shunt and remote monitoring platform for heart failure management.","discovery_run_id":"6a4a9add2a25258de550c5cf","score":65,"signals":[{"evidence":"Closed a $33.5M Series C financing round in July 2024.","key":"funding_series_24m"},{"evidence":"Initiated First-in-Human study for their novel interatrial shunt in late 2024 with enrollment completion in June 2025.","key":"active_trial"},{"evidence":"Active patent filings for adjustable shunt delivery and induction catheter systems within the last 24 months.","key":"patent_a61m_24m"},{"evidence":"Headquartered in Los Gatos, California.","key":"us_hq"}],"outreach_angle":"Highlight Sublime's expertise in nitinol shape-setting and laser-cutting for their adjustable interatrial shunt components.","tubular_need":"Laser-cut nitinol shunts with adaptable geometries and specialized induction delivery catheters.","company_name":"Adona Medical","domain":"adonamedical.com","rep_notes":null,"persona_rationale":"A spin-out from the Shifamed medical innovation hub (founded by former Guidant/Abbott executives) that secured $33.5M Series C funding in July 2024.","primary_material":"nitinol","state":"CA","band":"medium","contacts":[{"name":"Brian Fahey","note":"Email pattern is likely firstinitial.lastname@domain (pattern, unverified).","linkedin":"https://www.linkedin.com/in/brian-fahey-b040a44/","title":"Co-Founder & CEO","phone":"408-555-0123","email":"bfahey@adonamedical.com"}],"status":"new","id":"6a4a9add6893d3a059c8a47e","created_date":"2026-07-05T17:56:45.666000","updated_date":"2026-07-05T17:56:45.666000","created_by_id":"6a3fd5746b7b96f3840eda99","created_by":"toddwmac@gmail.com","is_sample":false},{"employee_count":110,"persona":"A","city":"Campbell","description":"Brain-computer interface company developing the Stentrode, a nitinol-based electrode array delivered via the jugular vein.","discovery_run_id":"6a3fdd5a06ba5a0f05f19584","score":60,"signals":[{"evidence":"Conducting the COMMAND clinical trial (NCT05035810) for their motor neuroprosthesis.","key":"active_trial"},{"evidence":"Raised $75 million in Series C funding in December 2022 led by ARCH Venture Partners.","key":"funding_series_24m"},{"evidence":"Primary US engineering and operations based in Campbell, CA.","key":"us_hq"},{"evidence":"Grew to over 100 employees in 2023.","key":"emp_10_250"}],"outreach_angle":"Highlight Sublime's ability to handle the extreme precision required for neuro-interventional electrode laser cutting.","tubular_need":"Ultra-precise laser cutting of nitinol 'stentrodes' and high-performance delivery catheter components.","company_name":"Synchron","domain":"synchron.com","rep_notes":null,"persona_rationale":"Pre-commercial Series C startup moving through pivotal clinical trials for a unique tubular implant.","primary_material":"nitinol","state":"CA","band":"medium","contacts":[{"name":"Thomas Oxley","note":"Visionary leader; likely best to reach via VP of Engineering for manufacturing inquiries.","linkedin":"https://www.linkedin.com/in/thomasoxley/","title":"CEO and Founder","phone":"","email":""}],"status":"new","id":"6a3fdd5ae57e01a760ab8e0a","created_date":"2026-06-27T14:25:30.830000","updated_date":"2026-06-27T14:25:30.830000","created_by_id":"6a3fd5746b7b96f3840eda99","created_by":"toddwmac@gmail.com","is_sample":false},{"employee_count":280,"persona":"B","city":"New York","description":"Neurotechnology company developing the Stentrode, a minimally invasive brain-computer interface (BCI) implanted via the jugular vein.","discovery_run_id":"6a4a9add2a25258de550c5cf","score":60,"signals":[{"evidence":"Raised $200M Series D in November 2024 and $310M Series E in June 2026.","key":"funding_series_24m"},{"evidence":"Actively hiring R&D Engineers for Stentrode mechanical design and catheter delivery mechanics in 2025.","key":"hiring_rd_mfg_eng"},{"evidence":"Advancing COMMAND pivotal trials for their endovascular BCI platform in 2025-2026.","key":"active_trial"},{"evidence":"Headquartered in New York with new manufacturing facilities in Fremont, CA.","key":"us_hq"}],"outreach_angle":"Promote Sublime's capacity for high-complexity nitinol laser cutting to support their Fremont manufacturing hub expansion.","tubular_need":"Precision micro-laser cutting for the nitinol Stentrode array and multi-lumen delivery catheters.","company_name":"Synchron","domain":"synchron.com","rep_notes":null,"persona_rationale":"High-growth venture-backed company (Series D/E in 2024-2025) scaling toward commercial launch of their nitinol endovascular electrode array.","primary_material":"nitinol","state":"NY","band":"medium","contacts":[{"name":"Nicholas Opie","note":"CTO is the primary technical stakeholder for Stentrode design and fabrication.","linkedin":"https://www.linkedin.com/in/nicholas-opie-2b638843/","title":"Co-Founder & CTO","phone":"212-555-0199","email":""}],"status":"new","id":"6a4a9add6893d3a059c8a47f","created_date":"2026-07-05T17:56:45.666000","updated_date":"2026-07-05T17:56:45.666000","created_by_id":"6a3fd5746b7b96f3840eda99","created_by":"toddwmac@gmail.com","is_sample":false},{"employee_count":45,"persona":"B","city":"Olathe","description":"Medical device company developing endovascular embolization products for peripheral vascular and neurovascular applications.","discovery_run_id":"6a4a9add2a25258de550c5cf","score":55,"signals":[{"evidence":"Secured additional Series A-2 and A-3 extension funding in late 2022/2023 with continued R&D spend into 2024.","key":"funding_series_24m"},{"evidence":"Recent patent assignments for endovascular occlusion devices and delivery assemblies (2024).","key":"patent_a61m_24m"},{"evidence":"Headquartered in Olathe, Kansas.","key":"us_hq"},{"evidence":"Maintains a workforce of approximately 40-50 employees.","key":"emp_10_250"}],"outreach_angle":"Position Sublime as a partner for rapid iteration of their neurovascular embolization product pipeline.","tubular_need":"Nitinol occlusion frames, laser-cut gold-coated markers, and high-pushability delivery catheters.","company_name":"Artio Medical","domain":"artiomedical.com","rep_notes":null,"persona_rationale":"Venture-backed serial entrepreneurs developing a portfolio of nitinol-based occlusion devices in the clinical/pre-commercial phase.","primary_material":"nitinol","state":"KS","band":"medium","contacts":[{"name":"F. Nicholas Franano","note":"Serial entrepreneur with direct oversight of product development strategy.","linkedin":"https://www.linkedin.com/in/nicholas-franano-8414416/","title":"President & CEO","phone":"913-730-0175","email":"nfranano@artiomedical.com"}],"status":"new","id":"6a4a9add6893d3a059c8a481","created_date":"2026-07-05T17:56:45.666000","updated_date":"2026-07-05T17:56:45.666000","created_by_id":"6a3fd5746b7b96f3840eda99","created_by":"toddwmac@gmail.com","is_sample":false},{"employee_count":30,"persona":"A","city":"Campbell","description":"A Shifamed portfolio company creating an adjustable interatrial shunt with integrated sensors for heart failure management.","discovery_run_id":"6a57c3a0e876413f72732031","score":55,"signals":[{"evidence":"Raised $33.5M in Series C funding in early 2024 to support clinical studies.","key":"funding_series_24m"},{"evidence":"Announced first-in-human implants of its heart failure shunt in early 2024.","key":"press_trigger"},{"evidence":"Based in Campbell, CA.","key":"us_hq"},{"evidence":"Operating with a lean team of approximately 25-35 specialists.","key":"emp_10_250"}],"outreach_angle":"Sublime can assist in the iterative design of the adjustable nitinol frame and the delivery system's pull-wire components.","tubular_need":"Laser-cut nitinol shunt frames and specialized delivery catheter components.","company_name":"Adona Medical","domain":"adonamedical.com","rep_notes":null,"persona_rationale":"Early-stage startup with recent Series A/B funding and active R&D for a complex catheter-based heart failure implant.","primary_material":"nitinol","state":"CA","band":"medium","contacts":[{"name":"Brian Fahey","note":"Email pattern is first_initial+lastname@adonamedical.com (unverified).","linkedin":"https://www.linkedin.com/in/brian-fahey-10214a1/","title":"Chief Executive Officer","phone":"","email":"bfahey@adonamedical.com"}],"status":"new","id":"6a57c3a1a88f14c94445c3ec","created_date":"2026-07-15T17:30:09.126000","updated_date":"2026-07-15T17:30:09.126000","created_by_id":"6a3fd5746b7b96f3840eda99","created_by":"toddwmac@gmail.com","is_sample":false},{"employee_count":45,"persona":"C","city":"Campbell","description":"A Shifamed portfolio company developing a next-generation percutaneous ventricular assist device (pVAD) for high-risk PCI and cardiogenic shock.","discovery_run_id":"6a3fdd5a06ba5a0f05f19584","score":45,"signals":[{"evidence":"Raised $40 million in Series D financing in July 2023 to advance clinical development.","key":"funding_series_24m"},{"evidence":"Headquartered in Campbell, California, within the Shifamed incubator.","key":"us_hq"},{"evidence":"Estimated employee count is approximately 45-50 based on LinkedIn data.","key":"emp_10_250"},{"evidence":"Operates under NAICS 339112 for surgical and medical instrument manufacturing.","key":"naics_match"}],"outreach_angle":"Offer rapid prototyping for their evolving pVAD pump geometry and nitinol-reinforced delivery system following their 2023 Series D funding.","tubular_need":"Precision laser-cut pump housings and high-flexibility delivery catheter shafts for the pVAD system.","company_name":"Supira Medical","domain":"supiramedical.com","rep_notes":null,"persona_rationale":"Spin-out from the Shifamed incubator; focuses on high-complexity cardiovascular catheter systems.","primary_material":"nitinol","state":"CA","band":"medium","contacts":[{"name":"Nitin Salunke","note":"Previously held leadership roles at Medtronic and Terumo.","linkedin":"https://www.linkedin.com/in/nitin-salunke-a6b12a1/","title":"President and CEO","phone":"408-612-7000","email":""}],"status":"new","id":"6a3fdd5ae57e01a760ab8e08","created_date":"2026-06-27T14:25:30.830000","updated_date":"2026-06-27T14:25:30.830000","created_by_id":"6a3fd5746b7b96f3840eda99","created_by":"toddwmac@gmail.com","is_sample":false}];
+const SIGNAL_CATALOG = [{"key":"fda_establishment_24m","label":"FDA Establishment Registration (last 24 mo)","source":"FDA"},{"key":"clearance_510k_18m","label":"510(k) clearance, tubular product code (last 18 mo)","source":"FDA"},{"key":"denovo_36m","label":"De Novo classification (last 36 mo)","source":"FDA"},{"key":"gudid_tubular","label":"GUDID listing in tubular product codes","source":"FDA"},{"key":"maude_24m","label":"MAUDE events on tubular codes (last 24 mo)","source":"FDA"},{"key":"warning_letter","label":"Recent FDA warning letter","source":"FDA"},{"key":"oai_18m","label":"OAI inspection classification (last 18 mo)","source":"FDA"},{"key":"active_trial","label":"Active device trial (catheter/stent/guidewire/nitinol)","source":"ClinicalTrials.gov"},{"key":"small_industry_trial","label":"Trial sponsored by small industry player","source":"CT.gov + Crunchbase"},{"key":"sbir_phase2_24m","label":"SBIR/STTR Phase II, tubular topic (last 24 mo)","source":"NIH / SBIR.gov"},{"key":"sec_formd_18m","label":"SEC Form D private placement (last 18 mo)","source":"SEC EDGAR"},{"key":"usaspending_24m","label":"USAspending awards, NAICS 339112/334510 (last 24 mo)","source":"USAspending"},{"key":"funding_series_24m","label":"Series A/B/C funding, med-device (last 24 mo)","source":"Crunchbase / PitchBook"},{"key":"patent_a61m_24m","label":"Patent filing, A61M CPC, assignee = company (last 24 mo)","source":"USPTO"},{"key":"patent_assignment_12m","label":"Patent assignment change (last 12 mo)","source":"USPTO Assignment"},{"key":"import_stainless","label":"Importing med-grade stainless tube (HTS 7304.4x)","source":"ImportGenius"},{"key":"import_titanium","label":"Importing titanium tube/wire (HTS 8108.x)","source":"ImportGenius"},{"key":"import_nitinol","label":"Importing nitinol wire/tube (HTS 7506.20)","source":"ImportGenius"},{"key":"press_trigger","label":"Press release: FDA cleared / first-in-human / Series (last 6 mo)","source":"MassDevice / PR Newswire"},{"key":"cms_kol","label":"CMS Open Payments to cardio KOLs","source":"CMS Open Payments"},{"key":"hiring_rd_mfg_eng","label":"Hiring R&D / Manufacturing Engineer (last 6 mo)","source":"LinkedIn / Indeed"},{"key":"hiring_quality_eng","label":"Hiring Quality Engineer (last 6 mo)","source":"LinkedIn / Indeed"},{"key":"hiring_prototype_machinist","label":"Hiring Prototype Machinist / Tooling Engineer (last 6 mo)","source":"LinkedIn / Indeed"},{"key":"member_mdma","label":"Member of MDMA","source":"MDMA"},{"key":"member_advamed","label":"Member of AdvaMed","source":"AdvaMed"},{"key":"member_cluster","label":"Member of Medical Alley / MassMEDIC","source":"Cluster dirs"},{"key":"exhibitor_mdm","label":"Exhibitor at MD&M / BIOMEDevice (last 2 yr)","source":"Informa"},{"key":"us_hq","label":"US-headquartered","source":"All"},{"key":"naics_match","label":"NAICS 339112 / 334510","source":"Census / SAM"},{"key":"emp_10_250","label":"Employee count 10–250","source":"LinkedIn / Apollo"},{"key":"emp_over_1000","label":"Employee count > 1000","source":"LinkedIn / Apollo"},{"key":"emp_under_5","label":"Employee count < 5","source":"LinkedIn / Apollo"}];
+const MATERIAL_LABELS = {"nitinol":"Nitinol","stainless_steel":"Stainless Steel","titanium":"Titanium","cobalt_chrome":"Cobalt Chrome","precious_metal":"Precious Metal","other":"Other","unknown":"Unknown"};
+const SIGNAL_META = Object.fromEntries(SIGNAL_CATALOG.map(s => [s.key, s]));
+let sortKey = 'score';
+let sortDir = -1;
+let currentProspect = null;
+
+function bandClass(b) { return 'band-' + (b || 'low'); }
+function bandLabel(b) { return ({very_high:'Very High',high:'High',medium:'Medium',low:'Low'})[b] || b; }
+function statusLabel(s) { return ({new:'New',researching:'Researching',contacted:'Contacted',qualified:'Qualified',won:'Won',archived:'Archived'})[s] || 'New'; }
+function esc(str) { return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function getFiltered() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const bf = document.getElementById('bandFilter').value;
+  const sf = document.getElementById('statusFilter').value;
+  return DATA.filter(p => {
+    if (bf !== 'all' && p.band !== bf) return false;
+    if (sf !== 'all' && (p.status || 'new') !== sf) return false;
+    if (q) {
+      const hay = (p.company_name + ' ' + p.city + ' ' + p.state + ' ' + (p.description||'')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }).sort((a, b) => {
+    let va = a[sortKey], vb = b[sortKey];
+    if (typeof va === 'string') { va = (va||'').toLowerCase(); vb = (vb||'').toLowerCase(); }
+    if (va == null) va = ''; if (vb == null) vb = '';
+    return (va > vb ? 1 : va < vb ? -1 : 0) * sortDir;
+  });
+}
+
+function renderTable() {
+  const filtered = getFiltered();
+  const tbody = document.getElementById('tbody');
+  document.getElementById('visibleCount').textContent = filtered.length;
+  document.getElementById('emptyState').style.display = filtered.length ? 'none' : 'block';
+  document.getElementById('table').style.display = filtered.length ? '' : 'none';
+  tbody.innerHTML = filtered.map((p, i) => {
+    const c = (p.contacts && p.contacts[0]) || {};
+    return '<tr onclick="openProspect(' + i + ')">' +
+      '<td><span class="score-ring ' + bandClass(p.band) + '">' + (p.score || 0) + '</span></td>' +
+      '<td><div class="company-name">' + esc(p.company_name) + '</div>' +
+        (p.description ? '<div class="company-desc">' + esc(p.description).slice(0, 80) + (p.description.length > 80 ? '...' : '') + '</div>' : '') +
+        (p.tubular_need ? '<div class="company-desc">🔧 ' + esc(p.tubular_need).slice(0, 60) + '</div>' : '') + '</td>' +
+      '<td><span class="band-badge ' + bandClass(p.band) + '">' + bandLabel(p.band) + '</span></td>' +
+      '<td>' + (p.persona && p.persona !== 'none' ? '<span class="persona-tag">Persona ' + esc(p.persona) + '</span>' : '<span style="color:#cbd5e1">—</span>') + '</td>' +
+      '<td>' + esc([p.city, p.state].filter(Boolean).join(', ')) + '</td>' +
+      '<td>' + (p.employee_count || '—') + '</td>' +
+      '<td><span class="status-badge">' + statusLabel(p.status) + '</span></td>' +
+      '<td>' + (c.name ? '<div class="company-name">' + esc(c.name) + '</div><div class="company-desc">' + esc(c.title) + '</div>' : '<span style="color:#cbd5e1">—</span>') + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function sortBy(key) {
+  if (sortKey === key) { sortDir *= -1; } else { sortKey = key; sortDir = key === 'company_name' ? 1 : -1; }
+  document.querySelectorAll('th').forEach((th, i) => {
+    th.classList.remove('sorted');
+    const arrow = th.querySelector('.sort-arrow');
+    if (arrow) arrow.textContent = '↕';
+  });
+  const headers = document.querySelectorAll('th');
+  const colMap = { score: 0, company_name: 1, band: 2, persona: 3, state: 4, employee_count: 5, status: 6 };
+  const idx = colMap[key];
+  if (idx != null) {
+    headers[idx].classList.add('sorted');
+    headers[idx].querySelector('.sort-arrow').textContent = sortDir === 1 ? '↑' : '↓';
+  }
+  renderTable();
+}
+
+function buildPrompt(p) {
+  const personaMap = {
+    A: { name: 'Series A Catheter Startup', summary: '510(k) clearance in last 18 mo or active device trial, Series A / SBIR Phase II funded.' },
+    B: { name: 'Pre-Commercial SBIR Awardee', summary: 'SBIR Phase II funded, pre/early-FDA, university spin-out with patents.' },
+    C: { name: 'Big-Med Spin-out', summary: 'Founded <24 mo ago, IP spun out of a large incumbent, seed/Series A funded.' },
+    none: { name: 'Unclassified', summary: 'Does not cleanly match a target persona.' }
+  };
+  const persona = personaMap[p.persona] || personaMap.none;
+  const signals = (p.signals || []).map(s => {
+    const key = typeof s === 'string' ? s : s.key;
+    const ev = typeof s === 'string' ? '' : s.evidence;
+    const meta = SIGNAL_META[key] || { label: key };
+    return '- ' + meta.label + (ev ? ' — ' + ev : '');
+  }).join('\n');
+  const contacts = (p.contacts || []).map(c =>
+    '- ' + (c.name || 'Unknown') + (c.title ? ', ' + c.title : '') + (c.linkedin ? ' (LinkedIn: ' + c.linkedin + ')' : '')
+  ).join('\n');
+  return 'Act as a B2B sales intelligence analyst. I need a deep research dossier on ' + p.company_name + ' to inform a sales outreach from Sublime Laser — a precision laser fabrication shop in Salt Lake City, UT that makes small-batch and prototype tubular components for medical devices (catheter shafts, hypotubes, stent tubing, nitinol laser-cut features).\n\n' +
+    'WHAT I ALREADY KNOW:\n' +
+    '- Company: ' + p.company_name + '\n' +
+    '- Domain: ' + (p.domain || 'unknown') + '\n' +
+    '- Location: ' + ([p.city, p.state].filter(Boolean).join(', ') || 'unknown') + '\n' +
+    '- Employees: ' + (p.employee_count || 'unknown') + '\n' +
+    '- Description: ' + (p.description || 'unknown') + '\n' +
+    '- Primary material: ' + (MATERIAL_LABELS[p.primary_material] || 'unknown') + '\n' +
+    '- Likely tubular need: ' + (p.tubular_need || 'unknown') + '\n' +
+    '- Persona classification: ' + p.persona + ' — ' + persona.name + ' (' + persona.summary + ')\n' +
+    '- Persona rationale: ' + (p.persona_rationale || 'unknown') + '\n' +
+    '- Suggested outreach angle: ' + (p.outreach_angle || 'unknown') + '\n' +
+    '- Priority score: ' + (p.score || 0) + '/200 (' + (p.band || 'low') + ')\n\n' +
+    'KEY CONTACTS:\n' + (contacts || 'none identified yet') + '\n\n' +
+    'DETECTED SIGNALS:\n' + (signals || 'none') + '\n\n' +
+    'WHAT I NEED YOU TO FIND:\n' +
+    '1. Company overview — What exactly do they make? What device categories and therapeutic areas? What stage of development or commercialization are they in?\n' +
+    '2. Recent news & milestones (last 12 months) — Funding rounds, acquisitions, partnerships, product launches, FDA submissions or clearances, clinical trial updates, press coverage.\n' +
+    '3. Manufacturing & supply chain — Do they have in-house laser cutting or tube fabrication capability? Do they outsource? Who are their known contract manufacturers or suppliers? What\'s their likely make-vs-buy posture for precision tubular components?\n' +
+    '4. Key decision makers — Who leads R&D, engineering, manufacturing, and supply chain? Any recent leadership changes or hires relevant to fabrication sourcing?\n' +
+    '5. Technology & materials — What materials do they work with (nitinol, stainless steel, titanium, cobalt-chrome)? What tube sizes, wall thicknesses, or laser-cut features might their devices require?\n' +
+    '6. Competitive landscape — Who else could supply their laser tube work? What would make Sublime Laser a better choice (precision, speed, prototyping expertise, location)?\n' +
+    '7. Buying signals — Are they hiring (especially engineering or manufacturing roles)? Expanding facilities? Raising capital? Any signs of a near-term need for prototype or low-volume fabrication?\n' +
+    '8. Outreach risks — Red flags: imminent acquisition, financial distress, pivot away from medical devices, existing exclusive supplier relationships.\n\n' +
+    'Format as a structured briefing with bullet points under each numbered heading. Be specific and cite sources where possible. Flag anything that would change the outreach approach or timing.';
+}
+
+function copyText(text, btnId) {
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById(btnId);
+    if (el) {
+      const orig = el.innerHTML;
+      el.innerHTML = '✅ Copied!';
+      el.classList.add('btn-green');
+      setTimeout(() => { el.innerHTML = orig; el.classList.remove('btn-green'); }, 1500);
+    }
+  });
+}
+
+function copyContact(contact, idx) {
+  const parts = [contact.name, contact.title, contact.email, contact.phone, contact.linkedin].filter(Boolean);
+  copyText(parts.join('\n'), 'copyContactBtn_' + idx);
+}
+
+function openProspect(idx) {
+  const p = getFiltered()[idx];
+  currentProspect = p;
+  const personaMap = {
+    A: 'Series A Catheter Startup', B: 'Pre-Commercial SBIR Awardee',
+    C: 'Big-Med Spin-out', none: 'Unclassified'
+  };
+  document.getElementById('modalTitle').textContent = p.company_name;
+  const contactsHtml = (p.contacts || []).length
+    ? (p.contacts || []).map((c, i) =>
+        '<div class="contact-card">' +
+          '<div class="contact-info">' +
+            '<div class="name">' + esc(c.name || 'Unknown') + '</div>' +
+            (c.title ? '<div class="title">' + esc(c.title) + '</div>' : '') +
+            (c.email ? '<div class="email">✉ ' + esc(c.email) + '</div>' : '') +
+            (c.phone ? '<div class="phone">☎ ' + esc(c.phone) + '</div>' : '') +
+            (c.linkedin ? '<div class="linkedin">in ' + esc(c.linkedin) + '</div>' : '') +
+            (c.note ? '<div class="phone">📝 ' + esc(c.note) + '</div>' : '') +
+          '</div>' +
+          '<button class="btn btn-outline btn-sm" id="copyContactBtn_' + i + '" onclick="copyContact(' + JSON.stringify(c).replace(/"/g, '&quot;') + ',' + i + ')">📋 Copy</button>' +
+        '</div>'
+      ).join('')
+    : '<p style="color:#94a3b8;font-size:13px;">No contacts on file.</p>';
+
+  const signalsHtml = (p.signals || []).length
+    ? (p.signals || []).map(s => {
+        const key = typeof s === 'string' ? s : s.key;
+        const ev = typeof s === 'string' ? '' : s.evidence;
+        const meta = SIGNAL_META[key] || { label: key, source: '—' };
+        return '<div class="signal-item">' +
+          '<div style="flex:1"><div class="signal-label">' + esc(meta.label) + '</div>' +
+          (ev ? '<div class="signal-ev">' + esc(ev) + '</div>' : '') + '</div>' +
+          '<div class="signal-src">' + esc(meta.source) + '</div>' +
+        '</div>';
+      }).join('')
+    : '<p style="color:#94a3b8;font-size:13px;">No signals detected.</p>';
+
+  document.getElementById('modalBody').innerHTML =
+    '<div class="badge-row" style="margin-bottom:16px;">' +
+      '<span class="score-ring ' + bandClass(p.band) + '">' + (p.score || 0) + '</span>' +
+      '<span class="band-badge ' + bandClass(p.band) + '">' + bandLabel(p.band) + '</span>' +
+      '<span class="status-badge">' + statusLabel(p.status) + '</span>' +
+      (p.persona && p.persona !== 'none' ? '<span class="persona-tag">Persona ' + esc(p.persona) + ' — ' + esc(personaMap[p.persona]) + '</span>' : '') +
+    '</div>' +
+    '<div class="detail-grid">' +
+      '<div class="detail-item"><label>Domain</label><div class="value">' + (p.domain ? '<a href="https://' + esc(p.domain) + '" target="_blank" style="color:#2563eb">' + esc(p.domain) + '</a>' : '—') + '</div></div>' +
+      '<div class="detail-item"><label>Location</label><div class="value">' + esc([p.city, p.state].filter(Boolean).join(', ') || '—') + '</div></div>' +
+      '<div class="detail-item"><label>Employees</label><div class="value">' + (p.employee_count || '—') + '</div></div>' +
+      '<div class="detail-item"><label>Primary Material</label><div class="value">' + esc(MATERIAL_LABELS[p.primary_material] || '—') + '</div></div>' +
+    '</div>' +
+    '<div class="detail-item" style="margin-bottom:16px;"><label>Description</label><div class="value">' + esc(p.description || '—') + '</div></div>' +
+    '<div class="detail-item" style="margin-bottom:16px;"><label>Tubular Need</label><div class="value">' + esc(p.tubular_need || '—') + '</div></div>' +
+    '<div class="detail-item" style="margin-bottom:16px;"><label>Persona Rationale</label><div class="value">' + esc(p.persona_rationale || '—') + '</div></div>' +
+    '<div class="detail-item" style="margin-bottom:16px;"><label>Outreach Angle</label><div class="value" style="font-style:italic;">"' + esc(p.outreach_angle || '—') + '"</div></div>' +
+    (p.rep_notes ? '<div class="detail-item" style="margin-bottom:16px;"><label>Rep Notes</label><div class="value">' + esc(p.rep_notes) + '</div></div>' : '') +
+    '<div class="section-title">📋 Contacts</div>' + contactsHtml +
+    '<div class="section-title">📊 Detected Signals</div>' + signalsHtml +
+    '<div class="section-title">🤖 LLM Research Prompt</div>' +
+    '<p style="font-size:12px;color:#64748b;margin-bottom:8px;">Copy this prompt and paste it into ChatGPT, Gemini, or Claude for a focused deep dive before outreach.</p>' +
+    '<div style="display:flex;gap:8px;margin-bottom:10px;">' +
+      '<button class="btn btn-primary btn-sm" id="copyPromptBtn" onclick="copyText(buildPrompt(currentProspect), ' + "'copyPromptBtn'" + ')">📋 Copy Prompt</button>' +
+      '<button class="btn btn-green btn-sm" onclick="window.open(' + "'https://chatgpt.com/','_blank'" + ')" style="text-decoration:none;">💬 Open ChatGPT</button>' +
+      '<button class="btn btn-green btn-sm" onclick="window.open(' + "'https://gemini.google.com/','_blank'" + ')" style="text-decoration:none;">💎 Open Gemini</button>' +
+      '<button class="btn btn-green btn-sm" onclick="window.open(' + "'https://claude.ai/','_blank'" + ')" style="text-decoration:none;">🧠 Open Claude</button>' +
+    '</div>' +
+    '<div class="prompt-box" id="promptBox"></div>';
+  document.getElementById('promptBox').textContent = buildPrompt(p);
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  currentProspect = null;
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+renderTable();
+</script>
+
+</body></html>
