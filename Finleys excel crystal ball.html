@@ -1,0 +1,2601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Finley's Excel Chrystal Ball</title>
+  <meta
+    name="description"
+    content="A refined, equestrian-themed briefing on how AI is reshaping Microsoft Excel, how Microsoft itself is thinking about the shift, and where the spreadsheet is headed next."
+  >
+
+  <style>
+    /* =========================================================
+       FINLEY'S EXCEL CHRYSTAL BALL
+       Refined equestrian edition — light, editorial, professional
+       ========================================================= */
+
+    :root {
+      /* Palette: paperwhite, cream, hunter green, brass, ink */
+      --paper: #fbf8f2;
+      --cream: #f2ecdf;
+      --card: #ffffff;
+      --card-soft: #f7f2e6;
+
+      --ink: #1c2a26;
+      --ink-soft: #2f3d38;
+      --muted: #5a6660;
+      --hairline: #dcd3bf;
+
+      --green: #2f6b4f;
+      --green-dark: #1f4e39;
+      --green-soft: #e2ecdf;
+
+      --brass: #b58a3d;
+      --brass-soft: #f2e6c5;
+
+      --burgundy: #7a2b34;
+      --burgundy-soft: #f2dcde;
+
+      --sky: #4a7a99;
+      --sky-soft: #dbe6ee;
+
+      --danger: #a8323d;
+      --warning: #9a6a15;
+      --success: #226b48;
+
+      --shadow-sm: 0 6px 18px rgba(28, 42, 38, 0.06);
+      --shadow-md: 0 14px 34px rgba(28, 42, 38, 0.09);
+      --shadow-lg: 0 28px 70px rgba(28, 42, 38, 0.14);
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+
+      --content-width: 1140px;
+      --sidebar-width: 230px;
+
+      --serif: "Cormorant Garamond", "EB Garamond", Georgia, "Times New Roman", serif;
+      --sans:
+        "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+
+      color-scheme: light;
+    }
+
+    html[data-theme="dusk"] {
+      --paper: #14201d;
+      --cream: #1a2823;
+      --card: #1c2b26;
+      --card-soft: #22332d;
+
+      --ink: #f2ede0;
+      --ink-soft: #e7e1d1;
+      --muted: #a9b6ae;
+      --hairline: #34493f;
+
+      --green: #7ec49d;
+      --green-dark: #a4dcbc;
+      --green-soft: #234a38;
+
+      --brass: #e2b866;
+      --brass-soft: #453818;
+
+      --burgundy: #e28793;
+      --burgundy-soft: #45262b;
+
+      --sky: #9dc0d9;
+      --sky-soft: #2c3f4d;
+
+      --danger: #f18a94;
+      --warning: #f0c675;
+      --success: #86d6a8;
+
+      --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.28);
+      --shadow-md: 0 16px 36px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 30px 70px rgba(0, 0, 0, 0.45);
+
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 24px;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16.5px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Subtle paper texture using overlaid gradients */
+    body::before {
+      content: "";
+      position: fixed;
+      z-index: -1;
+      inset: 0;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(47, 107, 79, 0.06), transparent 42%),
+        radial-gradient(circle at 92% 8%, rgba(181, 138, 61, 0.07), transparent 40%),
+        radial-gradient(circle at 50% 100%, rgba(122, 43, 52, 0.04), transparent 45%);
+      pointer-events: none;
+    }
+
+    a {
+      color: var(--green-dark);
+      text-decoration-thickness: 0.06em;
+      text-underline-offset: 0.22em;
+      transition: color 140ms ease;
+    }
+
+    a:hover {
+      color: var(--green);
+    }
+
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :focus-visible {
+      outline: 3px solid rgba(181, 138, 61, 0.55);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      padding: 0;
+      border: 0;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 1000;
+      top: 12px;
+      left: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--paper);
+      transform: translateY(-160%);
+      transition: transform 160ms ease;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .scroll-progress {
+      position: fixed;
+      z-index: 999;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--green), var(--brass));
+    }
+
+    /* ----------------- Typography ----------------- */
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--serif);
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.6rem;
+      color: var(--green);
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow .divider {
+      margin: 0 0.5rem;
+      color: var(--brass);
+    }
+
+    /* Small horseshoe glyph used as a light accent */
+    .glyph-shoe {
+      display: inline-block;
+      color: var(--brass);
+      font-family: var(--serif);
+      font-style: normal;
+      transform: translateY(-1px);
+    }
+
+    .glyph-shoe::before {
+      content: "\2040"; /* horseshoe-like ligature */
+    }
+
+    /* ----------------- Header / Hero ----------------- */
+
+    .site-header {
+      position: sticky;
+      z-index: 90;
+      top: 0;
+      border-bottom: 1px solid var(--hairline);
+      background: color-mix(in srgb, var(--paper) 88%, transparent);
+      backdrop-filter: blur(12px);
+    }
+
+    .site-header-inner {
+      display: flex;
+      width: min(calc(100% - 40px), var(--content-width));
+      margin: 0 auto;
+      padding: 0.85rem 0;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      gap: 0.65rem;
+      align-items: center;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 0.005em;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid var(--hairline);
+      border-radius: 50%;
+      background: var(--card);
+      color: var(--green-dark);
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .brand em {
+      color: var(--brass);
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    .site-header-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .header-link {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .header-link:hover {
+      color: var(--ink);
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      min-height: 34px;
+      padding: 0.35rem 0.7rem;
+      gap: 0.35rem;
+      align-items: center;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 140ms ease;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--brass);
+    }
+
+    /* ----------------- Hero ----------------- */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .hero-inner {
+      width: min(calc(100% - 40px), var(--content-width));
+      margin: 0 auto;
+      padding: clamp(3rem, 7vw, 6rem) 0 clamp(2.5rem, 5vw, 4rem);
+    }
+
+    .hero-title {
+      max-width: 15ch;
+      margin: 0.75rem 0 0;
+      font-size: clamp(2.75rem, 6.5vw, 5.5rem);
+      font-weight: 500;
+    }
+
+    .hero-title em {
+      color: var(--green);
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    .hero-rule {
+      display: flex;
+      max-width: 640px;
+      margin: 1.35rem 0 1.5rem;
+      gap: 0.6rem;
+      align-items: center;
+      color: var(--brass);
+      font-family: var(--serif);
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+
+    .hero-rule::before,
+    .hero-rule::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        transparent,
+        var(--brass),
+        transparent
+      );
+    }
+
+    .hero-lede {
+      max-width: 62ch;
+      margin: 0;
+      color: var(--ink-soft);
+      font-family: var(--serif);
+      font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+      font-weight: 400;
+      line-height: 1.45;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1.6rem;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 42px;
+      padding: 0.6rem 1rem;
+      gap: 0.45rem;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition:
+        transform 140ms ease,
+        background 140ms ease,
+        border-color 140ms ease,
+        color 140ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button-primary {
+      background: var(--green-dark);
+      color: #fff;
+    }
+
+    .button-primary:hover {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .button-ghost {
+      border-color: var(--hairline);
+      background: var(--card);
+      color: var(--ink);
+    }
+
+    .button-ghost:hover {
+      border-color: var(--brass);
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin-top: 1.75rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--hairline);
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .hero-meta strong {
+      display: block;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* ----------------- Layout ----------------- */
+
+    .page-shell {
+      display: grid;
+      width: min(calc(100% - 40px), var(--content-width));
+      margin: 0 auto;
+      padding: clamp(2.5rem, 5vw, 4rem) 0 5rem;
+      gap: clamp(2rem, 5vw, 4rem);
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    aside.sidebar {
+      position: sticky;
+      top: 88px;
+    }
+
+    .sidebar-title {
+      margin: 0 0 0.6rem;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .side-nav {
+      display: grid;
+      padding: 0;
+      border-left: 1px solid var(--hairline);
+      margin: 0;
+      list-style: none;
+      counter-reset: sidenav;
+    }
+
+    .side-nav li {
+      counter-increment: sidenav;
+    }
+
+    .side-nav a {
+      position: relative;
+      display: block;
+      padding: 0.5rem 0 0.5rem 1.3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 140ms ease;
+    }
+
+    .side-nav a::before {
+      content: counter(sidenav, decimal-leading-zero);
+      position: absolute;
+      top: 50%;
+      left: -1px;
+      padding-right: 0.5rem;
+      background: var(--paper);
+      color: var(--hairline);
+      font-family: var(--serif);
+      font-size: 0.78rem;
+      font-style: italic;
+      transform: translateY(-50%);
+    }
+
+    .side-nav a:hover {
+      color: var(--ink);
+    }
+
+    .side-nav a.active {
+      color: var(--green-dark);
+      font-weight: 700;
+    }
+
+    .side-nav a.active::before {
+      color: var(--brass);
+    }
+
+    .sidebar-footer {
+      margin-top: 1.3rem;
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.5;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    .section {
+      scroll-margin-top: 88px;
+      margin-bottom: clamp(3.5rem, 6vw, 5.5rem);
+    }
+
+    .section-heading {
+      max-width: 780px;
+      margin-bottom: 1.6rem;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: clamp(2rem, 3.5vw, 2.85rem);
+      font-weight: 500;
+    }
+
+    .section-lede {
+      max-width: 65ch;
+      margin: 0.75rem 0 0;
+      color: var(--muted);
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-style: italic;
+      line-height: 1.45;
+    }
+
+    /* Small superscript citations */
+    .cite {
+      font-size: 0.72em;
+      vertical-align: super;
+    }
+
+    .cite a {
+      color: var(--brass);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .cite a::before {
+      content: "[";
+    }
+
+    .cite a::after {
+      content: "]";
+    }
+
+    /* ----------------- Verdict card ----------------- */
+
+    .verdict {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(1.5rem, 3.5vw, 2.4rem);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(135deg, var(--green-soft), var(--card));
+      box-shadow: var(--shadow-md);
+    }
+
+    .verdict::before {
+      content: "\201C";
+      position: absolute;
+      top: -1rem;
+      left: 1.4rem;
+      color: var(--brass);
+      font-family: var(--serif);
+      font-size: 8rem;
+      font-weight: 700;
+      line-height: 1;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .verdict-label {
+      margin: 0;
+      color: var(--green-dark);
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .verdict blockquote {
+      position: relative;
+      z-index: 1;
+      max-width: 55ch;
+      margin: 0.75rem 0 0;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: clamp(1.4rem, 2.6vw, 2rem);
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .summary-row {
+      display: grid;
+      margin-top: 1.25rem;
+      gap: 0.9rem;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .summary-card {
+      padding: 1.1rem;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-md);
+      background: var(--card);
+    }
+
+    .summary-card strong {
+      display: block;
+      color: var(--green-dark);
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .summary-card p {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    /* ----------------- Microsoft POV block ----------------- */
+
+    .pov {
+      display: grid;
+      gap: 1.1rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pov-card {
+      display: flex;
+      flex-direction: column;
+      padding: 1.35rem;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-md);
+      background: var(--card);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pov-card .kicker {
+      margin: 0 0 0.35rem;
+      color: var(--brass);
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .pov-card h3 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .pov-card p {
+      margin: 0.65rem 0 0;
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+    }
+
+    .pillars {
+      display: grid;
+      margin-top: 1rem;
+      gap: 0.55rem;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pillar {
+      padding: 0.55rem 0.7rem;
+      border-left: 3px solid var(--green);
+      background: var(--card-soft);
+      font-size: 0.85rem;
+    }
+
+    .pillar strong {
+      display: block;
+      color: var(--green-dark);
+      font-family: var(--serif);
+      font-size: 0.98rem;
+    }
+
+    .pull-quote {
+      position: relative;
+      margin: 2rem 0 0;
+      padding: 1.5rem 1.6rem;
+      border-left: 3px solid var(--brass);
+      background: var(--card-soft);
+      color: var(--ink-soft);
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-style: italic;
+      line-height: 1.45;
+    }
+
+    .pull-quote cite {
+      display: block;
+      margin-top: 0.6rem;
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      font-style: normal;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ----------------- Current-state cards ----------------- */
+
+    .cards-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 1.35rem;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-md);
+      background: var(--card);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-index {
+      color: var(--brass);
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    .card h3 {
+      margin: 0.15rem 0 0.6rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+    }
+
+    .card p + p {
+      margin-top: 0.6rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.9rem;
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 0.22rem 0.55rem;
+      align-items: center;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      background: var(--card-soft);
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .tag-live {
+      border-color: color-mix(in srgb, var(--green) 40%, var(--hairline));
+      background: var(--green-soft);
+      color: var(--success);
+    }
+
+    .tag-preview {
+      border-color: color-mix(in srgb, var(--brass) 45%, var(--hairline));
+      background: var(--brass-soft);
+      color: var(--warning);
+    }
+
+    .tag-outlook {
+      border-color: color-mix(in srgb, var(--sky) 40%, var(--hairline));
+      background: var(--sky-soft);
+      color: var(--sky);
+    }
+
+    .tag-risk {
+      border-color: color-mix(in srgb, var(--burgundy) 40%, var(--hairline));
+      background: var(--burgundy-soft);
+      color: var(--danger);
+    }
+
+    .formula {
+      display: block;
+      overflow-x: auto;
+      margin-top: 0.9rem;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--hairline);
+      border-radius: 8px;
+      background: var(--card-soft);
+      color: var(--green-dark);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    /* ----------------- Thinking shifts ----------------- */
+
+    .shifts {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .shift {
+      display: grid;
+      gap: 1rem;
+      align-items: stretch;
+      grid-template-columns: 1fr auto 1fr;
+    }
+
+    .shift-side {
+      padding: 1.05rem 1.1rem;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-md);
+      background: var(--card);
+    }
+
+    .shift-side.from {
+      color: var(--muted);
+      background: var(--card-soft);
+    }
+
+    .shift-side.to {
+      border-color: color-mix(in srgb, var(--green) 32%, var(--hairline));
+      background: color-mix(in srgb, var(--green-soft) 70%, var(--card));
+    }
+
+    .shift-side small {
+      display: block;
+      margin-bottom: 0.15rem;
+      color: var(--brass);
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .shift-side strong {
+      display: block;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .shift-side p {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      font-size: 0.87rem;
+    }
+
+    .shift-arrow {
+      display: grid;
+      width: 2.4rem;
+      place-items: center;
+      color: var(--brass);
+      font-family: var(--serif);
+      font-size: 1.5rem;
+    }
+
+    .staples {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 1.4rem;
+      padding: 1.1rem 1.3rem;
+      gap: 0.55rem;
+      align-items: center;
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .staples strong {
+      margin-right: 0.5rem;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .chip {
+      display: inline-flex;
+      padding: 0.3rem 0.7rem;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--ink-soft);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* ----------------- Forecast ----------------- */
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 1.1rem;
+      gap: 0.35rem;
+    }
+
+    .filter-button {
+      padding: 0.42rem 0.85rem;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition:
+        background 140ms ease,
+        border-color 140ms ease,
+        color 140ms ease;
+    }
+
+    .filter-button:hover {
+      border-color: var(--brass);
+      color: var(--ink);
+    }
+
+    .filter-button[aria-pressed="true"] {
+      border-color: var(--green-dark);
+      background: var(--green-dark);
+      color: #fff;
+    }
+
+    .forecast-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .forecast-card {
+      display: flex;
+      min-height: 100%;
+      flex-direction: column;
+      padding: 1.3rem;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-md);
+      background: var(--card);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .forecast-card[data-horizon="now"] {
+      --horizon: var(--green);
+    }
+
+    .forecast-card[data-horizon="near"] {
+      --horizon: var(--brass);
+    }
+
+    .forecast-card[data-horizon="far"] {
+      --horizon: var(--sky);
+    }
+
+    .forecast-marker {
+      display: inline-flex;
+      margin-bottom: 0.6rem;
+      padding: 0.22rem 0.55rem;
+      align-self: flex-start;
+      align-items: center;
+      border: 1px solid color-mix(in srgb, var(--horizon) 40%, var(--hairline));
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--horizon) 12%, var(--card));
+      color: var(--horizon);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .forecast-card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    .forecast-card p,
+    .forecast-card li {
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+    }
+
+    .forecast-card ul {
+      flex: 1;
+      margin: 0.4rem 0 1rem;
+      padding-left: 1.1rem;
+    }
+
+    .forecast-card li + li {
+      margin-top: 0.25rem;
+    }
+
+    .confidence {
+      margin-top: auto;
+      padding-top: 0.65rem;
+      border-top: 1px dashed var(--hairline);
+    }
+
+    .confidence-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .confidence-bar {
+      overflow: hidden;
+      height: 4px;
+      margin-top: 0.35rem;
+      border-radius: 999px;
+      background: var(--card-soft);
+    }
+
+    .confidence-bar span {
+      display: block;
+      width: var(--confidence, 50%);
+      height: 100%;
+      border-radius: inherit;
+      background: var(--horizon);
+    }
+
+    .forecast-note {
+      margin-top: 1rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* ----------------- Risks table ----------------- */
+
+    .risk-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-md);
+      background: var(--card);
+    }
+
+    table.risk {
+      width: 100%;
+      min-width: 700px;
+      border-collapse: collapse;
+    }
+
+    table.risk th,
+    table.risk td {
+      padding: 0.95rem 1rem;
+      border-bottom: 1px solid var(--hairline);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    table.risk th {
+      background: var(--card-soft);
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    table.risk tr:last-child td {
+      border-bottom: 0;
+    }
+
+    table.risk td {
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+    }
+
+    table.risk td:first-child {
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .sev {
+      display: inline-flex;
+      padding: 0.18rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .sev-high {
+      background: var(--burgundy-soft);
+      color: var(--danger);
+    }
+
+    .sev-med {
+      background: var(--brass-soft);
+      color: var(--warning);
+    }
+
+    /* ----------------- Plan / gate steps ----------------- */
+
+    .gates {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .gate {
+      display: grid;
+      padding: 1.1rem 1.25rem;
+      gap: 1rem;
+      align-items: center;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-md);
+      background: var(--card);
+      grid-template-columns: 3rem 1fr;
+    }
+
+    .gate-num {
+      display: grid;
+      width: 3rem;
+      height: 3rem;
+      place-items: center;
+      border: 1px solid var(--brass);
+      border-radius: 50%;
+      background: var(--card);
+      color: var(--brass);
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 600;
+    }
+
+    .gate h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .gate p {
+      margin: 0.25rem 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    /* ----------------- Prompts ----------------- */
+
+    .prompts {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .prompt {
+      display: flex;
+      flex-direction: column;
+      padding: 1.25rem;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-md);
+      background: var(--card);
+    }
+
+    .prompt h3 {
+      margin: 0 0 0.65rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .prompt-body {
+      flex: 1;
+      margin: 0 0 0.9rem;
+      padding: 0.85rem 1rem;
+      border-left: 3px solid var(--green);
+      background: var(--card-soft);
+      color: var(--ink-soft);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.83rem;
+      line-height: 1.55;
+    }
+
+    .copy-btn {
+      align-self: flex-start;
+      padding: 0.42rem 0.85rem;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 140ms ease;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--brass);
+    }
+
+    .copy-btn.copied {
+      border-color: var(--green);
+      background: var(--green-soft);
+      color: var(--green-dark);
+    }
+
+    /* ----------------- Sources ----------------- */
+
+    .sources {
+      display: grid;
+      gap: 0.55rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: sources;
+    }
+
+    .sources li {
+      position: relative;
+      padding: 0.75rem 1rem 0.75rem 3rem;
+      border-bottom: 1px solid var(--hairline);
+      counter-increment: sources;
+    }
+
+    .sources li::before {
+      content: counter(sources);
+      position: absolute;
+      top: 0.85rem;
+      left: 0.9rem;
+      display: grid;
+      width: 1.6rem;
+      height: 1.6rem;
+      place-items: center;
+      border: 1px solid var(--brass);
+      border-radius: 50%;
+      color: var(--brass);
+      font-family: var(--serif);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .sources a {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .sources span {
+      display: block;
+      margin-top: 0.15rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* ----------------- Closing ----------------- */
+
+    .closing {
+      padding: clamp(1.75rem, 4vw, 2.75rem);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .closing .eyebrow {
+      color: var(--brass);
+    }
+
+    .closing h2 {
+      max-width: 24ch;
+      margin: 0.3rem 0 0.9rem;
+      color: var(--paper);
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+    }
+
+    .closing p {
+      max-width: 62ch;
+      margin: 0;
+      color: color-mix(in srgb, var(--paper) 80%, transparent);
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    footer {
+      padding: 2rem 20px 3rem;
+      border-top: 1px solid var(--hairline);
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    footer strong {
+      color: var(--ink);
+      font-family: var(--serif);
+      font-weight: 600;
+    }
+
+    /* Back to top */
+    .to-top {
+      position: fixed;
+      z-index: 60;
+      right: 22px;
+      bottom: 22px;
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid var(--hairline);
+      border-radius: 50%;
+      background: var(--card);
+      box-shadow: var(--shadow-md);
+      color: var(--ink);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition:
+        opacity 160ms ease,
+        transform 160ms ease;
+    }
+
+    .to-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* ----------------- Responsive ----------------- */
+
+    @media (max-width: 960px) {
+      .page-shell {
+        grid-template-columns: 1fr;
+      }
+
+      aside.sidebar {
+        position: sticky;
+        z-index: 50;
+        top: 62px;
+        padding: 0.5rem 0;
+        background: color-mix(in srgb, var(--paper) 92%, transparent);
+        backdrop-filter: blur(10px);
+      }
+
+      .sidebar-title,
+      .sidebar-footer {
+        display: none;
+      }
+
+      .side-nav {
+        display: flex;
+        overflow-x: auto;
+        border-left: 0;
+        border-bottom: 1px solid var(--hairline);
+        gap: 0.35rem;
+      }
+
+      .side-nav a {
+        flex: 0 0 auto;
+        padding: 0.45rem 0.7rem;
+        white-space: nowrap;
+      }
+
+      .side-nav a::before {
+        display: none;
+      }
+
+      .forecast-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .pov,
+      .cards-grid,
+      .prompts,
+      .summary-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .site-header-actions .header-link {
+        display: none;
+      }
+
+      .forecast-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .shift {
+        grid-template-columns: 1fr;
+      }
+
+      .shift-arrow {
+        justify-self: start;
+        transform: rotate(90deg);
+      }
+
+      .pillars {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-meta {
+        gap: 0.9rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .site-header,
+      aside.sidebar,
+      .filter-bar,
+      .copy-btn,
+      .to-top,
+      .scroll-progress {
+        display: none !important;
+      }
+
+      .page-shell {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+      }
+
+      .card,
+      .forecast-card,
+      .prompt,
+      .verdict {
+        box-shadow: none;
+      }
+
+      [hidden] {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to report</a>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true">F</span>
+        <span>Finley's Excel <em>Chrystal Ball</em></span>
+      </a>
+
+      <div class="site-header-actions">
+        <a class="header-link" href="#sources">Sources</a>
+        <button
+          class="theme-toggle"
+          id="themeToggle"
+          type="button"
+          aria-label="Switch to the dusk color theme"
+        >
+          <span aria-hidden="true">◐</span>
+          <span id="themeLabel">Dusk</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="hero-inner">
+      <p class="eyebrow">
+        A briefing<span class="divider">·</span>Vol. 01
+        <span class="divider">·</span>August 2026
+      </p>
+
+      <h1 class="hero-title">
+        Finley's Excel <em>Chrystal Ball</em>
+      </h1>
+
+      <div class="hero-rule" aria-hidden="true">
+        <span class="glyph-shoe"></span>
+        <span>a considered look at spreadsheets and AI</span>
+        <span class="glyph-shoe"></span>
+      </div>
+
+      <p class="hero-lede">
+        Excel is quietly changing shape. It is becoming less of a grid you
+        operate cell by cell and more of a workspace you can brief, question,
+        and supervise. This report surveys what is real today, how Microsoft
+        is framing the shift, and what to expect over the next decade.
+      </p>
+
+      <div class="hero-actions">
+        <a class="button button-primary" href="#verdict">
+          Read the verdict
+        </a>
+        <a class="button button-ghost" href="#microsoft">
+          How Microsoft sees it
+        </a>
+      </div>
+
+      <div class="hero-meta">
+        <div>
+          <strong>12 min read</strong>
+          Long-form briefing
+        </div>
+        <div>
+          <strong>Aug 8, 2026</strong>
+          Research snapshot
+        </div>
+        <div>
+          <strong>Primary sources</strong>
+          Microsoft blogs and support docs
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-shell">
+    <aside class="sidebar" aria-label="Report navigation">
+      <p class="sidebar-title">Contents</p>
+
+      <ol class="side-nav" id="sideNav">
+        <li><a href="#verdict">The verdict</a></li>
+        <li><a href="#microsoft">Microsoft's view</a></li>
+        <li><a href="#present">Where Excel is now</a></li>
+        <li><a href="#thinking">How thinking is changing</a></li>
+        <li><a href="#forecast">The next decade</a></li>
+        <li><a href="#risks">Risks and cautions</a></li>
+        <li><a href="#playbook">A practical playbook</a></li>
+        <li><a href="#prompts">Starter prompts</a></li>
+        <li><a href="#sources">Sources</a></li>
+      </ol>
+
+      <p class="sidebar-footer">
+        Feature availability varies by license, platform, region, and
+        rollout channel.
+      </p>
+    </aside>
+
+    <main id="main">
+      <!-- ============ VERDICT ============ -->
+
+      <section class="section" id="verdict">
+        <div class="section-heading">
+          <p class="eyebrow">01 <span class="divider">·</span> The verdict</p>
+          <h2>Excel is becoming a control surface for AI</h2>
+          <p class="section-lede">
+            The short version, before we get into the details.
+          </p>
+        </div>
+
+        <article class="verdict">
+          <p class="verdict-label">Bottom line</p>
+          <blockquote>
+            Excel is not being replaced by AI. It is becoming the place where
+            people direct AI, inspect its work, and turn data into decisions
+            they can defend.
+          </blockquote>
+        </article>
+
+        <div class="summary-row">
+          <div class="summary-card">
+            <strong>From clicks to briefs</strong>
+            <p>
+              Users describe an outcome. Copilot plans and edits the workbook,
+              step by step, with the user in the loop.
+            </p>
+          </div>
+
+          <div class="summary-card">
+            <strong>From cells to systems</strong>
+            <p>
+              Formulas, Python, connected data, and reusable instructions are
+              being stitched into one working surface.
+            </p>
+          </div>
+
+          <div class="summary-card">
+            <strong>From correctness to trust</strong>
+            <p>
+              Reasoning traces, citations, and verification are becoming
+              first-class features, not afterthoughts.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ MICROSOFT'S VIEW ============ -->
+
+      <section class="section" id="microsoft">
+        <div class="section-heading">
+          <p class="eyebrow">02 <span class="divider">·</span> Microsoft's view</p>
+          <h2>How Microsoft is framing the AI shift</h2>
+          <p class="section-lede">
+            Before predicting where Excel is going, it helps to understand
+            how its maker is thinking. Microsoft's public statements over the
+            last year make three themes clear.
+          </p>
+        </div>
+
+        <div class="pov">
+          <article class="pov-card">
+            <p class="kicker">Theme 1 · Vibe working</p>
+            <h3>From assistance to agentic collaboration</h3>
+            <p>
+              Microsoft has coined the term "vibe working" to describe a
+              collaborative pattern where users start with a prompt and then
+              <a href="https://www.microsoft.com/en-us/microsoft-365/blog/2025/09/29/vibe-working-introducing-agent-mode-and-office-agent-in-microsoft-365-copilot/" target="_blank" rel="noopener noreferrer">steer Copilot as it orchestrates multi-step tasks</a>
+              across Word, Excel, and PowerPoint.<span class="cite"><a href="#src-1">1</a></span>
+            </p>
+            <p>
+              In its own framing, Copilot is meant to move
+              <em>beyond assistance</em> and toward planning, executing, and
+              refining work end-to-end inside the productivity apps.<span class="cite"><a href="#src-2">2</a></span>
+            </p>
+          </article>
+
+          <article class="pov-card">
+            <p class="kicker">Theme 2 · Agent Mode</p>
+            <h3>Excel as "where people think with data"</h3>
+            <p>
+              With Agent Mode in Excel now generally available on web,
+              Windows, and Mac, Microsoft describes Excel as the place
+              "where people think with data" — where budgets, forecasts, and
+              operating plans take shape.<span class="cite"><a href="#src-3">3</a></span>
+            </p>
+            <p>
+              Agent Mode is positioned as a partner that can
+              take a goal, plan next steps, act inside the workbook, iterate,
+              and validate outcomes — with transparency into each step.<span class="cite"><a href="#src-3">3</a></span><span class="cite"><a href="#src-4">4</a></span>
+            </p>
+          </article>
+
+          <article class="pov-card" style="grid-column: 1 / -1;">
+            <p class="kicker">Theme 3 · Four pillars</p>
+            <h3>Copilot as one unified system</h3>
+            <p>
+              In March 2026, Satya Nadella announced a restructuring that
+              brings the consumer and commercial Copilot efforts together as
+              one unified system, organized around four connected pillars.<span class="cite"><a href="#src-5">5</a></span>
+              The move signals that Microsoft sees Copilot — including Copilot
+              in Excel — as a single product surface rather than a collection
+              of features.
+            </p>
+
+            <div class="pillars">
+              <div class="pillar">
+                <strong>Copilot experience</strong>
+                The everyday user surface across apps and devices.
+              </div>
+              <div class="pillar">
+                <strong>Copilot platform</strong>
+                Agents, tools, governance, and the plumbing beneath.
+              </div>
+              <div class="pillar">
+                <strong>Microsoft 365 apps</strong>
+                Word, Excel, PowerPoint, Outlook, Teams as delivery vehicles.
+              </div>
+              <div class="pillar">
+                <strong>AI models</strong>
+                A mix of first-party and partner models used behind the scenes.
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <blockquote class="pull-quote">
+          "A new era of productivity is emerging as AI experiences rapidly
+          evolve from answering questions and suggesting code, to executing
+          multi-step tasks with clear user control points."<span class="cite"><a href="#src-5">5</a></span>
+          <cite>— Microsoft leadership memo, March 2026</cite>
+        </blockquote>
+      </section>
+
+      <!-- ============ PRESENT ============ -->
+
+      <section class="section" id="present">
+        <div class="section-heading">
+          <p class="eyebrow">03 <span class="divider">·</span> Where Excel is now</p>
+          <h2>Six changes already reshaping the spreadsheet</h2>
+          <p class="section-lede">
+            These are documented capabilities or active rollouts — not
+            speculation. Exact availability still depends on license,
+            platform, region, and release channel.
+          </p>
+        </div>
+
+        <div class="cards-grid">
+          <article class="card">
+            <p class="card-index">i.</p>
+            <h3>Agent Mode: a partner inside the workbook</h3>
+            <p>
+              <a href="https://techcommunity.microsoft.com/blog/excelblog/agent-mode-in-excel-is-now-generally-available-on-desktop/4457408" target="_blank" rel="noopener noreferrer">Agent Mode in Excel is generally available on web, Windows, and Mac</a>
+              for commercial Copilot licenses and Microsoft 365 Premium,
+              with expanded support for Personal and Family tiers.<span class="cite"><a href="#src-3">3</a></span>
+            </p>
+            <p>
+              It works iteratively: Copilot proposes a plan, applies changes
+              directly to the workbook, and exposes its reasoning so users
+              can verify each step.<span class="cite"><a href="#src-4">4</a></span>
+            </p>
+            <div class="tag-row">
+              <span class="tag tag-live">Generally available</span>
+              <span class="tag">Multi-step workflows</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <p class="card-index">ii.</p>
+            <h3>Local files and model choice</h3>
+            <p>
+              Agent Mode can now query
+              <a href="https://techcommunity.microsoft.com/blog/microsoft365insiderblog/agent-mode-in-excel-now-works-with-your-local-files/4497675" target="_blank" rel="noopener noreferrer">locally stored .xlsx, .xlsb, and .xlsm workbooks</a>
+              on Windows and Mac, not only cloud files.<span class="cite"><a href="#src-6">6</a></span>
+            </p>
+            <p>
+              Users can also pick between
+              <a href="https://www.microsoft.com/en-us/microsoft-365/blog/2025/11/18/microsoft-ignite-2025-copilot-and-agents-built-to-power-the-frontier-firm/" target="_blank" rel="noopener noreferrer">Anthropic and OpenAI reasoning models</a>
+              inside Agent Mode, a meaningful shift for a Microsoft product.<span class="cite"><a href="#src-7">7</a></span>
+            </p>
+            <div class="tag-row">
+              <span class="tag tag-live">Rolling out</span>
+              <span class="tag">Multi-model</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <p class="card-index">iii.</p>
+            <h3>Generative AI as a cell function</h3>
+            <p>
+              The preview <code>COPILOT</code> function lets a cell generate
+              semantic output — a classification, a summary, or a short piece
+              of text — using a prompt and referenced ranges.
+            </p>
+            <code class="formula">=COPILOT("Classify this feedback:", B2:B20)</code>
+            <p>
+              It is designed for interpretive work, not deterministic
+              arithmetic, and results may change on recalculation.
+            </p>
+            <div class="tag-row">
+              <span class="tag tag-preview">Preview</span>
+              <span class="tag">Semantic tasks</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <p class="card-index">iv.</p>
+            <h3>Reusable skills and workbook rules</h3>
+            <p>
+              Teams can now
+              <a href="https://techcommunity.microsoft.com/blog/microsoft365copilotblog/what%E2%80%99s-new-in-microsoft-365-copilot--june-2026/4529572" target="_blank" rel="noopener noreferrer">package repeatable workflows as reusable Skills</a>
+              in Copilot in Excel — custom instructions for common analysis,
+              modeling, or reporting tasks.<span class="cite"><a href="#src-8">8</a></span>
+            </p>
+            <p>
+              Combined with workbook-level rules, the deliverable is no
+              longer just a finished file. It is also the instruction set
+              that shapes future work.
+            </p>
+            <div class="tag-row">
+              <span class="tag tag-live">Rolling out</span>
+              <span class="tag">Reusable instructions</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <p class="card-index">v.</p>
+            <h3>Python inside the workbook</h3>
+            <p>
+              Python in Excel runs cloud-based Python calculations from
+              cells, with access to standard analytical libraries such as
+              pandas, NumPy, Matplotlib, seaborn, and statsmodels.
+            </p>
+            <p>
+              Copilot can now also use Python-based analysis to answer
+              questions and expose deeper work as editable Python cells,
+              which is a meaningful step toward hybrid analytics.
+            </p>
+            <div class="tag-row">
+              <span class="tag tag-live">Generally available</span>
+              <span class="tag">Hybrid analytics</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <p class="card-index">vi.</p>
+            <h3>Transparency and verification</h3>
+            <p>
+              Microsoft has emphasized
+              <a href="https://techcommunity.microsoft.com/blog/excelblog/agent-mode-in-excel-is-now-generally-available-on-desktop/4457408" target="_blank" rel="noopener noreferrer">reasoning traces and step-by-step explanations</a>
+              so users can see how Copilot interpreted a request and what
+              actions it took.<span class="cite"><a href="#src-4">4</a></span>
+            </p>
+            <p>
+              This is not a full audit trail, but it moves review from an
+              afterthought to something users are expected to do as part of
+              the loop.
+            </p>
+            <div class="tag-row">
+              <span class="tag tag-live">Improving</span>
+              <span class="tag">Trust surface</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ THINKING ============ -->
+
+      <section class="section" id="thinking">
+        <div class="section-heading">
+          <p class="eyebrow">04 <span class="divider">·</span> How thinking is changing</p>
+          <h2>The mental model behind the grid</h2>
+          <p class="section-lede">
+            The most consequential change is not a new function. It is the
+            way skilled users are learning to think when they open a workbook.
+          </p>
+        </div>
+
+        <div class="shifts">
+          <div class="shift">
+            <div class="shift-side from">
+              <small>Before</small>
+              <strong>Remember the right function</strong>
+              <p>Translate the question into syntax, cell by cell.</p>
+            </div>
+            <div class="shift-arrow" aria-hidden="true">→</div>
+            <div class="shift-side to">
+              <small>Now</small>
+              <strong>Frame the question and the outcome</strong>
+              <p>
+                State the objective, audience, and definition of a good result.
+                Let the tool draft the mechanics.
+              </p>
+            </div>
+          </div>
+
+          <div class="shift">
+            <div class="shift-side from">
+              <small>Before</small>
+              <strong>Chain local calculations</strong>
+              <p>Think mostly in cells, ranges, and worksheet tabs.</p>
+            </div>
+            <div class="shift-arrow" aria-hidden="true">→</div>
+            <div class="shift-side to">
+              <small>Now</small>
+              <strong>Design models and scenarios</strong>
+              <p>
+                Combine formulas, Python, data sources, and reusable
+                instructions into a system.
+              </p>
+            </div>
+          </div>
+
+          <div class="shift">
+            <div class="shift-side from">
+              <small>Before</small>
+              <strong>Check that the formula calculates</strong>
+              <p>A valid result usually looked trustworthy at first glance.</p>
+            </div>
+            <div class="shift-arrow" aria-hidden="true">→</div>
+            <div class="shift-side to">
+              <small>Now</small>
+              <strong>Audit whether the claim holds</strong>
+              <p>
+                Verify data, assumptions, and interpretations independently of
+                the presentation.
+              </p>
+            </div>
+          </div>
+
+          <div class="shift">
+            <div class="shift-side from">
+              <small>Before</small>
+              <strong>Workbook as an individual file</strong>
+              <p>Context lived in the creator's head.</p>
+            </div>
+            <div class="shift-arrow" aria-hidden="true">→</div>
+            <div class="shift-side to">
+              <small>Now</small>
+              <strong>Workbook as a shared artifact</strong>
+              <p>
+                Rules, sources, prompts, and review history are part of the
+                deliverable.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="staples">
+          <strong>Skills that keep their value:</strong>
+          <span class="chip">Domain knowledge</span>
+          <span class="chip">Clean data structure</span>
+          <span class="chip">Statistical judgment</span>
+          <span class="chip">Deterministic modeling</span>
+          <span class="chip">Source evaluation</span>
+          <span class="chip">Clear communication</span>
+          <span class="chip">Considered skepticism</span>
+        </div>
+      </section>
+
+      <!-- ============ FORECAST ============ -->
+
+      <section class="section" id="forecast">
+        <div class="section-heading">
+          <p class="eyebrow">05 <span class="divider">·</span> The next decade</p>
+          <h2>A ten-year outlook</h2>
+          <p class="section-lede">
+            Near-term forecasts extend visible product direction. Longer-term
+            forecasts are informed speculation — not Microsoft commitments.
+          </p>
+        </div>
+
+        <div
+          class="filter-bar"
+          role="group"
+          aria-label="Filter forecast by time horizon"
+        >
+          <button class="filter-button" type="button" data-filter="all" aria-pressed="true">All horizons</button>
+          <button class="filter-button" type="button" data-filter="now" aria-pressed="false">2026 – 2027</button>
+          <button class="filter-button" type="button" data-filter="near" aria-pressed="false">2028 – 2031</button>
+          <button class="filter-button" type="button" data-filter="far" aria-pressed="false">2032 – 2036</button>
+        </div>
+
+        <div class="forecast-grid" id="forecastGrid">
+          <article class="forecast-card" data-horizon="now">
+            <span class="forecast-marker">2026 – 2027</span>
+            <h3>Copilot becomes the default starting point</h3>
+            <ul>
+              <li>More users begin with a prompt instead of a blank grid.</li>
+              <li>Plan-first, review-first interactions become normalized.</li>
+              <li>Direct workbook editing extends to more object types.</li>
+            </ul>
+            <div class="confidence">
+              <div class="confidence-meta">
+                <span>Confidence</span>
+                <span>High</span>
+              </div>
+              <div class="confidence-bar" style="--confidence: 92%"><span></span></div>
+            </div>
+          </article>
+
+          <article class="forecast-card" data-horizon="now">
+            <span class="forecast-marker">2026 – 2027</span>
+            <h3>Skills and rules formalize team practice</h3>
+            <ul>
+              <li>Recurring reports get packaged as reusable Skills.</li>
+              <li>Workbook standards travel with files, not people.</li>
+              <li>Prompt libraries begin to look like formula libraries.</li>
+            </ul>
+            <div class="confidence">
+              <div class="confidence-meta">
+                <span>Confidence</span>
+                <span>High</span>
+              </div>
+              <div class="confidence-bar" style="--confidence: 88%"><span></span></div>
+            </div>
+          </article>
+
+          <article class="forecast-card" data-horizon="now">
+            <span class="forecast-marker">2026 – 2027</span>
+            <h3>Model choice becomes an expected feature</h3>
+            <ul>
+              <li>Users pick between reasoning models by task type.</li>
+              <li>Enterprises route sensitive work to specific models.</li>
+              <li>Excel exposes model behavior more explicitly.</li>
+            </ul>
+            <div class="confidence">
+              <div class="confidence-meta">
+                <span>Confidence</span>
+                <span>Medium-high</span>
+              </div>
+              <div class="confidence-bar" style="--confidence: 78%"><span></span></div>
+            </div>
+          </article>
+
+          <article class="forecast-card" data-horizon="near">
+            <span class="forecast-marker">2028 – 2031</span>
+            <h3>Excel becomes a governed front end for enterprise data</h3>
+            <ul>
+              <li>Analysis stays connected to governed sources.</li>
+              <li>BI, operational data, and modeling blur together.</li>
+              <li>Permission-aware grounding reduces manual exports.</li>
+            </ul>
+            <div class="confidence">
+              <div class="confidence-meta">
+                <span>Confidence</span>
+                <span>Medium-high</span>
+              </div>
+              <div class="confidence-bar" style="--confidence: 76%"><span></span></div>
+            </div>
+          </article>
+
+          <article class="forecast-card" data-horizon="near">
+            <span class="forecast-marker">2028 – 2031</span>
+            <h3>Persistent agents monitor recurring work</h3>
+            <ul>
+              <li>Agents refresh, reconcile, and flag exceptions on schedule.</li>
+              <li>Humans approve consequential changes, not routine ones.</li>
+              <li>Excel and Power Automate feel like one workflow layer.</li>
+            </ul>
+            <div class="confidence">
+              <div class="confidence-meta">
+                <span>Confidence</span>
+                <span>Medium</span>
+              </div>
+              <div class="confidence-bar" style="--confidence: 66%"><span></span></div>
+            </div>
+          </article>
+
+          <article class="forecast-card" data-horizon="near">
+            <span class="forecast-marker">2028 – 2031</span>
+            <h3>Verification tooling matures</h3>
+            <ul>
+              <li>Provenance panels sit alongside charts and PivotTables.</li>
+              <li>Regulated industries require sign-off on AI-authored logic.</li>
+              <li>Change diffs specifically cover AI-driven edits.</li>
+            </ul>
+            <div class="confidence">
+              <div class="confidence-meta">
+                <span>Confidence</span>
+                <span>Medium</span>
+              </div>
+              <div class="confidence-bar" style="--confidence: 62%"><span></span></div>
+            </div>
+          </article>
+
+          <article class="forecast-card" data-horizon="far">
+            <span class="forecast-marker">2032 – 2036</span>
+            <h3>Workbooks become multimodal analytical canvases</h3>
+            <ul>
+              <li>Voice, sketches, and documents become normal inputs.</li>
+              <li>Users discuss scenarios while Excel builds them.</li>
+              <li>The grid endures but is no longer the only interface.</li>
+            </ul>
+            <div class="confidence">
+              <div class="confidence-meta">
+                <span>Confidence</span>
+                <span>Speculative</span>
+              </div>
+              <div class="confidence-bar" style="--confidence: 52%"><span></span></div>
+            </div>
+          </article>
+
+          <article class="forecast-card" data-horizon="far">
+            <span class="forecast-marker">2032 – 2036</span>
+            <h3>A market emerges for certified spreadsheet intelligence</h3>
+            <ul>
+              <li>Organizations share approved skills and models.</li>
+              <li>Certification signals which flows are safe for regulated use.</li>
+              <li>Institutional knowledge becomes a reusable component.</li>
+            </ul>
+            <div class="confidence">
+              <div class="confidence-meta">
+                <span>Confidence</span>
+                <span>Speculative</span>
+              </div>
+              <div class="confidence-bar" style="--confidence: 48%"><span></span></div>
+            </div>
+          </article>
+
+          <article class="forecast-card" data-horizon="far">
+            <span class="forecast-marker">2032 – 2036</span>
+            <h3>Human judgment becomes the differentiator</h3>
+            <ul>
+              <li>Delegation is cheap; framing and verification are rare.</li>
+              <li>Analysts are hired for judgment, not throughput.</li>
+              <li>Explainability sits alongside accuracy as a core metric.</li>
+            </ul>
+            <div class="confidence">
+              <div class="confidence-meta">
+                <span>Confidence</span>
+                <span>Directional</span>
+              </div>
+              <div class="confidence-bar" style="--confidence: 60%"><span></span></div>
+            </div>
+          </article>
+        </div>
+
+        <p class="forecast-note">
+          Confidence ratings are editorial assessments based on the strength of
+          current product signals. They are not Microsoft projections.
+        </p>
+      </section>
+
+      <!-- ============ RISKS ============ -->
+
+      <section class="section" id="risks">
+        <div class="section-heading">
+          <p class="eyebrow">06 <span class="divider">·</span> Risks and cautions</p>
+          <h2>What to watch as the arena widens</h2>
+          <p class="section-lede">
+            AI removes some sources of spreadsheet error and introduces others.
+            Fluent output can disguise weak logic or missing context.
+          </p>
+        </div>
+
+        <div class="risk-wrap">
+          <table class="risk">
+            <thead>
+              <tr>
+                <th scope="col">Risk</th>
+                <th scope="col">Level</th>
+                <th scope="col">Why it matters</th>
+                <th scope="col">Countermeasure</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Confident but incorrect output</td>
+                <td><span class="sev sev-high">High</span></td>
+                <td>Well-written summaries can hide the wrong range, filter, or interpretation.</td>
+                <td>Recalculate key numbers independently before relying on them.</td>
+              </tr>
+              <tr>
+                <td>Automation bias</td>
+                <td><span class="sev sev-high">High</span></td>
+                <td>Polished output is easier to accept than a formula the user wrote by hand.</td>
+                <td>Require human sign-off on decisions of any real consequence.</td>
+              </tr>
+              <tr>
+                <td>Non-deterministic cells</td>
+                <td><span class="sev sev-med">Medium</span></td>
+                <td>Generative functions may change on recalculation or model updates.</td>
+                <td>Use AI cells for semantic tasks. Freeze results as values when needed.</td>
+              </tr>
+              <tr>
+                <td>Data and permission exposure</td>
+                <td><span class="sev sev-high">High</span></td>
+                <td>Cloud runtimes and connectors widen the data boundary of the workbook.</td>
+                <td>Follow institutional policies and audit connector permissions.</td>
+              </tr>
+              <tr>
+                <td>Opaque automation</td>
+                <td><span class="sev sev-med">Medium</span></td>
+                <td>Workbooks may rely on prompts and rules no current owner understands.</td>
+                <td>Document owners, inputs, outputs, and known assumptions in the file.</td>
+              </tr>
+              <tr>
+                <td>Availability fragmentation</td>
+                <td><span class="sev sev-med">Medium</span></td>
+                <td>Features vary by license, region, platform, and rollout ring.</td>
+                <td>Keep a fallback process that works without the latest AI feature.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ PLAYBOOK ============ -->
+
+      <section class="section" id="playbook">
+        <div class="section-heading">
+          <p class="eyebrow">07 <span class="divider">·</span> A practical playbook</p>
+          <h2>Five gates for working with Copilot</h2>
+          <p class="section-lede">
+            A short, repeatable routine for using AI in Excel without losing
+            control of the workbook.
+          </p>
+        </div>
+
+        <div class="gates">
+          <article class="gate">
+            <div class="gate-num">I</div>
+            <div>
+              <h3>Frame the decision</h3>
+              <p>State the question, audience, time window, and the shape of a good answer before asking for formulas.</p>
+            </div>
+          </article>
+
+          <article class="gate">
+            <div class="gate-num">II</div>
+            <div>
+              <h3>Structure the data</h3>
+              <p>Use clear headers, consistent types, and Excel tables. Keep raw data separate from transformations and presentation.</p>
+            </div>
+          </article>
+
+          <article class="gate">
+            <div class="gate-num">III</div>
+            <div>
+              <h3>Ask for the plan first</h3>
+              <p>For meaningful work, have Copilot explain its intended steps, assumptions, and affected sheets before making changes.</p>
+            </div>
+          </article>
+
+          <article class="gate">
+            <div class="gate-num">IV</div>
+            <div>
+              <h3>Verify on two levels</h3>
+              <p>Check the mechanics — ranges, formulas, filters — and then check the meaning: does the conclusion follow from the data?</p>
+            </div>
+          </article>
+
+          <article class="gate">
+            <div class="gate-num">V</div>
+            <div>
+              <h3>Preserve the trail</h3>
+              <p>Save a version, capture sources and assumptions, note where AI was used, and freeze non-deterministic outputs when needed.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ PROMPTS ============ -->
+
+      <section class="section" id="prompts">
+        <div class="section-heading">
+          <p class="eyebrow">08 <span class="divider">·</span> Starter prompts</p>
+          <h2>Four prompts ready for a Tuesday</h2>
+          <p class="section-lede">
+            Replace the table and column names with your own. Start with
+            non-sensitive data while getting a feel for how Agent Mode plans.
+          </p>
+        </div>
+
+        <div class="prompts">
+          <article class="prompt">
+            <h3>Club budget review</h3>
+            <div class="prompt-body" id="prompt-1">
+Using the ClubBudget table, plan and then build a semester dashboard comparing budget to actual spending by category. Add variance and percent-used formulas, flag categories above 90 percent, and produce a chart of the largest expenses. State every assumption before making edits.
+            </div>
+            <button class="copy-btn" type="button" data-copy="prompt-1">Copy prompt</button>
+          </article>
+
+          <article class="prompt">
+            <h3>Workload and grades</h3>
+            <div class="prompt-body" id="prompt-2">
+Analyze the StudyLog table for relationships among study time, sleep, assignment type, and grade. Identify plausible patterns and outliers, but keep measured findings separate from speculation. Suggest two charts and show the calculations behind each one.
+            </div>
+            <button class="copy-btn" type="button" data-copy="prompt-2">Copy prompt</button>
+          </article>
+
+          <article class="prompt">
+            <h3>Formula audit</h3>
+            <div class="prompt-body" id="prompt-3">
+Use plan mode first. Audit this workbook for inconsistent formulas, hard-coded values inside calculated columns, broken references, duplicate calculations, and totals that do not reconcile. Do not change anything until you deliver a sheet-by-sheet review plan.
+            </div>
+            <button class="copy-btn" type="button" data-copy="prompt-3">Copy prompt</button>
+          </article>
+
+          <article class="prompt">
+            <h3>Event cost scenarios</h3>
+            <div class="prompt-body" id="prompt-4">
+Create three scenarios for attending the next event: minimum, expected, and high cost. Include transport, entry fees, lodging, food, equipment, and a 10 percent contingency. Keep all assumptions in a clearly labeled input table and use deterministic Excel formulas for every total.
+            </div>
+            <button class="copy-btn" type="button" data-copy="prompt-4">Copy prompt</button>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ CLOSING ============ -->
+
+      <section class="section closing" aria-labelledby="closing-title">
+        <p class="eyebrow">The finish</p>
+        <h2 id="closing-title">The dominant skill will be judgment</h2>
+        <p>
+          Excel is becoming a hybrid, AI-augmented analytics canvas. Copilots
+          will build analyses, Python and connected data will deepen them, and
+          reusable rules will make them more consistent. The strongest users
+          will not be those who delegate everything, but those who frame the
+          right problem, preserve deterministic logic where it matters, and
+          verify results before anyone reaches the finish line.
+        </p>
+      </section>
+
+      <!-- ============ SOURCES ============ -->
+
+      <section class="section" id="sources">
+        <div class="section-heading">
+          <p class="eyebrow">09 <span class="divider">·</span> Sources</p>
+          <h2>What this briefing is standing on</h2>
+          <p class="section-lede">
+            Primary sources are Microsoft blogs, support documentation, and
+            official announcements available through August 8, 2026.
+          </p>
+        </div>
+
+        <ol class="sources">
+          <li id="src-1">
+            <a href="https://www.microsoft.com/en-us/microsoft-365/blog/2025/09/29/vibe-working-introducing-agent-mode-and-office-agent-in-microsoft-365-copilot/" target="_blank" rel="noopener noreferrer">
+              Vibe working: Introducing Agent Mode and Office Agent in Microsoft 365 Copilot
+            </a>
+            <span>Microsoft 365 Blog — original framing of "vibe working" across Word, Excel, and PowerPoint.</span>
+          </li>
+          <li id="src-2">
+            <a href="https://www.microsoft.com/en-us/microsoft-365/roadmap" target="_blank" rel="noopener noreferrer">
+              Microsoft 365 Roadmap
+            </a>
+            <span>Microsoft — agentic capabilities in Word, Excel, and PowerPoint as GA; Copilot model choice.</span>
+          </li>
+          <li id="src-3">
+            <a href="https://techcommunity.microsoft.com/blog/excelblog/agent-mode-in-excel-is-now-generally-available-on-desktop/4457408" target="_blank" rel="noopener noreferrer">
+              Agent Mode in Excel is now generally available on desktop
+            </a>
+            <span>Excel Blog — GA on Windows and Mac, expanded availability, positioning of Excel as where people think with data.</span>
+          </li>
+          <li id="src-4">
+            <a href="https://techcommunity.microsoft.com/blog/excelblog/agent-mode-in-excel-is-now-generally-available-on-excel-for-web/4476092" target="_blank" rel="noopener noreferrer">
+              Agent Mode in Excel is now generally available on Excel for Web
+            </a>
+            <span>Excel Blog — multi-step workflows, direct workbook manipulation, transparency and reasoning.</span>
+          </li>
+          <li id="src-5">
+            <a href="https://blogs.microsoft.com/blog/2026/03/17/announcing-copilot-leadership-update/" target="_blank" rel="noopener noreferrer">
+              Announcing Copilot leadership update
+            </a>
+            <span>Official Microsoft Blog — four-pillar Copilot strategy and the "multi-step tasks with clear user control points" framing.</span>
+          </li>
+          <li id="src-6">
+            <a href="https://techcommunity.microsoft.com/blog/microsoft365insiderblog/agent-mode-in-excel-now-works-with-your-local-files/4497675" target="_blank" rel="noopener noreferrer">
+              Agent Mode in Excel now works with your local files
+            </a>
+            <span>Microsoft 365 Insider Blog — support for locally stored modern workbooks.</span>
+          </li>
+          <li id="src-7">
+            <a href="https://www.microsoft.com/en-us/microsoft-365/blog/2025/11/18/microsoft-ignite-2025-copilot-and-agents-built-to-power-the-frontier-firm/" target="_blank" rel="noopener noreferrer">
+              Microsoft Ignite 2025: Copilot and agents built to power the Frontier Firm
+            </a>
+            <span>Microsoft 365 Blog — user choice between Anthropic and OpenAI reasoning models in Excel Agent Mode.</span>
+          </li>
+          <li id="src-8">
+            <a href="https://techcommunity.microsoft.com/blog/microsoft365copilotblog/what%E2%80%99s-new-in-microsoft-365-copilot--june-2026/4529572" target="_blank" rel="noopener noreferrer">
+              What's New in Microsoft 365 Copilot | June 2026
+            </a>
+            <span>Microsoft 365 Copilot Blog — Skills in Copilot in Excel as reusable workflow instructions.</span>
+          </li>
+          <li id="src-9">
+            <a href="https://support.microsoft.com/en-us/excel/copilot/get-started-with-copilot-in-excel" target="_blank" rel="noopener noreferrer">
+              Get started with Copilot in Excel
+            </a>
+            <span>Microsoft Support — current modes, capabilities, and usage guidance.</span>
+          </li>
+          <li id="src-10">
+            <a href="https://support.microsoft.com/en-us/excel/copilot/frequently-asked-questions-about-copilot-in-excel" target="_blank" rel="noopener noreferrer">
+              FAQ: Copilot in Excel
+            </a>
+            <span>Microsoft Support — limitations, review guidance, and trust considerations.</span>
+          </li>
+        </ol>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <strong>Finley's Excel Chrystal Ball</strong><br>
+    An independent briefing based on official Microsoft material. Last
+    researched August 8, 2026.
+  </footer>
+
+  <button
+    class="to-top"
+    id="toTop"
+    type="button"
+    aria-label="Return to the top of the report"
+    title="Back to top"
+  >
+    ↑
+  </button>
+
+  <div class="sr-only" id="copyStatus" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const root = document.documentElement;
+      const progress = document.getElementById("scrollProgress");
+      const toTop = document.getElementById("toTop");
+      const themeToggle = document.getElementById("themeToggle");
+      const themeLabel = document.getElementById("themeLabel");
+      const copyStatus = document.getElementById("copyStatus");
+
+      /* Scroll progress and back-to-top visibility */
+      const onScroll = () => {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = scrollable > 0 ? Math.min(100, (scrollTop / scrollable) * 100) : 0;
+        progress.style.width = pct + "%";
+        toTop.classList.toggle("visible", scrollTop > 640);
+      };
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      onScroll();
+
+      toTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      /* Active-section highlight in side nav */
+      const navLinks = Array.from(document.querySelectorAll("#sideNav a[href^='#']"));
+      const sections = navLinks
+        .map((link) => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
+
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            const visible = entries
+              .filter((e) => e.isIntersecting)
+              .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+            if (!visible.length) return;
+
+            const id = visible[0].target.id;
+            navLinks.forEach((link) => {
+              const active = link.getAttribute("href") === "#" + id;
+              link.classList.toggle("active", active);
+              if (active) {
+                link.setAttribute("aria-current", "location");
+              } else {
+                link.removeAttribute("aria-current");
+              }
+            });
+          },
+          {
+            rootMargin: "-20% 0px -65% 0px",
+            threshold: [0.05, 0.2, 0.5]
+          }
+        );
+
+        sections.forEach((s) => observer.observe(s));
+      }
+
+      /* Theme toggle */
+      const storageKey = "finley-excel-theme";
+
+      const readTheme = () => {
+        try { return localStorage.getItem(storageKey); }
+        catch (e) { return null; }
+      };
+
+      const writeTheme = (v) => {
+        try { localStorage.setItem(storageKey, v); }
+        catch (e) { /* ignore */ }
+      };
+
+      const applyTheme = (theme) => {
+        if (theme === "dusk") {
+          root.dataset.theme = "dusk";
+          themeLabel.textContent = "Daylight";
+          themeToggle.setAttribute("aria-label", "Switch to the daylight color theme");
+        } else {
+          delete root.dataset.theme;
+          themeLabel.textContent = "Dusk";
+          themeToggle.setAttribute("aria-label", "Switch to the dusk color theme");
+        }
+      };
+
+      applyTheme(readTheme());
+
+      themeToggle.addEventListener("click", () => {
+        const next = root.dataset.theme === "dusk" ? "light" : "dusk";
+        applyTheme(next);
+        writeTheme(next);
+      });
+
+      /* Forecast filters */
+      const filterButtons = Array.from(document.querySelectorAll(".filter-button"));
+      const forecastCards = Array.from(document.querySelectorAll(".forecast-card[data-horizon]"));
+
+      filterButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const filter = btn.dataset.filter;
+          filterButtons.forEach((other) => {
+            other.setAttribute("aria-pressed", String(other === btn));
+          });
+          forecastCards.forEach((card) => {
+            card.hidden = !(filter === "all" || card.dataset.horizon === filter);
+          });
+        });
+      });
+
+      /* Copy-to-clipboard for prompts */
+      const fallbackCopy = (text) => {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand("copy");
+        ta.remove();
+        if (!ok) throw new Error("copy failed");
+      };
+
+      const doCopy = async (text) => {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+          await navigator.clipboard.writeText(text);
+        } else {
+          fallbackCopy(text);
+        }
+      };
+
+      document.querySelectorAll("[data-copy]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const target = document.getElementById(btn.dataset.copy);
+          if (!target) return;
+
+          const original = btn.textContent;
+          const text = target.textContent.trim();
+
+          try {
+            await doCopy(text);
+            btn.textContent = "Copied";
+            btn.classList.add("copied");
+            copyStatus.textContent = "Prompt copied to the clipboard.";
+            setTimeout(() => {
+              btn.textContent = original;
+              btn.classList.remove("copied");
+            }, 1600);
+          } catch (e) {
+            btn.textContent = "Select and copy";
+            copyStatus.textContent = "Automatic copy unavailable. Select the prompt manually.";
+            setTimeout(() => { btn.textContent = original; }, 2000);
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
