@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Search for AI Nuggets — A Field Guide for Thinking Artifact Miners | Center for Applied AI</title>
+<meta name="description" content="A business field guide to finding, reading, and judging the hidden reasoning traces (thinking artifacts) produced by modern LLMs like Claude, ChatGPT, DeepSeek, Gemini, and more." />
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f1419;
+    --ink-2: #171e26;
+    --ink-3: #1f2933;
+    --line: #2a3642;
+    --paper: #f5efe0;
+    --paper-dim: #e8dfc9;
+    --gold: #e6b422;
+    --gold-bright: #ffd447;
+    --amber: #f59e0b;
+    --rust: #c2410c;
+    --teal: #5eead4;
+    --text: #e6e1d3;
+    --text-dim: #a8a393;
+    --red: #ef4444;
+    --green: #22c55e;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--ink);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .display { font-family: 'Fraunces', Georgia, serif; font-weight: 600; letter-spacing: -0.02em; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .gold { color: var(--gold); }
+  .gold-bg { background: var(--gold); color: var(--ink); }
+
+  /* Noise / paper texture */
+  .paper-bg {
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(230,180,34,0.08), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(194,65,12,0.05), transparent 40%);
+    color: #1a1510;
+  }
+
+  /* Hero */
+  .hero {
+    background:
+      radial-gradient(ellipse at 15% 10%, rgba(230,180,34,0.18), transparent 50%),
+      radial-gradient(ellipse at 85% 90%, rgba(94,234,212,0.08), transparent 50%),
+      linear-gradient(180deg, #0b0f14 0%, #0f1419 100%);
+  }
+
+  .rule { height: 1px; background: linear-gradient(90deg, transparent, var(--line), transparent); }
+  .rule-gold { height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+
+  /* Section anchors offset for sticky header */
+  section[id] { scroll-margin-top: 80px; }
+
+  /* Card */
+  .card {
+    background: var(--ink-2);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .card-paper {
+    background: var(--paper);
+    color: #1a1510;
+    border: 1px solid var(--paper-dim);
+    border-radius: 14px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 20px 40px -20px rgba(0,0,0,0.3);
+  }
+
+  /* Callouts */
+  .callout {
+    border-left: 3px solid var(--gold);
+    background: rgba(230,180,34,0.06);
+    padding: 1rem 1.25rem;
+    border-radius: 0 10px 10px 0;
+  }
+  .callout-warn {
+    border-left-color: var(--rust);
+    background: rgba(194,65,12,0.08);
+  }
+  .callout-note {
+    border-left-color: var(--teal);
+    background: rgba(94,234,212,0.06);
+  }
+
+  /* Code block */
+  pre.code {
+    background: #0a0d12;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    overflow-x: auto;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: #d9d3c2;
+  }
+  pre.code .c-k { color: #fbbf24; }
+  pre.code .c-s { color: #a7f3d0; }
+  pre.code .c-c { color: #6b7280; font-style: italic; }
+
+  /* Sticky nav */
+  .toc-link {
+    display: block;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .toc-link:hover { color: var(--gold); border-left-color: var(--gold); }
+  .toc-link.active { color: var(--gold); border-left-color: var(--gold); background: rgba(230,180,34,0.05); }
+
+  /* Model card hover */
+  .model-card { transition: transform 0.2s, border-color 0.2s; }
+  .model-card:hover { transform: translateY(-2px); border-color: var(--gold); }
+
+  /* Nugget marker */
+  .nugget {
+    display: inline-block;
+    width: 14px; height: 14px;
+    background: radial-gradient(circle at 30% 30%, var(--gold-bright), var(--gold) 60%, #8a6d15);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(230,180,34,0.5);
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+  }
+  .badge-gold { border-color: var(--gold); color: var(--gold); }
+  .badge-green { border-color: var(--green); color: var(--green); }
+  .badge-red { border-color: var(--red); color: var(--red); }
+  .badge-teal { border-color: var(--teal); color: var(--teal); }
+
+  /* Copy button */
+  .copy-btn {
+    position: absolute; top: 0.5rem; right: 0.5rem;
+    background: var(--ink-3); border: 1px solid var(--line);
+    color: var(--text-dim); font-size: 0.7rem;
+    padding: 0.2rem 0.5rem; border-radius: 6px;
+    cursor: pointer; font-family: 'JetBrains Mono', monospace;
+  }
+  .copy-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+  /* Progress bar */
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+    z-index: 100; width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* Table */
+  table.mining {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  table.mining th {
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid var(--line);
+    background: var(--ink-2);
+  }
+  table.mining td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  table.mining tr:hover td { background: rgba(230,180,34,0.03); }
+
+  /* Floating back-to-top */
+  #top {
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--gold); color: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; opacity: 0; pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    box-shadow: 0 4px 20px rgba(230,180,34,0.3);
+    z-index: 50;
+  }
+  #top.show { opacity: 1; pointer-events: auto; }
+  #top:hover { transform: translateY(-3px); }
+
+  /* Decorative pickaxe */
+  .pickaxe-bg {
+    position: absolute;
+    opacity: 0.03;
+    pointer-events: none;
+  }
+
+  /* Gradient text */
+  .grad-text {
+    background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold) 50%, #b8860b 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Print */
+  @media print {
+    body { background: white; color: black; }
+    .no-print { display: none !important; }
+  }
+
+  /* Small caps for labels */
+  .sc { font-variant: small-caps; letter-spacing: 0.08em; }
+
+  /* Thinking trace sample box */
+  .trace-sample {
+    background: #05080c;
+    border: 1px dashed var(--gold);
+    border-radius: 10px;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: #c9c3b0;
+  }
+  .trace-sample .tag { color: var(--gold); }
+  .trace-sample .thought { color: #a8a393; font-style: italic; }
+
+  /* Animated nugget */
+  @keyframes pulse-gold {
+    0%, 100% { box-shadow: 0 0 8px rgba(230,180,34,0.4); }
+    50% { box-shadow: 0 0 20px rgba(230,180,34,0.8); }
+  }
+  .pulse { animation: pulse-gold 2.5s ease-in-out infinite; }
+
+  /* Chapter numbers */
+  .chapter-num {
+    font-family: 'Fraunces', serif;
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--gold);
+    opacity: 0.25;
+    font-weight: 800;
+  }
+</style>
+</head>
+<body class="antialiased">
+
+<div id="progress"></div>
+
+<!-- =================== NAV =================== -->
+<header class="no-print sticky top-0 z-40 backdrop-blur-lg bg-[rgba(15,20,25,0.85)] border-b border-[var(--line)]">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-3 flex items-center justify-between">
+    <a href="#top-anchor" class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-md flex items-center justify-center" style="background: linear-gradient(135deg, #1a1510, #3d2e0a); border: 1px solid var(--gold);">
+        <span class="gold" style="font-family: Fraunces, serif; font-weight: 800; font-size: 1.1rem;">⛏</span>
+      </div>
+      <div class="leading-tight">
+        <div class="text-xs mono gold sc">Center for Applied AI</div>
+        <div class="text-[11px] text-[var(--text-dim)] mono">Field Guide №01</div>
+      </div>
+    </a>
+    <nav class="hidden md:flex items-center gap-6 text-sm text-[var(--text-dim)]">
+      <a href="#background" class="hover:text-[var(--gold)] transition">Background</a>
+      <a href="#research" class="hover:text-[var(--gold)] transition">Research</a>
+      <a href="#caveats" class="hover:text-[var(--gold)] transition">Caveats</a>
+      <a href="#field-guide" class="hover:text-[var(--gold)] transition">Field Guide</a>
+      <a href="#prompts" class="hover:text-[var(--gold)] transition">Prompts</a>
+      <a href="#assess" class="hover:text-[var(--gold)] transition">Assess</a>
+      <a href="#examples" class="hover:text-[var(--gold)] transition">Examples</a>
+    </nav>
+    <a href="https://www.centerforapliedai.com" target="_blank" rel="noopener" class="text-xs mono gold-bg px-3 py-1.5 rounded-md font-semibold hover:opacity-90 transition">centerforapliedai.com ↗</a>
+  </div>
+</header>
+
+<div id="top-anchor"></div>
+
+<!-- =================== HERO =================== -->
+<section class="hero relative overflow-hidden">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-20 md:py-28 relative">
+    <div class="grid md:grid-cols-12 gap-10 items-center">
+      <div class="md:col-span-8">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="badge badge-gold"><span class="nugget pulse"></span> 2026 Edition</span>
+          <span class="badge">Field Guide · 40 min read</span>
+        </div>
+        <h1 class="display text-5xl md:text-7xl leading-[0.95] mb-6">
+          The Search for <span class="grad-text">AI Nuggets</span>
+        </h1>
+        <p class="display text-2xl md:text-3xl text-[var(--paper-dim)] italic mb-8 font-normal">
+          A field guide for thinking artifact miners.
+        </p>
+        <p class="text-lg md:text-xl text-[var(--text-dim)] max-w-2xl leading-relaxed">
+          Modern LLMs don't just answer — they <em class="gold not-italic">reason out loud</em>. Those hidden thinking traces are a goldmine for business users who know how to dig. This guide shows you where to find them, how to read them, and when to trust them.
+        </p>
+        <div class="mt-10 flex flex-wrap gap-3">
+          <a href="#background" class="gold-bg px-5 py-3 rounded-md font-semibold text-sm hover:opacity-90 transition">Start Mining →</a>
+          <a href="#field-guide" class="border border-[var(--line)] px-5 py-3 rounded-md font-medium text-sm hover:border-[var(--gold)] hover:text-[var(--gold)] transition">Jump to Model Guide</a>
+          <button onclick="window.print()" class="border border-[var(--line)] px-5 py-3 rounded-md font-medium text-sm hover:border-[var(--gold)] hover:text-[var(--gold)] transition mono">🖨 Print / Save PDF</button>
+        </div>
+      </div>
+
+      <div class="md:col-span-4">
+        <div class="card p-6">
+          <div class="text-xs mono sc gold mb-3">Sample Thinking Artifact</div>
+          <div class="trace-sample">
+<span class="tag">&lt;thinking&gt;</span><br>
+<span class="thought">The user asks about Q3 revenue. Before I answer, I should:</span><br>
+<span class="thought">1) Check the attached CSV…</span><br>
+<span class="thought">2) Note that Q3 = Jul–Sep…</span><br>
+<span class="thought">3) Watch out: the "EMEA" row uses €, not $…</span><br>
+<span class="tag">&lt;/thinking&gt;</span><br>
+<span class="text-[var(--paper)]">Total Q3 revenue: $42.3M (+8% QoQ).</span>
+          </div>
+          <div class="mt-4 pt-4 border-t border-[var(--line)] text-xs text-[var(--text-dim)]">
+            ↑ That middle part? <span class="gold">That's the nugget.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rule-gold"></div>
+</section>
+
+<!-- =================== MAIN =================== -->
+<main class="max-w-7xl mx-auto px-5 md:px-8 py-16 grid md:grid-cols-12 gap-10">
+
+  <!-- Sticky TOC (desktop) -->
+  <aside class="hidden lg:block md:col-span-3 no-print">
+    <div class="sticky top-24">
+      <div class="text-xs mono sc gold mb-3">Contents</div>
+      <nav class="space-y-0.5" id="toc">
+        <a href="#background" class="toc-link">01 · What Are Thinking Artifacts?</a>
+        <a href="#research" class="toc-link">02 · What the Research Says</a>
+        <a href="#caveats" class="toc-link">03 · Caveats & Cautions</a>
+        <a href="#field-guide" class="toc-link">04 · The Model Field Guide</a>
+        <a href="#prompts" class="toc-link">05 · Tactical Prompts</a>
+        <a href="#assess" class="toc-link">06 · The Assay Framework</a>
+        <a href="#examples" class="toc-link">07 · Business Examples</a>
+        <a href="#conclusion" class="toc-link">08 · Conclusion</a>
+      </nav>
+      <div class="mt-8 p-4 card">
+        <div class="text-xs mono sc gold mb-2">Quick Legend</div>
+        <div class="text-xs space-y-1.5 text-[var(--text-dim)]">
+          <div><span class="badge badge-green">● Direct</span> Model exports thinking</div>
+          <div><span class="badge badge-gold">● Prompted</span> Needs a trick to reveal</div>
+          <div><span class="badge badge-red">● Hidden</span> Not available</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <article class="md:col-span-9 space-y-24">
+
+    <!-- ================== SECTION 1: BACKGROUND ================== -->
+    <section id="background">
+      <div class="flex items-start gap-6 mb-8">
+        <div class="chapter-num">01</div>
+        <div>
+          <div class="text-xs mono sc gold mb-1">Chapter One</div>
+          <h2 class="display text-4xl md:text-5xl leading-tight">What Are Thinking Artifacts?</h2>
+        </div>
+      </div>
+
+      <div class="prose prose-invert max-w-none text-[1.05rem] space-y-5">
+        <p>
+          When you ask an LLM a question in 2026, you're not just getting an answer — you're getting the <em class="gold">aftermath of a reasoning process</em>. For the newest generation of "thinking" models (OpenAI's o-series, Claude's extended thinking, DeepSeek R1, Gemini's thinking mode, QwQ, Kimi K1.5, and others), that process is sometimes <strong>visible to you</strong>. The visible scraps of that process — the scratchpad, the backtracking, the self-corrections, the plan sketches — are what we call <strong class="gold">thinking artifacts</strong>.
+        </p>
+
+        <div class="callout">
+          <div class="font-semibold mb-1 gold">In plain terms</div>
+          A thinking artifact is the LLM's "rough draft" — the internal monologue it generates <em>before</em> (or alongside) the final answer you see. Some models show it to you. Some hide it. Some only show it if you know how to ask.
+        </div>
+
+        <h3 class="display text-2xl mt-10 mb-3">Where do they come from?</h3>
+        <p>
+          The idea traces back to <strong>Chain-of-Thought (CoT)</strong> prompting, introduced by Wei et al. at Google in 2022: asking a model to "think step by step" dramatically improved performance on math, logic, and reasoning. By 2024, OpenAI's <strong>o1</strong> was the first widely-available model to do this thinking <em>automatically</em> — generating thousands of hidden tokens of reasoning before responding. Anthropic, DeepSeek, Google, Alibaba, and xAI followed with their own variants through 2025 and 2026.
+        </p>
+
+        <h3 class="display text-2xl mt-10 mb-3">Three flavors you'll encounter</h3>
+        <div class="grid md:grid-cols-3 gap-4 not-prose mt-6">
+          <div class="card p-5">
+            <div class="badge badge-green mb-3">● Direct Export</div>
+            <div class="display text-xl mb-2">Visible by default</div>
+            <p class="text-sm text-[var(--text-dim)]">Models like DeepSeek R1 and QwQ print their <code class="mono text-xs gold">&lt;think&gt;…&lt;/think&gt;</code> block right in the answer. You see the raw reasoning without doing anything.</p>
+          </div>
+          <div class="card p-5">
+            <div class="badge badge-gold mb-3">● Prompted / Toggled</div>
+            <div class="display text-xl mb-2">Visible on request</div>
+            <p class="text-sm text-[var(--text-dim)]">ChatGPT's "Show thinking", Claude's extended-thinking toggle, Gemini's thinking panel, and API flags. You have to turn it on or ask for it.</p>
+          </div>
+          <div class="card p-5">
+            <div class="badge badge-red mb-3">● Hidden / Distilled</div>
+            <div class="display text-xl mb-2">Not available</div>
+            <p class="text-sm text-[var(--text-dim)]">Many smaller or "distilled" models were trained on thinking traces but don't expose them. You can sometimes coax out reasoning with clever prompts — but you're seeing a reconstruction, not the real thing.</p>
+          </div>
+        </div>
+
+        <h3 class="display text-2xl mt-10 mb-3">Why should a business user care?</h3>
+        <p>
+          Because the <strong>thinking trace is often more valuable than the answer</strong>. The answer tells you <em>what</em>. The thinking trace tells you:
+        </p>
+        <ul class="space-y-2 list-none pl-0">
+          <li>✦ <strong>Why</strong> the model chose that answer (traceability)</li>
+          <li>✦ <strong>What it's uncertain about</strong> (honest confidence signals)</li>
+          <li>✦ <strong>Where it got stuck or self-corrected</strong> (quality signal)</li>
+          <li>✦ <strong>What alternatives it considered and rejected</strong> (exploration depth)</li>
+          <li>✦ <strong>Whether it actually read your source documents</strong> (grounding audit)</li>
+        </ul>
+        <p>
+          For a procurement manager, that's the difference between "here's a vendor recommendation" and "here's the <em>reasoning</em> behind this vendor recommendation — including the parts I'm least sure about." That's an <span class="gold font-semibold">AI nugget</span>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================== SECTION 2: RESEARCH ================== -->
+    <section id="research">
+      <div class="flex items-start gap-6 mb-8">
+        <div class="chapter-num">02</div>
+        <div>
+          <div class="text-xs mono sc gold mb-1">Chapter Two</div>
+          <h2 class="display text-4xl md:text-5xl leading-tight">What the Research Says</h2>
+          <p class="text-[var(--text-dim)] mt-2">A plain-language summary of 2024–2026 findings.</p>
+        </div>
+      </div>
+
+      <!-- Pros -->
+      <div class="card-paper p-6 md:p-8 mb-8">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="nugget pulse"></span>
+          <h3 class="display text-2xl">The Case FOR Mining</h3>
+          <span class="badge badge-green ml-auto">Pros</span>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 text-sm">
+          <div>
+            <div class="font-semibold mb-1">✓ Accuracy jumps on complex tasks</div>
+            <p>OpenAI reported o1 solving 83% of International Math Olympiad qualifying problems vs 13% for GPT-4o. The "thinking" step is the driver. Business analogue: multi-step analyses (pricing, forecasting, contract review) show measurable accuracy gains.</p>
+          </div>
+          <div>
+            <div class="font-semibold mb-1">✓ Better calibration of uncertainty</div>
+            <p>Research from Anthropic (2025) showed thinking models can express <em>honest uncertainty</em> ("I'm about 60% sure") more faithfully than standard models, which tend to sound equally confident whether right or wrong.</p>
+          </div>
+          <div>
+            <div class="font-semibold mb-1">✓ Self-correction becomes visible</div>
+            <p>Google's Gemini technical reports note that thinking traces surface when a model catches its own mistakes mid-reasoning — critical for audit trails in regulated industries.</p>
+          </div>
+          <div>
+            <div class="font-semibold mb-1">✓ Built-in rationale for decisions</div>
+            <p>For enterprise workflows (approvals, recommendations, risk flags), the thinking trace is a first-draft justification you can keep, edit, or discard — saving hours of "explain your answer" follow-ups.</p>
+          </div>
+          <div>
+            <div class="font-semibold mb-1">✓ Training signal for your team</div>
+            <p>Reading how an LLM structures reasoning is surprisingly useful as a prompt-engineering and analyst-training tool. You learn what "good reasoning" looks like on your domain data.</p>
+          </div>
+          <div>
+            <div class="font-semibold mb-1">✓ Distillation goldmine (with caution)</div>
+            <p>DeepSeek's R1 release famously showed that smaller models trained on high-quality thinking traces from larger models can punch far above their weight — a major cost lever for enterprise deployments.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cons -->
+      <div class="card p-6 md:p-8 mb-8">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-xl">⚠️</span>
+          <h3 class="display text-2xl">The Case AGAINST Trusting Them Blindly</h3>
+          <span class="badge badge-red ml-auto">Cons</span>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 text-sm">
+          <div>
+            <div class="font-semibold mb-1 gold">✗ Post-hoc rationalization</div>
+            <p>Turing Award winner Yoshua Bengio and others (2025) warn that thinking traces can be <em>plausible-sounding justifications generated after the fact</em>, not the true causal chain of the answer. A confident-sounding trace ≠ honest reasoning.</p>
+          </div>
+          <div>
+            <div class="font-semibold mb-1 gold">✗ Token cost explosion</div>
+            <p>Thinking traces routinely add 2,000–20,000+ tokens per query. At enterprise scale, this can 5–10x your inference bill. Apple's 2025 paper "The Illusion of Thinking" argued that for many problems, you're paying for reasoning theater.</p>
+          </div>
+          <div>
+            <div class="font-semibold mb-1 gold">✗ Latency tax</div>
+            <p>A 10-second thinking pass is fine for strategic analysis. It's a dealbreaker for customer-facing chat. Latency-sensitive workflows need thinking <em>budgets</em>, not thinking <em>on everything</em>.</p>
+          </div>
+          <div>
+            <div class="font-semibold mb-1 gold">✗ "Reasoning-washing"</div>
+            <p>Several 2025 studies (including work from Stanford HAI) found that simply displaying a thinking panel makes users <em>over-trust</em> the output — even when the trace is shallow or fabricated. The UI itself is a persuasion vector.</p>
+          </div>
+          <div>
+            <div class="font-semibold mb-1 gold">✗ PII and policy leakage</div>
+            <p>Thinking traces sometimes surface content the final answer correctly redacts — including copyrighted text, system prompts, or sensitive retrieved documents. This is a real compliance risk.</p>
+          </div>
+          <div>
+            <div class="font-semibold mb-1 gold">✗ Inconsistent availability</div>
+            <p>Providers toggle thinking visibility on and off across versions. A workflow built on reading today's traces may break tomorrow. Never architect a critical pipeline around a thinking artifact you don't control.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Benefits — the balanced view -->
+      <div class="card p-6 md:p-8" style="border-color: var(--gold);">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="nugget"></span>
+          <h3 class="display text-2xl">The Balanced View: When It's Worth It</h3>
+          <span class="badge badge-gold ml-auto">Verdict</span>
+        </div>
+        <p class="text-sm text-[var(--text-dim)] mb-4">
+          The research converges on a pragmatic position: <strong class="text-[var(--paper)]">thinking artifacts are most valuable for high-stakes, low-frequency, complex-reasoning work</strong> — and least valuable (or actively harmful) for high-frequency, simple-Q&A work. The sweet spot for business users:
+        </p>
+        <div class="grid md:grid-cols-3 gap-3 text-sm">
+          <div class="p-3 bg-[rgba(230,180,34,0.08)] rounded-lg border border-[rgba(230,180,34,0.2)]">
+            <div class="font-semibold gold mb-1">🎯 Strategic analysis</div>
+            <div class="text-[var(--text-dim)]">Market sizing, competitive moves, M&amp;A rationale</div>
+          </div>
+          <div class="p-3 bg-[rgba(230,180,34,0.08)] rounded-lg border border-[rgba(230,180,34,0.2)]">
+            <div class="font-semibold gold mb-1">📊 Multi-step data work</div>
+            <div class="text-[var(--text-dim)]">Financial models, cohort analysis, anomaly triage</div>
+          </div>
+          <div class="p-3 bg-[rgba(230,180,34,0.08)] rounded-lg border border-[rgba(230,180,34,0.2)]">
+            <div class="font-semibold gold mb-1">📜 Document reasoning</div>
+            <div class="text-[var(--text-dim)]">Contract review, policy interpretation, compliance</div>
+          </div>
+          <div class="p-3 bg-[rgba(230,180,34,0.08)] rounded-lg border border-[rgba(230,180,34,0.2)]">
+            <div class="font-semibold gold mb-1">🔧 Debug & troubleshooting</div>
+            <div class="text-[var(--text-dim)]">Root cause analysis, engineering triage</div>
+          </div>
+          <div class="p-3 bg-[rgba(230,180,34,0.08)] rounded-lg border border-[rgba(230,180,34,0.2)]">
+            <div class="font-semibold gold mb-1">✍️ Writing with intent</div>
+            <div class="text-[var(--text-dim)]">Messaging strategy, stakeholder comms, negotiations</div>
+          </div>
+          <div class="p-3 bg-[rgba(230,180,34,0.08)] rounded-lg border border-[rgba(230,180,34,0.2)]">
+            <div class="font-semibold gold mb-1">🧪 Hypothesis generation</div>
+            <div class="text-[var(--text-dim)]">Research, product ideas, experiment design</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SECTION 3: CAVEATS ================== -->
+    <section id="caveats">
+      <div class="flex items-start gap-6 mb-8">
+        <div class="chapter-num">03</div>
+        <div>
+          <div class="text-xs mono sc gold mb-1">Chapter Three</div>
+          <h2 class="display text-4xl md:text-5xl leading-tight">Caveats &amp; Cautions</h2>
+          <p class="text-[var(--text-dim)] mt-2">Read this before you trust anything you mine.</p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="card p-5">
+          <div class="badge badge-red mb-3">⚠️ Caveat 1</div>
+          <h4 class="display text-xl mb-2">The trace is not the thought.</h4>
+          <p class="text-sm text-[var(--text-dim)]">LLMs don't "think" the way humans do. The thinking trace is a <em>generated text sequence</em> that the model learned improves its final answer. Treat it as a <strong>useful scaffold</strong>, not a window into cognition.</p>
+        </div>
+        <div class="card p-5">
+          <div class="badge badge-red mb-3">⚠️ Caveat 2</div>
+          <h4 class="display text-xl mb-2">Fluency ≠ fidelity.</h4>
+          <p class="text-sm text-[var(--text-dim)]">A beautifully written thinking trace can be completely disconnected from how the answer was actually produced. Smooth prose in the trace is a <em>style</em>, not a guarantee of honesty.</p>
+        </div>
+        <div class="card p-5">
+          <div class="badge badge-red mb-3">⚠️ Caveat 3</div>
+          <h4 class="display text-xl mb-2">Traces can leak what answers won't.</h4>
+          <p class="text-sm text-[var(--text-dim)]">Sensitive documents, system instructions, and even competitor data sometimes surface in thinking traces while being correctly filtered from the final answer. <strong>Always sanitize thinking traces before sharing externally.</strong></p>
+        </div>
+        <div class="card p-5">
+          <div class="badge badge-red mb-3">⚠️ Caveat 4</div>
+          <h4 class="display text-xl mb-2">Cost &amp; latency are real constraints.</h4>
+          <p class="text-sm text-[var(--text-dim)]">A single "thinking" query can cost 10–50× a standard query. Budget it like you'd budget analyst time — spend it where the stakes justify it.</p>
+        </div>
+        <div class="card p-5">
+          <div class="badge badge-red mb-3">⚠️ Caveat 5</div>
+          <h4 class="display text-xl mb-2">Provider control means instability.</h4>
+          <p class="text-sm text-[var(--text-dim)]">You do not own the thinking artifact. Providers can (and do) change format, length, and availability without notice. Don't build fragile automations on a specific trace structure.</p>
+        </div>
+        <div class="card p-5">
+          <div class="badge badge-red mb-3">⚠️ Caveat 6</div>
+          <h4 class="display text-xl mb-2">Over-trust is the biggest risk.</h4>
+          <p class="text-sm text-[var(--text-dim)]">Research (Stanford HAI, 2025) shows that showing thinking traces increases user trust <em>regardless of trace quality</em>. The fix: build habits of spot-checking the trace against the answer and the source.</p>
+        </div>
+      </div>
+
+      <div class="callout-warn callout mt-8">
+        <div class="font-semibold mb-1" style="color: var(--rust);">The Golden Rule of Nugget Mining</div>
+        <p class="text-sm">A thinking artifact is <strong>a lead</strong>, not a verdict. Use it to <em>direct your attention</em>, then verify the claim against the original source. The best miners treat every nugget as "probable until confirmed."</p>
+      </div>
+    </section>
+
+    <!-- ================== SECTION 4: FIELD GUIDE ================== -->
+    <section id="field-guide">
+      <div class="flex items-start gap-6 mb-8">
+        <div class="chapter-num">04</div>
+        <div>
+          <div class="text-xs mono sc gold mb-1">Chapter Four</div>
+          <h2 class="display text-4xl md:text-5xl leading-tight">The Model Field Guide</h2>
+          <p class="text-[var(--text-dim)] mt-2">Model-by-model tactics for finding and reading thinking artifacts.</p>
+        </div>
+      </div>
+
+      <p class="mb-8 text-[var(--text-dim)]">Information current as of early 2026. Always verify availability in your specific tier and region.</p>
+
+      <!-- Model Cards -->
+      <div class="space-y-8">
+
+        <!-- CLAUDE -->
+        <div class="model-card card p-6 md:p-8" id="model-claude">
+          <div class="flex flex-wrap items-center gap-3 mb-5">
+            <div class="w-12 h-12 rounded-lg flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #d97706, #92400e);">🟤</div>
+            <div class="flex-1 min-w-0">
+              <h3 class="display text-2xl md:text-3xl">Claude (Anthropic)</h3>
+              <div class="text-sm text-[var(--text-dim)]">Claude Sonnet 4.5 · Claude Opus 4.5 · Claude Haiku 4.5</div>
+            </div>
+            <span class="badge badge-gold">● Prompted / Toggled</span>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-semibold text-sm sc gold mb-2">Where thinking lives</h4>
+              <ul class="text-sm space-y-1.5 text-[var(--text-dim)]">
+                <li>✦ <strong class="text-[var(--paper)]">claude.ai:</strong> "Extended Thinking" toggle in the model dropdown. Once on, Claude shows a collapsible thinking panel above each response.</li>
+                <li>✦ <strong class="text-[var(--paper)]">API:</strong> <code class="mono text-xs gold">thinking: { type: "enabled", budget_tokens: N }</code>. Returned as separate <code class="mono text-xs gold">thinking</code> content blocks alongside <code class="mono text-xs gold">text</code> blocks.</li>
+                <li>✦ <strong class="text-[var(--paper)]">Claude Code:</strong> Thinking is on by default for agentic tasks; streamed in a dedicated pane.</li>
+              </ul>
+
+              <h4 class="font-semibold text-sm sc gold mb-2 mt-5">What makes Claude's thinking distinctive</h4>
+              <p class="text-sm text-[var(--text-dim)]">Claude's traces are typically <strong>well-structured, self-questioning, and explicit about uncertainties</strong>. They often include numbered reasoning steps, explicit "let me re-check" moments, and a clear handoff to the final answer. Anthropic has invested heavily in making these traces <em>auditable</em> rather than just long.</p>
+            </div>
+
+            <div>
+              <h4 class="font-semibold text-sm sc gold mb-2">Tactical prompt to elicit richer thinking</h4>
+              <div class="relative">
+                <pre class="code"><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="c-c"># Use with Extended Thinking ON, budget_tokens ≥ 4000</span>
+<span class="c-k">Before answering,</span> walk through:
+1. What exactly am I being asked to decide?
+2. What information do I have, and what's missing?
+3. What are the top 3 alternatives I considered?
+4. Which assumption in my reasoning is weakest?
+5. What would change my mind?
+
+<span class="c-k">Then</span> give me the answer with confidence.
+</pre>
+              </div>
+              <h4 class="font-semibold text-sm sc gold mb-2 mt-4">Business use-case sweet spot</h4>
+              <p class="text-sm text-[var(--text-dim)]">Policy interpretation, stakeholder comms, contract red-flag review, structured decision memos. Claude's thinking shines on tasks where <em>nuance and tradeoffs</em> matter more than raw calculation.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHATGPT / OPENAI -->
+        <div class="model-card card p-6 md:p-8" id="model-chatgpt">
+          <div class="flex flex-wrap items-center gap-3 mb-5">
+            <div class="w-12 h-12 rounded-lg flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #10a37f, #065f46);">✦</div>
+            <div class="flex-1 min-w-0">
+              <h3 class="display text-2xl md:text-3xl">ChatGPT / OpenAI o-series</h3>
+              <div class="text-sm text-[var(--text-dim)]">o1 · o3 · o3-mini · o4-mini · GPT-5 with thinking</div>
+            </div>
+            <span class="badge badge-gold">● Toggled</span>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-semibold text-sm sc gold mb-2">Where thinking lives</h4>
+              <ul class="text-sm space-y-1.5 text-[var(--text-dim)]">
+                <li>✦ <strong class="text-[var(--paper)]">chatgpt.com:</strong> "Show thinking" toggle on o-series and GPT-5-thinking responses. Renders as an expandable "Thought for N seconds" block.</li>
+                <li>✦ <strong class="text-[var(--text-dim)]">API:</strong> The reasoning content is <em>not</em> directly exposed via the Responses API as of 2026 — a notable limitation for enterprise pipelines. You can only see the final answer plus a <code class="mono text-xs gold">reasoning_effort</code> setting.</li>
+                <li>✦ <strong class="text-[var(--paper)]">Reasoning effort:</strong> <code class="mono text-xs gold">low / medium / high / xhigh</code> controls how long the model thinks.</li>
+              </ul>
+
+              <h4 class="font-semibold text-sm sc gold mb-2 mt-5">What makes o-series thinking distinctive</h4>
+              <p class="text-sm text-[var(--text-dim)]">o-series traces tend to be <strong>denser and more mathematical</strong> than Claude's. They're optimized for problems where exhaustive exploration and self-verification help — math, code, logic puzzles, and structured data analysis. Less conversational, more "show your work."</p>
+            </div>
+
+            <div>
+              <h4 class="font-semibold text-sm sc gold mb-2">Tactical prompt for better traces</h4>
+              <div class="relative">
+                <pre class="code"><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="c-c"># Pair with reasoning_effort: "high"</span>
+Analyze the attached quarterly data.
+
+<span class="c-k">Show your work explicitly:</span>
+- State each assumption you're making
+- Do the math step-by-step (don't skip intermediate numbers)
+- Flag any figures that look anomalous and why
+- End with a one-line verdict and your confidence (0–100%)
+</pre>
+              </div>
+              <h4 class="font-semibold text-sm sc gold mb-2 mt-4">Business use-case sweet spot</h4>
+              <p class="text-sm text-[var(--text-dim)]">Financial modeling, SQL/code generation, spreadsheet analysis, quantitative research, operations planning. Pick o-series when you want <em>rigor over rhetoric</em>.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- DEEPSEEK -->
+        <div class="model-card card p-6 md:p-8" id="model-deepseek">
+          <div class="flex flex-wrap items-center gap-3 mb-5">
+            <div class="w-12 h-12 rounded-lg flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #2563eb, #1e3a8a);">🔷</div>
+            <div class="flex-1 min-w-0">
+              <h3 class="display text-2xl md:text-3xl">DeepSeek R1 / R1-0528</h3>
+              <div class="text-sm text-[var(--text-dim)]">Open-weight reasoning model, self-hosted options</div>
+            </div>
+            <span class="badge badge-green">● Direct Export</span>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-semibold text-sm sc gold mb-2">Where thinking lives</h4>
+              <ul class="text-sm space-y-1.5 text-[var(--text-dim)]">
+                <li>✦ <strong class="text-[var(--paper)]">Everywhere, by default:</strong> R1 emits its reasoning between literal <code class="mono text-xs gold">&lt;think&gt;…&lt;/think&gt;</code> XML tags as part of the completion. No toggle needed.</li>
+                <li>✦ <strong class="text-[var(--paper)]">API:</strong> The same tags appear in the <code class="mono text-xs gold">content</code> field. You can parse them out or leave them in.</li>
+                <li>✦ <strong class="text-[var(--paper)]">Self-hosted:</strong> Because the weights are open, you can run R1 on your own infra and keep thinking traces fully internal — a real enterprise advantage.</li>
+              </ul>
+
+              <h4 class="font-semibold text-sm sc gold mb-2 mt-5">What makes DeepSeek's thinking distinctive</h4>
+              <p class="text-sm text-[var(--text-dim)]">R1's traces are <strong>very long, highly introspective, and occasionally bilingual</strong> (Chinese/English code-switching in early versions). They show genuine backtracking — "wait, that can't be right" moments — which is rare and valuable for auditability. The "aha" moments are often visible.</p>
+            </div>
+
+            <div>
+              <h4 class="font-semibold text-sm sc gold mb-2">Tactical prompt</h4>
+              <div class="relative">
+                <pre class="code"><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="c-c"># R1 thinks automatically; steer the quality with structure</span>
+<span class="c-k">Task:</span> Review this customer churn dataset and identify the top 3
+predictive factors.
+
+<span class="c-k">In your &lt;think&gt; block,</span> please:
+- Consider at least 5 candidate factors before narrowing to 3
+- Explicitly state why each rejected factor was dropped
+- Show the correlation reasoning (even approximate)
+
+<span class="c-k">Final answer:</span> Ranked list with brief rationale.
+</pre>
+              </div>
+              <h4 class="font-semibold text-sm sc gold mb-2 mt-4">Business use-case sweet spot</h4>
+              <p class="text-sm text-[var(--text-dim)]">Data analysis, research synthesis, code review, cost-sensitive deployments (R1 is dramatically cheaper than frontier closed models). Ideal when you want <em>transparent reasoning on your own infrastructure</em>.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- GEMINI -->
+        <div class="model-card card p-6 md:p-8" id="model-gemini">
+          <div class="flex flex-wrap items-center gap-3 mb-5">
+            <div class="w-12 h-12 rounded-lg flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #4285f4, #ea4335, #fbbc04, #34a853);">◆</div>
+            <div class="flex-1 min-w-0">
+              <h3 class="display text-2xl md:text-3xl">Gemini (Google)</h3>
+              <div class="text-sm text-[var(--text-dim)]">Gemini 2.5 Pro · 2.5 Flash · 3 Pro (thinking mode)</div>
+            </div>
+            <span class="badge badge-gold">● Toggled</span>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-semibold text-sm sc gold mb-2">Where thinking lives</h4>
+              <ul class="text-sm space-y-1.5 text-[var(--text-dim)]">
+                <li>✦ <strong class="text-[var(--paper)]">Gemini app:</strong> Thinking mode exposes a "Thinking" panel with the reasoning trace.</li>
+                <li>✦ <strong class="text-[var(--paper)]">API:</strong> <code class="mono text-xs gold">thinkingConfig: { thinkingBudget: N }</code>. Returned as a <code class="mono text-xs gold">THOUGHT</code> part alongside the response.</li>
+                <li>✦ <strong class="text-[var(--paper)]">Dynamic thinking:</strong> Gemini can also auto-scale thinking tokens based on problem complexity.</li>
+              </ul>
+
+              <h4 class="font-semibold text-sm sc gold mb-2 mt-5">What makes Gemini's thinking distinctive</h4>
+              <p class="text-sm text-[var(--text-dim)]">Gemini traces are strong on <strong>multimodal reasoning</strong> — they'll walk through an image, a PDF, a code snippet, and a chart in a single coherent chain. The 2.5 Pro "1M token context" + thinking combo is particularly useful for long-document analysis.</p>
+            </div>
+
+            <div>
+              <h4 class="font-semibold text-sm sc gold mb-2">Tactical prompt</h4>
+              <div class="relative">
+                <pre class="code"><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="c-c"># Works great with Gemini's long context</span>
+Using the attached 40-page vendor proposal:
+
+<span class="c-k">Think through</span> (show your reasoning):
+1. What is the vendor actually committing to?
+2. What are the unstated risks or ambiguities?
+3. How does pricing compare to the 3 benchmarks I attached?
+4. What questions should we ask before signing?
+
+<span class="c-k">Cite page numbers</span> for every claim.
+</pre>
+              </div>
+              <h4 class="font-semibold text-sm sc gold mb-2 mt-4">Business use-case sweet spot</h4>
+              <p class="text-sm text-[var(--text-dim)]">Long-document review (contracts, RFPs, reports), multimodal analysis (slides + data + images), research synthesis across many sources.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- QWQ / QWEN -->
+        <div class="model-card card p-6 md:p-8" id="model-qwq">
+          <div class="flex flex-wrap items-center gap-3 mb-5">
+            <div class="w-12 h-12 rounded-lg flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #7c3aed, #4c1d95);">Q</div>
+            <div class="flex-1 min-w-0">
+              <h3 class="display text-2xl md:text-3xl">QwQ / Qwen (Alibaba)</h3>
+              <div class="text-sm text-[var(--text-dim)]">QwQ-32B · Qwen3-235B-A22B-Thinking</div>
+            </div>
+            <span class="badge badge-green">● Direct Export</span>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-semibold text-sm sc gold mb-2">Where thinking lives</h4>
+              <ul class="text-sm space-y-1.5 text-[var(--text-dim)]">
+                <li>✦ Like DeepSeek R1, QwQ emits <code class="mono text-xs gold">&lt;think&gt;…&lt;/think&gt;</code> tags directly in the completion.</li>
+                <li>✦ Qwen3's "thinking mode" toggle in the official chat app; in the API, controlled by <code class="mono text-xs gold">enable_thinking: true</code>.</li>
+                <li>✦ <strong class="text-[var(--paper)]">Hybrid mode (Qwen3):</strong> You can mix thinking and non-thinking turns in the same conversation — useful for cost control.</li>
+              </ul>
+
+              <h4 class="font-semibold text-sm sc gold mb-2 mt-5">What makes QwQ/Qwen's thinking distinctive</h4>
+              <p class="text-sm text-[var(--text-dim)]">QwQ traces are <strong>concise but methodical</strong>, often with explicit self-verification steps ("Let me verify: ..."). The 32B version punches well above its weight on math and code for the price. Qwen3's hybrid approach is genuinely novel for enterprise cost management.</p>
+            </div>
+
+            <div>
+              <h4 class="font-semibold text-sm sc gold mb-2">Tactical prompt</h4>
+              <div class="relative">
+                <pre class="code"><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="c-c"># Use for technical problem-solving</span>
+<span class="c-k">Problem:</span> Our API latency spiked 4x overnight after the deploy.
+
+<span class="c-k">In your thinking, systematically:</span>
+- Enumerate likely root causes (at least 6)
+- For each, name the diagnostic query that would confirm/rule out
+- Rank by probability based on the logs I've shared
+- Propose the first 3 actions for the on-call engineer
+</pre>
+              </div>
+              <h4 class="font-semibold text-sm sc gold mb-2 mt-4">Business use-case sweet spot</h4>
+              <p class="text-sm text-[var(--text-dim)]">Engineering troubleshooting, math-heavy analysis, cost-conscious reasoning workloads, on-prem / private deployments.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- GROK -->
+        <div class="model-card card p-6 md:p-8" id="model-grok">
+          <div class="flex flex-wrap items-center gap-3 mb-5">
+            <div class="w-12 h-12 rounded-lg flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #1f2937, #000);">⚡</div>
+            <div class="flex-1 min-w-0">
+              <h3 class="display text-2xl md:text-3xl">Grok (xAI)</h3>
+              <div class="text-sm text-[var(--text-dim)]">Grok 3 · Grok 4 with Think mode</div>
+            </div>
+            <span class="badge badge-gold">● Toggled</span>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-semibold text-sm sc gold mb-2">Where thinking lives</h4>
+              <ul class="text-sm space-y-1.5 text-[var(--text-dim)]">
+                <li>✦ <strong class="text-[var(--paper)]">grok.com / X:</strong> "Think" mode toggle; reasoning appears in a collapsible block.</li>
+                <li>✦ <strong class="text-[var(--paper)]">API:</strong> <code class="mono text-xs gold">reasoning_effort</code> parameter on supported endpoints.</li>
+                <li>✦ <strong class="text-[var(--paper)]">Think / Big Brain:</strong> Two tiers — "Think" for standard reasoning, "Big Brain" for deep multi-step exploration (longer, costlier).</li>
+              </ul>
+
+              <h4 class="font-semibold text-sm sc gold mb-2 mt-5">What makes Grok's thinking distinctive</h4>
+              <p class="text-sm text-[var(--text-dim)]">Grok traces tend to be <strong>more conversational and less structured</strong> than o-series. They integrate real-time X/web context when available, which makes them useful for fast-moving market intel — but also harder to audit.</p>
+            </div>
+
+            <div>
+              <h4 class="font-semibold text-sm sc gold mb-2">Tactical prompt</h4>
+              <div class="relative">
+                <pre class="code"><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="c-c"># Good for market / competitive intel</span>
+<span class="c-k">Think mode ON.</span>
+
+Our competitor just announced [X]. Walk through:
+1. What this likely means strategically (3 interpretations)
+2. Which interpretation is most probable and why
+3. What signal would confirm each one in the next 30 days
+4. What our response options are, ranked by risk/reward
+</pre>
+              </div>
+              <h4 class="font-semibold text-sm sc gold mb-2 mt-4">Business use-case sweet spot</h4>
+              <p class="text-sm text-[var(--text-dim)]">Competitive intelligence, real-time market monitoring, brainstorming, exploratory research where <em>speed + breadth</em> matter more than rigorous verification.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- KIMI / MISTRAL -->
+        <div class="model-card card p-6 md:p-8" id="model-others">
+          <div class="flex flex-wrap items-center gap-3 mb-5">
+            <div class="w-12 h-12 rounded-lg flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #64748b, #334155);">…</div>
+            <div class="flex-1 min-w-0">
+              <h3 class="display text-2xl md:text-3xl">Other Notable Models</h3>
+              <div class="text-sm text-[var(--text-dim)]">Kimi K2 · Mistral Medium 3 · Phi-4-reasoning · Perplexity Pro Search</div>
+            </div>
+            <span class="badge badge-gold">● Mixed</span>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6 text-sm">
+            <div>
+              <h4 class="font-semibold sc gold mb-2">Kimi K2 (Moonshot)</h4>
+              <p class="text-[var(--text-dim)]">Mixture-of-experts reasoning model with visible thinking in the web UI. Strong on agentic tasks and long-context reasoning. Thinking exposed via toggle.</p>
+            </div>
+            <div>
+              <h4 class="font-semibold sc gold mb-2">Mistral Medium 3</h4>
+              <p class="text-[var(--text-dim)]">Thinking mode toggle in Le Chat. Particularly strong for European-enterprise contexts and regulated workloads where EU-hosted options matter.</p>
+            </div>
+            <div>
+              <h4 class="font-semibold sc gold mb-2">Phi-4-reasoning (Microsoft)</h4>
+              <p class="text-[var(--text-dim)]">Small open model with CoT-style reasoning traces. Cheap to run locally. Useful for on-device or private reasoning where data sensitivity is high.</p>
+            </div>
+            <div>
+              <h4 class="font-semibold sc gold mb-2">Perplexity Pro Search</h4>
+              <p class="text-[var(--text-dim)]">Shows its search &amp; reasoning steps ("Clarifying questions → Search → Synthesis"). Best for research tasks where <em>provenance</em> of information matters more than raw reasoning depth.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Comparison table -->
+      <div class="mt-12 card overflow-hidden">
+        <div class="p-6 border-b border-[var(--line)]">
+          <h3 class="display text-2xl">Quick Comparison Table</h3>
+          <p class="text-sm text-[var(--text-dim)] mt-1">At-a-glance: how the main models stack up for nugget miners.</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="mining">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Access</th>
+                <th>Trace Style</th>
+                <th>Best For</th>
+                <th>Cost Tier</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm">
+              <tr>
+                <td class="font-semibold">Claude Opus 4.5</td>
+                <td><span class="badge badge-gold">Toggled</span></td>
+                <td>Structured, self-questioning</td>
+                <td>Nuanced tradeoffs, policy</td>
+                <td class="gold">💎💎💎</td>
+              </tr>
+              <tr>
+                <td class="font-semibold">ChatGPT o4-mini</td>
+                <td><span class="badge badge-gold">Toggled</span></td>
+                <td>Dense, mathematical</td>
+                <td>Quant analysis, code</td>
+                <td class="gold">💎💎</td>
+              </tr>
+              <tr>
+                <td class="font-semibold">DeepSeek R1</td>
+                <td><span class="badge badge-green">Direct</span></td>
+                <td>Long, introspective, backtracky</td>
+                <td>Research, self-hosted</td>
+                <td class="gold">💎</td>
+              </tr>
+              <tr>
+                <td class="font-semibold">Gemini 2.5 Pro</td>
+                <td><span class="badge badge-gold">Toggled</span></td>
+                <td>Multimodal, long-context</td>
+                <td>Documents, mixed media</td>
+                <td class="gold">💎💎</td>
+              </tr>
+              <tr>
+                <td class="font-semibold">QwQ-32B</td>
+                <td><span class="badge badge-green">Direct</span></td>
+                <td>Concise, self-verifying</td>
+                <td>Math, code, budget reasoning</td>
+                <td class="gold">💎</td>
+              </tr>
+              <tr>
+                <td class="font-semibold">Grok 4</td>
+                <td><span class="badge badge-gold">Toggled</span></td>
+                <td>Conversational, real-time</td>
+                <td>Market intel, brainstorming</td>
+                <td class="gold">💎💎</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SECTION 5: PROMPTS ================== -->
+    <section id="prompts">
+      <div class="flex items-start gap-6 mb-8">
+        <div class="chapter-num">05</div>
+        <div>
+          <div class="text-xs mono sc gold mb-1">Chapter Five</div>
+          <h2 class="display text-4xl md:text-5xl leading-tight">Tactical Prompts</h2>
+          <p class="text-[var(--text-dim)] mt-2">Copy, paste, adapt. These work across most thinking-enabled models.</p>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+
+        <!-- Prompt 1 -->
+        <div class="card p-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full gold-bg flex items-center justify-center font-bold text-sm">P1</div>
+            <div>
+              <h4 class="display text-xl">The "Show Your Reasoning" Primering</h4>
+              <div class="text-xs text-[var(--text-dim)]">Use when you want richer thinking traces from any model</div>
+            </div>
+          </div>
+          <div class="relative">
+            <pre class="code"><button class="copy-btn" onclick="copyCode(this)">copy</button>Before you answer, I want to see <span class="c-k">how you're thinking</span>, not just what
+you conclude. In your reasoning trace, please:
+
+1. Restate the question in your own words to confirm understanding.
+2. List the <span class="c-k">information you have</span> and the <span class="c-k">information you'd ideally want</span>.
+3. Identify 2–3 possible approaches, and briefly say why you're choosing one.
+4. Walk through your chosen approach step by step, showing intermediate results.
+5. Flag any <span class="c-k">assumptions you're making</span> and any <span class="c-k">points of uncertainty</span>.
+6. If you catch yourself mid-reasoning, say so out loud.
+
+Then give your final answer, clearly separated.
+</pre>
+          </div>
+          <p class="text-xs text-[var(--text-dim)] mt-3">💡 <strong>When to use:</strong> At the start of a complex analytical conversation. Sets a reasoning-first tone for the whole thread.</p>
+        </div>
+
+        <!-- Prompt 2 -->
+        <div class="card p-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full gold-bg flex items-center justify-center font-bold text-sm">P2</div>
+            <div>
+              <h4 class="display text-xl">The "Red Team Your Own Answer"</h4>
+              <div class="text-xs text-[var(--text-dim)]">Stress-test a conclusion before you act on it</div>
+            </div>
+          </div>
+          <div class="relative">
+            <pre class="code"><button class="copy-btn" onclick="copyCode(this)">copy</button>Here's my proposed decision: <span class="c-s">[paste your decision/recommendation]</span>
+
+<span class="c-k">Think through it like a skeptical advisor:</span>
+- What are the strongest arguments against this decision?
+- Which assumption, if wrong, would most damage the outcome?
+- What would a smart person who disagrees point to?
+- What's the worst realistic outcome if I proceed?
+- What cheap check could I run in the next 48 hours to de-risk it?
+
+Then give me a revised confidence level (0–100) and a one-line recommendation.
+</pre>
+          </div>
+          <p class="text-xs text-[var(--text-dim)] mt-3">💡 <strong>When to use:</strong> Before committing to any significant business decision. The thinking trace this produces is often more valuable than the final verdict.</p>
+        </div>
+
+        <!-- Prompt 3 -->
+        <div class="card p-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full gold-bg flex items-center justify-center font-bold text-sm">P3</div>
+            <div>
+              <h4 class="display text-xl">The "Grounding Audit"</h4>
+              <div class="text-xs text-[var(--text-dim)]">Force the model to show what it actually read</div>
+            </div>
+          </div>
+          <div class="relative">
+            <pre class="code"><button class="copy-btn" onclick="copyCode(this)">copy</button>Using ONLY the documents I've attached, answer: <span class="c-s">[your question]</span>
+
+<span class="c-k">In your thinking, for every claim in your final answer:</span>
+- Quote the exact sentence from the source that supports it
+- Name the document and page/section
+- If no direct support exists, say <span class="c-s">"NOT GROUNDED"</span> and explain your inference
+
+Final answer should be clearly separated and flag any ungrounded claims inline.
+</pre>
+          </div>
+          <p class="text-xs text-[var(--text-dim)] mt-3">💡 <strong>When to use:</strong> Contract review, compliance analysis, any task where "did the model actually read this?" is a real concern.</p>
+        </div>
+
+        <!-- Prompt 4 -->
+        <div class="card p-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full gold-bg flex items-center justify-center font-bold text-sm">P4</div>
+            <div>
+              <h4 class="display text-xl">The "Confidence Ladder"</h4>
+              <div class="text-xs text-[var(--text-dim)]">Extract honest uncertainty instead of polished certainty</div>
+            </div>
+          </div>
+          <div class="relative">
+            <pre class="code"><button class="copy-btn" onclick="copyCode(this)">copy</button>Answer the following, but <span class="c-k">calibrate honestly</span>:
+
+Question: <span class="c-s">[your question]</span>
+
+In your thinking:
+- Rate your confidence on each sub-claim from 0–100
+- Flag anything below 70% as <span class="c-s">"LOW CONFIDENCE"</span>
+- State what evidence would raise or lower your confidence
+
+Final answer format:
+<span class="c-s">- Headline answer
+- Confidence: X%
+- What I'm most sure about:
+- What I'm least sure about:
+- What would change my mind:</span>
+</pre>
+          </div>
+          <p class="text-xs text-[var(--text-dim)] mt-3">💡 <strong>When to use:</strong> Whenever you'll act on the answer. Calibrated confidence is arguably the single most valuable output a thinking model can give a decision-maker.</p>
+        </div>
+
+        <!-- Prompt 5 -->
+        <div class="card p-6">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full gold-bg flex items-center justify-center font-bold text-sm">P5</div>
+            <div>
+              <h4 class="display text-xl">The "Thinking Trace Miner" (for non-thinking models)</h4>
+              <div class="text-xs text-[var(--text-dim)]">When the model doesn't natively expose thinking — coax it out</div>
+            </div>
+          </div>
+          <div class="relative">
+            <pre class="code"><button class="copy-btn" onclick="copyCode(this)">copy</button><span class="c-c"># Works on most standard LLMs without native thinking mode</span>
+
+<span class="c-k">I want you to think out loud before answering.</span> Put all your reasoning
+inside <span class="c-s">&lt;thinking&gt; ... &lt;/thinking&gt;</span> tags, then give the final answer
+afterwards.
+
+Inside the thinking block:
+- Consider the problem from multiple angles
+- Work through the logic step by step
+- Note any doubts or alternative interpretations
+- Self-correct if you catch an error
+
+The question is: <span class="c-s">[your question]</span>
+</pre>
+          </div>
+          <div class="callout-note callout mt-3">
+            <div class="font-semibold mb-1">⚠️ Important distinction</div>
+            <p class="text-xs">This produces <em>simulated</em> thinking — a reconstruction, not the model's actual internal reasoning. It's still useful (often improves answer quality), but don't treat it with the same trust as a native thinking trace from an o-series or R1 model.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================== SECTION 6: ASSESS ================== -->
+    <section id="assess">
+      <div class="flex items-start gap-6 mb-8">
+        <div class="chapter-num">06</div>
+        <div>
+          <div class="text-xs mono sc gold mb-1">Chapter Six</div>
+          <h2 class="display text-4xl md:text-5xl leading-tight">The ASSAY Framework</h2>
+          <p class="text-[var(--text-dim)] mt-2">How to tell a real nugget from fool's gold.</p>
+        </div>
+      </div>
+
+      <p class="mb-8">Just like a gold prospector assays a sample before declaring a strike, use this five-point checklist on any thinking trace you plan to act on.</p>
+
+      <div class="grid md:grid-cols-5 gap-3 mb-8">
+        <div class="card p-5">
+          <div class="display text-4xl gold mb-1">A</div>
+          <div class="font-semibold mb-2">Anchored</div>
+          <p class="text-xs text-[var(--text-dim)]">Does the trace cite specific facts, numbers, or sources — or does it reason in vague generalities?</p>
+        </div>
+        <div class="card p-5">
+          <div class="display text-4xl gold mb-1">S</div>
+          <div class="font-semibold mb-2">Self-correcting</div>
+          <p class="text-xs text-[var(--text-dim)]">Does the trace show the model catching its own mistakes, or is it a straight line to the answer?</p>
+        </div>
+        <div class="card p-5">
+          <div class="display text-4xl gold mb-1">S</div>
+          <div class="font-semibold mb-2">Specific</div>
+          <p class="text-xs text-[var(--text-dim)]">Does it give concrete intermediate results (numbers, names, steps) or hand-wave?</p>
+        </div>
+        <div class="card p-5">
+          <div class="display text-4xl gold mb-1">A</div>
+          <div class="font-semibold mb-2">Alternative-aware</div>
+          <p class="text-xs text-[var(--text-dim)]">Does it consider paths not taken and explain why they were rejected?</p>
+        </div>
+        <div class="card p-5">
+          <div class="display text-4xl gold mb-1">Y</div>
+          <div class="font-semibold mb-2">Yield-clear</div>
+          <p class="text-xs text-[var(--text-dim)]">Does it honestly flag uncertainty, or does it end with false confidence?</p>
+        </div>
+      </div>
+
+      <div class="card p-6 md:p-8">
+        <h3 class="display text-2xl mb-5">Scoring a Thinking Trace</h3>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <div class="font-semibold mb-3 green" style="color: var(--green);">✓ A real nugget looks like this:</div>
+            <div class="trace-sample">
+<span class="thought">The user asked for Q3 revenue by region.</span>
+<span class="thought">Looking at the CSV: EMEA is in €, not $ — I need to convert at 1.08.</span>
+<span class="thought">Wait, let me check the date on the exchange rate… it's Q2-end rate.</span>
+<span class="thought"><span class="tag">[Self-correction]</span> Using Q3 avg rate of 1.07 instead.</span>
+<span class="thought">Two approaches: (a) convert each row, (b) sum then convert. Will do (a) for auditability.</span>
+<span class="thought">NA=$18.2M, EMEA=€12.1M × 1.07 = $12.9M, APAC=$11.2M.</span>
+<span class="thought">Total = $42.3M. Confidence: ~90% — main uncertainty is FX rate choice.</span>
+            </div>
+            <div class="mt-3 text-xs text-[var(--text-dim)]">
+              <strong class="text-[var(--paper)]">ASSAY score: 5/5.</strong> Anchored (CSV data), Self-correcting (FX rate), Specific (exact numbers), Alternative-aware (two methods), Yield-clear (90% confidence stated).
+            </div>
+          </div>
+
+          <div>
+            <div class="font-semibold mb-3" style="color: var(--red);">✗ Fool's gold looks like this:</div>
+            <div class="trace-sample">
+<span class="thought">The user wants to know Q3 revenue by region.</span>
+<span class="thought">I should look at the data carefully and analyze it.</span>
+<span class="thought">Revenue is an important business metric that companies track quarterly.</span>
+<span class="thought">Let me think about the regions mentioned in the data.</span>
+<span class="thought">After careful analysis, I will provide the breakdown the user needs.</span>
+<span class="thought">I'm confident in my analysis of this data.</span>
+            </div>
+            <div class="mt-3 text-xs text-[var(--text-dim)]">
+              <strong class="text-[var(--paper)]">ASSAY score: 0/5.</strong> No anchoring, no self-correction, no specifics, no alternatives, false confidence. This is <em>reasoning theater</em> — looks like thinking, but adds nothing.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SECTION 7: EXAMPLES ================== -->
+    <section id="examples">
+      <div class="flex items-start gap-6 mb-8">
+        <div class="chapter-num">07</div>
+        <div>
+          <div class="text-xs mono sc gold mb-1">Chapter Seven</div>
+          <h2 class="display text-4xl md:text-5xl leading-tight">Business Examples</h2>
+          <p class="text-[var(--text-dim)] mt-2">What this looks like in real roles, on real days.</p>
+        </div>
+      </div>
+
+      <div class="space-y-5">
+        <div class="card p-6 md:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="badge badge-gold">Scenario 1</span>
+            <h3 class="display text-xl">Procurement Manager — Vendor Selection</h3>
+          </div>
+          <p class="text-sm text-[var(--text-dim)] mb-3"><strong class="text-[var(--paper)]">The task:</strong> Pick between 3 finalist vendors for a new CRM.</p>
+          <p class="text-sm text-[var(--text-dim)] mb-3"><strong class="text-[var(--paper)]">Without thinking artifacts:</strong> You get a 2-page recommendation. Sounds good. You have no idea why the model preferred Vendor B over A.</p>
+          <p class="text-sm text-[var(--text-dim)] mb-3"><strong class="text-[var(--paper)]">With thinking artifacts (Claude extended thinking):</strong> You see the model explicitly weighing pricing tiers against your team size, noting that Vendor A's "unlimited seats" only applies above 500 users (you have 280), catching that Vendor C's "99.99% uptime" SLA excludes weekends, and flagging that its confidence in Vendor B is ~75% because of limited data on their EU data residency.</p>
+          <p class="text-sm"><strong class="gold">The nugget:</strong> You realize the recommendation was nearly wrong because of a pricing-tier nuance the model caught in its own trace. You go back to Vendor A with a negotiated tier instead.</p>
+        </div>
+
+        <div class="card p-6 md:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="badge badge-gold">Scenario 2</span>
+            <h3 class="display text-xl">Finance Analyst — Quarterly Variance Review</h3>
+          </div>
+          <p class="text-sm text-[var(--text-dim)] mb-3"><strong class="text-[var(--paper)]">The task:</strong> Explain why OpEx came in 12% over budget.</p>
+          <p class="text-sm text-[var(--text-dim)] mb-3"><strong class="text-[var(--paper)]">With thinking artifacts (ChatGPT o4-mini, high effort):</strong> The trace shows the model methodically testing 5 hypotheses (FX, one-time accruals, hiring timing, vendor price increases, classification errors), explicitly ruling out 3 with intermediate math, and landing on two co-occurring drivers with confidence 65% and 80%.</p>
+          <p class="text-sm"><strong class="gold">The nugget:</strong> The thinking trace becomes the <em>outline of your variance memo</em> — saving an hour of structuring and, more importantly, capturing the alternatives you'd otherwise forget to mention.</p>
+        </div>
+
+        <div class="card p-6 md:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="badge badge-gold">Scenario 3</span>
+            <h3 class="display text-xl">Engineering Lead — Incident Post-Mortem</h3>
+          </div>
+          <p class="text-sm text-[var(--text-dim)] mb-3"><strong class="text-[var(--paper)]">The task:</strong> Root-cause a 45-minute production outage.</p>
+          <p class="text-sm text-[var(--text-dim)] mb-3"><strong class="text-[var(--paper)]">With thinking artifacts (DeepSeek R1, self-hosted):</strong> The trace walks through the log timeline, notices a 3-second gap that doesn't match the hypothesis, backtracks, and proposes an alternative cause involving a cache invalidation race condition. It explicitly flags what telemetry is missing to confirm.</p>
+          <p class="text-sm"><strong class="gold">The nugget:</strong> Your team gets a structured investigation path in 30 seconds that would have taken 30 minutes to assemble. The "missing telemetry" callout becomes a real action item.</p>
+        </div>
+
+        <div class="card p-6 md:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="badge badge-gold">Scenario 4</span>
+            <h3 class="display text-xl">Marketing Director — Campaign Positioning</h3>
+          </div>
+          <p class="text-sm text-[var(--text-dim)] mb-3"><strong class="text-[var(--paper)]">The task:</strong> Position a new B2B product against a dominant incumbent.</p>
+          <p class="text-sm text-[var(--text-dim)] mb-3"><strong class="text-[var(--paper)]">With thinking artifacts (Grok Think + Claude):</strong> Grok surfaces current market chatter and competitor messaging; Claude's thinking trace then walks through three positioning frames, explicitly weighing each against your customer research, and flags that the "cheaper" frame contradicts your brand equity.</p>
+          <p class="text-sm"><strong class="gold">The nugget:</strong> You avoid a positioning mistake you wouldn't have caught from a polished final recommendation. The "rejected alternatives" section is worth more than the final answer.</p>
+        </div>
+
+        <div class="card p-6 md:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="badge badge-gold">Scenario 5</span>
+            <h3 class="display text-xl">Legal / Compliance — Contract Red-Flag Review</h3>
+          </div>
+          <p class="text-sm text-[var(--text-dim)] mb-3"><strong class="text-[var(--paper)]">The task:</strong> Flag risks in a 30-page vendor MSA.</p>
+          <p class="text-sm text-[var(--text-dim)] mb-3"><strong class="text-[var(--paper)]">With thinking artifacts (Gemini 2.5 Pro, thinking on):</strong> The trace walks through the document section by section, citing page numbers, flagging that Section 11.3's indemnity clause is uncapped, that the auto-renewal notice window is 15 days (industry standard is 60), and that the data processing addendum references a version of GDPR guidance that's been superseded.</p>
+          <p class="text-sm"><strong class="gold">The nugget:</strong> Every flag in the thinking trace comes with the exact clause that triggered it — making your review a verification pass, not a discovery pass.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== SECTION 8: CONCLUSION ================== -->
+    <section id="conclusion">
+      <div class="flex items-start gap-6 mb-8">
+        <div class="chapter-num">08</div>
+        <div>
+          <div class="text-xs mono sc gold mb-1">Chapter Eight</div>
+          <h2 class="display text-4xl md:text-5xl leading-tight">Conclusion: Mine Smart</h2>
+        </div>
+      </div>
+
+      <div class="card-paper p-6 md:p-10">
+        <p class="display text-2xl italic mb-6 leading-snug">
+          The next era of AI literacy isn't about asking better questions — it's about <span class="underline decoration-[var(--gold)] decoration-2">reading the reasoning</span> and knowing what to trust.
+        </p>
+
+        <div class="space-y-4 text-[0.98rem]">
+          <p>
+            Thinking artifacts are the most significant new surface area LLMs have exposed to business users since chatbots arrived. For the first time, you can see not just <em>what</em> an AI recommends but <em>how it got there</em> — and that's transformative for any workflow where traceability, auditability, and trust matter.
+          </p>
+          <p>
+            But a thinking trace is not an oracle. It's a <strong>reasoning artifact</strong> — a rich, imperfect, often-useful byproduct of how modern models generate better answers. Used well, it's a force multiplier. Used naively, it's a persuasion vector that makes you <em>feel</em> more confident than you should be.
+          </p>
+          <p>
+            The miners who'll come out ahead in the next two years are the ones who develop two complementary habits:
+          </p>
+          <ol class="space-y-2 list-decimal pl-5">
+            <li><strong>Know where the traces live</strong> — per model, per interface, per API. This guide is your map.</li>
+            <li><strong>Assay before you act</strong> — apply the ASSAY framework to every trace you plan to base a decision on.</li>
+            <li><strong>Budget thinking like analyst time</strong> — spend it where the stakes justify it; skip it where they don't.</li>
+            <li><strong>Sanitize before you share</strong> — thinking traces can leak what final answers correctly hide.</li>
+            <li><strong>Stay skeptical of your own trust</strong> — the trace panel is designed to feel reassuring. Verify anyway.</li>
+          </ol>
+          <p class="mt-6 pt-6 border-t border-[var(--paper-dim)]">
+            The gold is real. So is fool's gold. The skill — the <em>only</em> skill that ultimately matters — is telling them apart.
+          </p>
+        </div>
+
+        <div class="mt-8 p-5 rounded-lg" style="background: rgba(26,21,16,0.95); color: var(--paper);">
+          <div class="text-xs mono gold sc mb-2">From the editor</div>
+          <p class="text-sm italic">
+            "We wrote this guide because we kept seeing the same pattern: teams paying premium prices for 'thinking' models and then only reading the final answer. The reasoning trace is where the real leverage lives — but only if you know how to read it critically. That's the skill this guide tries to build."
+          </p>
+          <div class="text-xs mt-3 text-[var(--paper-dim)]">— Research Team, Center for Applied AI</div>
+        </div>
+      </div>
+    </section>
+
+  </article>
+</main>
+
+<!-- =================== FOOTER =================== -->
+<footer class="border-t border-[var(--line)] mt-16" style="background: #0a0d12;">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-12">
+    <div class="grid md:grid-cols-3 gap-10 mb-10">
+      <div>
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-9 h-9 rounded-md flex items-center justify-center" style="background: linear-gradient(135deg, #1a1510, #3d2e0a); border: 1px solid var(--gold);">
+            <span class="gold" style="font-family: Fraunces, serif; font-weight: 800; font-size: 1.2rem;">⛏</span>
+          </div>
+          <div>
+            <div class="display text-lg">Center for Applied AI</div>
+            <div class="text-xs mono gold sc">Practical intelligence. Applied.</div>
+          </div>
+        </div>
+        <p class="text-sm text-[var(--text-dim)] max-w-sm">
+          We translate frontier AI research into practical playbooks for business and technology professionals. No hype. No jargon. Just what works.
+        </p>
+      </div>
+
+      <div>
+        <div class="text-xs mono sc gold mb-4">This Guide</div>
+        <ul class="space-y-2 text-sm text-[var(--text-dim)]">
+          <li><strong class="text-[var(--paper)]">Title:</strong> The Search for AI Nuggets</li>
+          <li><strong class="text-[var(--paper)]">Subtitle:</strong> A Field Guide for Thinking Artifact Miners</li>
+          <li><strong class="text-[var(--paper)]">Edition:</strong> 2026 · v1.0</li>
+          <li><strong class="text-[var(--paper)]">Audience:</strong> Business &amp; Technology Professionals</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="text-xs mono sc gold mb-4">Connect</div>
+        <ul class="space-y-2 text-sm">
+          <li><a href="https://www.centerforapliedai.com" target="_blank" rel="noopener" class="text-[var(--paper)] hover:text-[var(--gold)] transition flex items-center gap-2">🌐 www.centerforapliedai.com ↗</a></li>
+          <li><span class="text-[var(--text-dim)]">📧 research@centerforapliedai.com</span></li>
+          <li><span class="text-[var(--text-dim)]">📍 Applied AI Field Guides</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rule mb-6"></div>
+
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-xs text-[var(--text-dim)]">
+      <div>
+        © <span id="year"></span> Center for Applied AI. All rights reserved.
+        <span class="mx-2">·</span>
+        "Center for Applied AI" is a registered trademark.
+      </div>
+      <div class="mono">
+        Field Guide №01 · "The Search for AI Nuggets"
+      </div>
+    </div>
+
+    <div class="mt-6 text-[11px] text-[var(--text-dim)] max-w-4xl leading-relaxed">
+      <strong class="text-[var(--paper)]">Disclaimer:</strong> This guide is for informational purposes and does not constitute legal, technical, or professional advice. Model capabilities, interfaces, and pricing change frequently; verify current details with each provider before relying on them in production. Product names and trademarks referenced herein are the property of their respective owners. The Center for Applied AI has no commercial affiliation with the model providers discussed unless explicitly stated.
+    </div>
+  </div>
+</footer>
+
+<!-- Back to top -->
+<div id="top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+<script>
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Copy code buttons
+  function copyCode(btn) {
+    const pre = btn.closest('pre');
+    const code = pre.innerText.replace(/^copy\n?/, '').trim();
+    navigator.clipboard.writeText(code).then(() => {
+      const original = btn.textContent;
+      btn.textContent = 'copied!';
+      btn.style.color = 'var(--gold)';
+      setTimeout(() => { btn.textContent = original; btn.style.color = ''; }, 1500);
+    });
+  }
+
+  // Progress bar
+  const progress = document.getElementById('progress');
+  const topBtn = document.getElementById('top');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    progress.style.width = Math.min(100, Math.max(0, pct)) + '%';
+    topBtn.classList.toggle('show', h.scrollTop > 500);
+  });
+
+  // Active TOC link
+  const tocLinks = document.querySelectorAll('.toc-link');
+  const sections = Array.from(tocLinks).map(link => {
+    const id = link.getAttribute('href').slice(1);
+    return { link, el: document.getElementById(id) };
+  }).filter(s => s.el);
+
+  const tocObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(l => l.classList.remove('active'));
+        const match = sections.find(s => s.el === entry.target);
+        if (match) match.link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+
+  sections.forEach(s => tocObserver.observe(s.el));
+</script>
+
+</body>
+</html>

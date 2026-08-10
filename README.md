@@ -1,33 +1,27 @@
 # AI Web Drop
 
-A polished drop-zone for HTML files on GitHub Pages.
+A single-page drop-zone that lists every HTML file in this repo as browsable cards, served from GitHub Pages.
 
 ## How it works
 
-- `index.html` loads your repository tree from the GitHub API
-- It automatically finds every `.html` file in the repo
-- It excludes `index.html` itself
-- It renders elegant cards with titles and descriptions
-- Files open in new tabs
+- `index.html` loads the repository tree from the GitHub API
+- It scans for every `.html` file in the repo (excluding `index.html`)
+- Card titles and descriptions are pulled from `manifest.json`
+- Cards link to the full HTML report, opening in a new tab
 
-## Adding descriptions
+## Adding a new file
 
-Edit `manifest.json` to add descriptions for your files:
+1. Add any `.html` file anywhere in the repository
+2. Add an entry to `manifest.json` with a description
+3. Commit and push — the card appears on the next page load
+
+### manifest.json format
 
 ```json
 {
-  "My File.html": "A brief description of what this file contains."
+  "My Report.html": "A brief description of what this report contains."
 }
 ```
-
-The filename in the manifest must match the exact file path in your repository.
-
-## Use it
-
-1. Add any new `.html` file anywhere in this repository
-2. Update `manifest.json` with a description for the file (optional)
-3. Commit and push to GitHub
-4. Open your GitHub Pages site and the file appears automatically
 
 ## GitHub Pages notes
 
